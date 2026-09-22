@@ -10,8 +10,8 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(10, 10, 10, 0.5); /* Noch viel durchsichtiger für den perfekten Glas-Look */
-            --ios-border: rgba(255, 255, 255, 0.15);
+            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtig */
+            --ios-border: rgba(255, 255, 255, 0.12);
         }
 
         * { 
@@ -208,7 +208,7 @@
         /* --- RESULT BOXEN --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
-        /* Desktop Result Screen (Jetzt ebenfalls extrem durchsichtig) */
+        /* Desktop Result Screen */
         .desktop-result {
             position: relative;
             border: 1px solid var(--primary-color);
@@ -266,7 +266,7 @@
         @keyframes popupSlideUpFade {
             0% {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translateY(40px);
             }
             100% {
                 opacity: 1;
@@ -276,34 +276,34 @@
 
         .ios-modal {
             position: relative;
-            background: var(--ios-bg); /* Sehr transparentes Glas-Design */
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px);
+            background: var(--ios-bg); /* Extrem durchsichtig */
+            backdrop-filter: blur(6px); /* Weniger Blur */
+            -webkit-backdrop-filter: blur(6px);
             border-radius: 14px; 
-            width: 310px; 
+            width: 275px; /* Kleiner gemacht */
             text-align: center; 
             color: var(--text-color);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.12);
             animation: popupSlideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .ios-text {
-            padding: 32px 18px 28px 18px; 
-            font-size: 1.05rem; 
+            padding: 24px 14px 20px 14px; /* Kompakterer Textbereich */
+            font-size: 0.95rem; 
             font-weight: 500;
-            line-height: 1.4; 
+            line-height: 1.35; 
         }
         #mob-num {
             display: block; 
-            margin: 10px 0; 
-            font-size: 1.15rem; 
+            margin: 8px 0; 
+            font-size: 1.05rem; 
             font-weight: 600;
         }
         #mob-system-text {
             display: block;
-            margin-top: 15px; 
-            font-size: 0.95rem; 
+            margin-top: 12px; 
+            font-size: 0.85rem; 
         }
         .ios-buttons {
             display: flex; 
@@ -311,10 +311,10 @@
         }
         .ios-buttons button {
             flex: 1; 
-            padding: 18px; 
+            padding: 13px; /* Kleinere Buttons */
             background: none; 
             border: none;
-            font-size: 1.1rem; 
+            font-size: 1rem; 
             color: var(--primary-color); 
             cursor: pointer;
             transition: background 0.2s;
