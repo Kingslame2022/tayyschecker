@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp Banchecker</title>
+    <style>
+        :root {
+            --primary-color: #ff0033;
+            --text-color: #ffffff;
+            --bg-overlay: rgba(0, 0, 0, 0.75);
+            --ios-bg: rgba(30, 30, 30, 0.85);
+            --ios-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        body, html { 
+            height: 100%; width: 100%; 
+            background-color: #000; 
+            color: var(--text-color); 
+            overflow-x: hidden; 
+            display: flex; 
+            justify-content: center;
+        }
+
+        /* --- Hintergrund --- */
+        .bg-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
+        }
+        .bg-wrapper video, .bg-wrapper img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.5;
+        }
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, transparent, #000 95%);
+            z-index: -1;
+        }
+
+        /* --- Main Layout --- */
+        .app-container { 
+            width: 100%; max-width: 420px; 
+            min-height: 100vh; padding: 40px 20px 20px 20px; 
+            display: flex; flex-direction: column; 
+        }
+
+        .header {
+            text-align: center; font-size: 1.2rem; letter-spacing: 2px;
+            margin-bottom: 40px; position: relative; color: var(--text-color);
+        }
+        .dots { position: absolute; right: 0; top: 0; font-size: 1.2rem; cursor: pointer; }
+
+        /* Top Panel (Autofill) */
+        .top-panel {
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            text-align: center;
+            margin-bottom: 25px;
+            background: rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* Detail */
+        }
+        .top-panel > div {
+            flex: 1; padding: 15px; cursor: pointer;
+            transition: 0.2s; color: var(--text-color);
+        }
+        .top-panel > div:hover { background: rgba(255,255,255,0.1); }
+        .border-right { border-right: 1px solid var(--primary-color); }
+
+        /* Input Area */
+        .input-wrapper { margin-bottom: 5px; position: relative; }
+        .input-panel {
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            display: flex; align-items: center;
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3); /* Detail */
+        }
+        .input-panel span { color: var(--text-color); margin-right: 10px; font-weight: bold;}
+        input[type="text"] {
+            background: transparent; border: none; color: var(--text-color);
+            font-size: 1rem; outline: none; text-shadow: 0 0 2px rgba(255,255,255,0.2); /* Detail */
+        }
+        #country-code { width: 40px; border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; margin-right: 10px; text-align: center;}
+        #phone-number { flex: 1; }
+
+        /* Animierter Balken */
+        .progress-bar-container {
+            width: 80%; height: 3px; background: rgba(255,255,255,0.1); 
+            margin: 5px auto 10px auto; border-radius: 2px; overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%; width: 50%; background: var(--primary-color);
+            position: absolute; top: 0; left: 0;
+            box-shadow: 0 0 8px var(--primary-color);
+            animation: moveBar 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBar {
+            0% { left: 0%; width: 30%; }
+            100% { left: 70%; width: 30%; }
+        }
+
+        .copyright { text-align: center; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 30px; letter-spacing: 1px;}
+
+        .btn-check {
+            width: 100%; background: transparent; color: var(--text-color);
+            border: 1px solid var(--primary-color); padding: 15px;
+            border-radius: 8px; font-weight: bold; font-size: 1rem;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; margin-bottom: 20px;
+            position: relative; overflow: hidden;
+        }
+        /* Button Glow Effekt */
+        .btn-check::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg); transition: 0.5s;
+        }
+        .btn-check:hover::before { left: 150%; }
+        .btn-check:hover { background: var(--primary-color); color: #000; box-shadow: 0 0 20px var(--primary-color); }
+
+        #loading { text-align: center; display: none; color: var(--primary-color); margin-bottom: 10px; animation: pulseText 1.5s infinite; }
+        @keyframes pulseText { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        #error-message { color: red; text-align: center; margin-bottom: 10px; display: none; font-size: 0.9rem; }
+
+        /* --- Settings Panel --- */
+        .settings-panel {
+            margin-top: auto; border: 1px solid var(--primary-color);
+            border-radius: 12px; padding: 15px; background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+        .settings-title { font-size: 0.8rem; text-align: center; margin-bottom: 15px; color: var(--text-color); opacity: 0.7; }
+        .settings-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem;}
+        input[type="color"] { -webkit-appearance: none; border: none; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; padding: 0; background: transparent;}
+        input[type="color"]::-webkit-color-swatch { border: 1px solid white; border-radius: 4px; }
+        
+        input[type="file"] { width: 100%; padding: 5px; border: 1px dashed var(--primary-color); color: var(--text-color); border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top: 5px;}
+        input[type="file"]::file-selector-button { background: transparent; border: 1px solid var(--primary-color); color: var(--text-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 10px;}
+
+        /* =========================================
+           RESPONSIVE RESULT BOX (DESKTOP VS MOBILE)
+           ========================================= */
+        #result-wrapper { display: none; }
+        
+        /* DESKTOP (Bild 2 Style) */
+        .desktop-result {
+            border: 1px solid var(--primary-color);
+            border-radius: 12px; padding: 20px;
+            background: rgba(0,0,0,0.6);
+            box-shadow: 0 0 15px rgba(255,0,51,0.3); /* Etwas stärkerer Glow */
+            backdrop-filter: blur(5px);
+        }
+        .desktop-num { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 5px rgba(255,255,255,0.3);}
+        .desktop-msg { font-style: italic; font-size: 1.1rem; margin-bottom: 30px; text-shadow: 0 0 8px var(--primary-color);}
+        .desktop-actions { display: flex; justify-content: space-between; font-size: 0.9rem; text-transform: uppercase; }
+        .desktop-actions span { cursor: pointer; transition: text-shadow 0.2s;}
+        .desktop-actions span:hover { text-shadow: 0 0 10px var(--text-color); }
+
+        /* MOBILE (Bild 1 Style - iOS Popup) */
+        .mobile-result { display: none; }
+        .ios-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; backdrop-filter: blur(4px); /* Etwas mehr Blur */
+        }
+        .ios-modal {
+            background: var(--ios-bg); backdrop-filter: blur(20px);
+            border-radius: 14px; width: 280px;
+            text-align: center; color: var(--text-color);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.7); /* Stärkerer Schatten */
+        }
+        .ios-text {
+            padding: 20px 15px; font-size: 0.95rem; line-height: 1.4; font-weight: 500;
+        }
+        .ios-buttons {
+            display: flex; border-top: 1px solid var(--ios-border);
+        }
+        .ios-buttons button {
+            flex: 1; padding: 12px; background: none; border: none;
+            font-size: 1.05rem; color: var(--primary-color); cursor: pointer;
+            transition: background 0.2s;
+        }
+        .ios-buttons button:hover { background: rgba(255,255,255,0.05); } /* Hover Effekt iOS Button */
+        .ios-buttons button:first-child { border-right: 1px solid var(--ios-border); font-weight: 400; border-bottom-left-radius: 14px;}
+        .ios-buttons button:last-child { font-weight: bold; border-bottom-right-radius: 14px;}
+
+        /* Media Queries für den Switch */
+        @media (max-width: 768px) {
+            .desktop-result { display: none; }
+            .mobile-result.active { display: block; }
+        }
+        @media (min-width: 769px) {
+            .desktop-result.active { display: block; }
+            .mobile-result { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hintergrund -->
+    <div class="bg-wrapper">
+        <video id="bg-video" autoplay loop muted playsinline style="display: block;">
+            <source src="https://cdn.pixabay.com/video/2021/08/11/84688-587841581_tiny.mp4" type="video/mp4">
+        </video>
+        <img id="bg-img" style="display: none;" src="" alt="background">
+    </div>
+    <div class="overlay"></div>
+
+    <div class="app-container">
+        
+        <div class="header">スノウィ <span class="dots">⋮</span></div>
+
+        <div class="top-panel">
+            <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
+            <div>スノウィ</div>
+        </div>
+
+        <div class="input-wrapper">
+            <div class="input-panel">
+                <span>+</span>
+                <input type="text" id="country-code" value="49">
+                <input type="text" id="phone-number" placeholder="15678332333">
+            </div>
+            <!-- Animierter Balken Container -->
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="copyright">©Snowi Modder</div>
+        </div>
+        
+        <button class="btn-check" onclick="checkNumber()">PRÜFEN</button>
+
+        <div id="loading">API wird abgefragt...</div>
+        <div id="error-message"></div>
+
+        <!-- RESULTAT BEREICH -->
+        <div id="result-wrapper">
+            
+            <div class="desktop-result" id="desktop-view">
+                <div class="desktop-num" id="desk-num">+49 15678332333</div>
+                <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
+                <div class="desktop-actions">
+                    <span onclick="closeResult()">EXIT...</span>
+                    <span>サポート</span>
+                </div>
+            </div>
+
+            <div class="mobile-result" id="mobile-view">
+                <div class="ios-overlay">
+                    <div class="ios-modal">
+                        <div class="ios-text" id="mobile-msg">
+                            Deine Telefonnummer<br>
+                            <strong id="mob-num">+49 15678332333</strong><br>
+                            ist für die Nutzung von WhatsApp gesperrt.<br>
+                            Bitte kontaktiere unseren Customer Support für weitere Hilfe.
+                        </div>
+                        <div class="ios-buttons">
+                            <button onclick="closeResult()" style="color: var(--text-color);">Abbrechen</button>
+                            <button onclick="closeResult()">Support</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="settings-panel">
+            <div class="settings-title">Einstellungen</div>
+            <div class="settings-row">
+                <span>Neon-/Akzentfarbe</span>
+                <input type="color" id="neon-color-picker" value="#ff0033" onchange="changeThemeColor(this.value)">
+            </div>
+            <div class="settings-row">
+                <span>Textfarbe ändern</span>
+                <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
+            </div>
+            <div style="font-size: 0.85rem; margin-top: 10px;">Hintergrund (Bild/Video)</div>
+            <input type="file" id="bg-file-input" accept="video/mp4,video/webm,image/jpeg,image/png,image/gif,image/webp" onchange="handleFileUpload(this)">
+        </div>
+    </div>
+
+    <script>
+        // --- LOKALER SPEICHER FÜR HINTERGRUND & FARBEN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Farben laden
+            const savedNeon = localStorage.getItem('snowi_neon_color');
+            if (savedNeon) {
+                document.getElementById('neon-color-picker').value = savedNeon;
+                changeThemeColor(savedNeon);
+            }
+            
+            const savedText = localStorage.getItem('snowi_text_color');
+            if (savedText) {
+                document.getElementById('text-color-picker').value = savedText;
+                changeTextColor(savedText);
+            }
+
+            // Hintergrund laden (Base64)
+            const savedBgData = localStorage.getItem('snowi_bg_data');
+            const savedBgType = localStorage.getItem('snowi_bg_type'); // 'image' oder 'video'
+            
+            if (savedBgData && savedBgType) {
+                applyBackgroundData(savedBgData, savedBgType);
+            }
+        });
+
+        // --- THEME FUNKTIONEN ---
+        function changeThemeColor(hexColor) {
+            document.documentElement.style.setProperty('--primary-color', hexColor);
+            localStorage.setItem('snowi_neon_color', hexColor);
+        }
+
+        function changeTextColor(hexColor) {
+            document.documentElement.style.setProperty('--text-color', hexColor);
+            localStorage.setItem('snowi_text_color', hexColor);
+        }
+
+        // --- HINTERGRUND FUNKTIONEN (MIT LOCALSTORAGE) ---
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Dateigröße begrenzen (ca. 4MB), da LocalStorage ein Limit hat (oft 5MB)
+            if (file.size > 4 * 1024 * 1024) {
+                alert("Datei ist zu groß zum dauerhaften Speichern. Bitte wähle eine Datei unter 4MB (z.B. stark komprimiertes GIF oder Bild).");
+                return;
+            }
+
+            const isVideo = file.type.startsWith('video/');
+            const bgType = isVideo ? 'video' : 'image';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                // Im LocalStorage speichern
+                try {
+                    localStorage.setItem('snowi_bg_data', base64Data);
+                    localStorage.setItem('snowi_bg_type', bgType);
+                    // Direkt anwenden
+                    applyBackgroundData(base64Data, bgType);
+                } catch (err) {
+                    console.error("Fehler beim Speichern im LocalStorage (evtl. Quota exceeded):", err);
+                    alert("Datei ist zu groß für den lokalen Speicher. Sie wird nur für diese Sitzung angezeigt.");
+                    applyBackgroundData(base64Data, bgType); // Anwenden, aber nicht gespeichert
+                }
+            };
+            reader.readAsDataURL(file); // Liest Datei als Base64
+        }
+
+        function applyBackgroundData(dataUrl, type) {
+            const bgVid = document.getElementById('bg-video');
+            const bgImg = document.getElementById('bg-img');
+
+            if (type === 'video') {
+                bgImg.style.display = 'none';
+                bgVid.style.display = 'block';
+                bgVid.src = dataUrl;
+                bgVid.play().catch(e => console.log("Autoplay prevented:", e));
+            } else {
+                bgVid.style.display = 'none';
+                bgVid.pause();
+                bgImg.style.display = 'block';
+                bgImg.src = dataUrl;
+            }
+        }
+
+
+        // --- UI FUNKTIONEN ---
+        function closeResult() {
+            document.getElementById('result-wrapper').style.display = 'none';
+            document.getElementById('desktop-view').classList.remove('active');
+            document.getElementById('mobile-view').classList.remove('active');
+        }
+
+        // --- API & CHECK FUNKTIONEN ---
+        async function checkNumber() {
+            const cc = document.getElementById('country-code').value.replace('+', ''); 
+            const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
+            const fullNumber = "+" + cc + " " + num;
+
+            if(num.trim() === "") return alert("Bitte eine Nummer eingeben!");
+
+            closeResult();
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                // Abfrage an EIGENEN Server
+                const response = await fetch('/check', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ number: fullNumber })
+                });
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.error || 'Unbekannter API Fehler');
+                }
+                
+                // BANN ERKENNUNG
+                let isBannedValue = false;
+                if (responseData.banned !== undefined) isBannedValue = responseData.banned;
+                else if (responseData.isBanned !== undefined) isBannedValue = responseData.isBanned;
+                else if (responseData.data && responseData.data.banned !== undefined) isBannedValue = responseData.data.banned;
+                else if (responseData.data && responseData.data.isBanned !== undefined) isBannedValue = responseData.data.isBanned;
+                else if (responseData.status === "banned" || responseData.status === "BANNED" || responseData.status === true) isBannedValue = true;
+                
+                renderResult(fullNumber, isBannedValue);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.innerHTML = "<strong>Fehler:</strong><br>" + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function renderResult(fullNumber, isBanned) {
+            document.getElementById('loading').style.display = 'none';
+            
+            const deskNum = document.getElementById('desk-num');
+            const deskMsg = document.getElementById('desk-msg');
+            const mobNum = document.getElementById('mob-num');
+            const mobMsg = document.getElementById('mobile-msg');
+
+            deskNum.innerText = fullNumber;
+            mobNum.innerText = fullNumber;
+
+            if (isBanned) {
+                // Desktop Ansicht
+                deskMsg.innerText = "Banned by ViVa La Tayy";
+                deskMsg.style.color = "var(--primary-color)";
+                // Mobile Ansicht
+                mobMsg.innerHTML = `Deine Telefonnummer<br><strong style="margin: 5px 0; display: block;">${fullNumber}</strong>ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.`;
+            } else {
+                // Desktop Ansicht
+                deskMsg.innerText = "Nummer ist SAFE (Aktiv)";
+                deskMsg.style.color = "#32D74B";
+                // Mobile Ansicht
+                mobMsg.innerHTML = `Die Telefonnummer<br><strong style="margin: 5px 0; display: block;">${fullNumber}</strong>ist <strong>NICHT</strong> gesperrt.<br>Sie kann für WhatsApp genutzt werden.`;
+            }
+
+            document.getElementById('result-wrapper').style.display = 'block';
+            document.getElementById('desktop-view').classList.add('active');
+            document.getElementById('mobile-view').classList.add('active');
+        }
+    </script>
+</body>
+</html>
