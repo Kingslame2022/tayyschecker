@@ -24,7 +24,7 @@
         body, html { 
             height: 100%; 
             width: 100%; 
-            background-color: #050505; /* Standard Schwarz */
+            background-color: #050505; 
             color: var(--text-color); 
             overflow-x: hidden; 
             display: flex; 
@@ -39,9 +39,9 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            z-index: 1; /* FIXED: Liegt jetzt ÜBER dem schwarzen Body-Hintergrund! */
-            opacity: 0.6; /* Dunkelt das Bild etwas ab für bessere Lesbarkeit */
-            display: none; /* Versteckt, bis ein Bild hochgeladen wird */
+            z-index: 1; 
+            opacity: 0.6; 
+            display: none; 
         }
 
         .overlay {
@@ -51,7 +51,7 @@
             width: 100vw;
             height: 100vh;
             background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
-            z-index: 2; /* FIXED: Liegt über dem Bild für den dunklen Rand-Effekt */
+            z-index: 2; 
             pointer-events: none;
         }
 
@@ -60,11 +60,11 @@
             width: 100%; 
             max-width: 420px; 
             min-height: 100vh; 
-            padding: 40px 20px 25px 20px; 
+            padding: 40px 20px 20px 20px; 
             display: flex; 
             flex-direction: column; 
             position: relative;
-            z-index: 10; /* FIXED: Alle Buttons liegen über dem Bild */
+            z-index: 10; 
         }
 
         .header {
@@ -295,19 +295,19 @@
             .mobile-result { display: none !important; }
         }
 
-        /* --- EINSTELLUNGEN PANEL --- */
+        /* --- EINSTELLUNGEN PANEL (KOMPAKT) --- */
         .settings-panel {
             margin-top: auto; 
             border: 1px solid var(--primary-color);
-            border-radius: 12px; 
-            padding: 15px; 
+            border-radius: 10px; /* Kleinerer Radius */
+            padding: 12px 14px; /* Weniger Padding */
             background: rgba(10, 10, 15, 0.7);
             backdrop-filter: blur(10px);
         }
         .settings-title { 
-            font-size: 0.8rem; 
+            font-size: 0.75rem; /* Kleinerer Text */
             text-align: center; 
-            margin-bottom: 12px; 
+            margin-bottom: 10px; /* Weniger Abstand */
             color: var(--text-color); 
             opacity: 0.7; 
             letter-spacing: 1px;
@@ -317,14 +317,14 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            margin-bottom: 15px; 
-            font-size: 0.85rem;
+            margin-bottom: 8px; /* Boxen enger zusammen */
+            font-size: 0.8rem; /* Kleinerer Text */
         }
         input[type="color"] { 
             -webkit-appearance: none; 
             border: none; 
-            width: 32px; 
-            height: 32px; 
+            width: 24px; /* Deutlich kleinere Farbkästchen */
+            height: 24px; 
             border-radius: 4px; 
             cursor: pointer; 
             padding: 0; 
@@ -338,10 +338,10 @@
             background: transparent;
             border: 1px solid var(--primary-color);
             color: var(--text-color);
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 4px 8px; /* Kleinerer Button */
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
         }
         .edit-text-btn:hover {
@@ -349,22 +349,23 @@
         }
         input[type="file"] { 
             width: 100%; 
-            padding: 6px; 
+            padding: 4px; /* Schmaleres Feld */
             border: 1px dashed var(--primary-color); 
             color: var(--text-color); 
-            border-radius: 6px; 
-            font-size: 0.75rem; 
+            border-radius: 4px; 
+            font-size: 0.7rem; 
             cursor: pointer; 
-            margin-top: 5px;
+            margin-top: 4px;
         }
         input[type="file"]::file-selector-button { 
             background: transparent; 
             border: 1px solid var(--primary-color); 
             color: var(--text-color); 
-            padding: 4px 8px; 
-            border-radius: 4px; 
+            padding: 2px 6px; 
+            border-radius: 3px; 
             cursor: pointer; 
-            margin-right: 10px;
+            margin-right: 8px;
+            font-size: 0.7rem;
         }
     </style>
 </head>
@@ -381,7 +382,6 @@
         <!-- Autofill & NEUER PRÜFKNOPF -->
         <div class="top-panel">
             <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
-            <!-- Hier ist der Prüfen-Button! (Rechte Seite) -->
             <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
@@ -435,7 +435,7 @@
 
         </div>
 
-        <!-- EINSTELLUNGEN -->
+        <!-- EINSTELLUNGEN (JETZT KOMPAKT) -->
         <div class="settings-panel">
             <div class="settings-title">EINSTELLUNGEN</div>
             <div class="settings-row">
@@ -450,7 +450,7 @@
                 <span>Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
             </div>
-            <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.7;">Hintergrundbild hochladen (JPG/PNG/GIF):</div>
+            <div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.7;">Hintergrundbild hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
         </div>
 
@@ -461,7 +461,6 @@
 
         // Beim Start: Gespeicherte Werte laden
         document.addEventListener('DOMContentLoaded', () => {
-            // Farben
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) {
                 document.getElementById('neon-color-picker').value = savedNeon;
@@ -473,7 +472,6 @@
                 changeTextColor(savedText);
             }
 
-            // Hintergrundbild laden
             const savedBg = localStorage.getItem('snowi_bg_image');
             if (savedBg) {
                 const bgImg = document.getElementById('bg-img');
@@ -481,12 +479,10 @@
                 bgImg.style.display = 'block';
             }
 
-            // Bann-Text
             const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             updateBannedTextDisplay(savedBannedText);
         });
 
-        // --- BANN-TEXT ÄNDERN ---
         function editBannedText() {
             const currentText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentText);
@@ -505,7 +501,6 @@
             if (mobCustom) mobCustom.innerText = text;
         }
 
-        // --- FARBWECHSEL ---
         function changeThemeColor(hex) {
             document.documentElement.style.setProperty('--primary-color', hex);
             localStorage.setItem('snowi_neon_color', hex);
@@ -516,18 +511,15 @@
             localStorage.setItem('snowi_text_color', hex);
         }
 
-        // --- 100% SICHERER HINTERGRUND UPLOAD ---
         function handleImageUpload(input) {
             const file = input.files[0];
             if (!file) return;
 
-            // 1. Sofortiges Anzeigen (Ohne Komprimierungs-Verzögerung)
             const tempUrl = URL.createObjectURL(file);
             const bgImg = document.getElementById('bg-img');
             bgImg.src = tempUrl;
             bgImg.style.display = 'block';
 
-            // 2. Im Hintergrund für den nächsten Besuch abspeichern
             if (file.size <= 4 * 1024 * 1024) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -549,7 +541,6 @@
             document.getElementById('mobile-view').classList.remove('active');
         }
 
-        // --- API CHECK FUNKTION ---
         async function checkNumber() {
             const cc = document.getElementById('country-code').value.replace('+', ''); 
             const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
