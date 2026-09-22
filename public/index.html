@@ -10,7 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(28, 28, 30, 0.25); /* Leicht deckend für bessere Lesbarkeit */
+            --ios-bg: rgba(30, 30, 30, 0.85); /* Echte iOS-Glas-Farbe */
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -40,7 +40,7 @@
             height: 100vh;
             object-fit: cover;
             z-index: 1; 
-            opacity: 0.4; /* WIEDER DUNKLER GEMACHT */
+            opacity: 0.4; 
             display: none; 
         }
 
@@ -50,7 +50,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 95%); /* DUNKLE RÄNDER */
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 95%);
             z-index: 2; 
             pointer-events: none;
         }
@@ -250,30 +250,31 @@
             left: 0; 
             width: 100vw; 
             height: 100vh;
-            background: rgba(0,0,0,0.3); /* Leicht dunkleres Overlay für Fokus */
+            background: rgba(0,0,0,0.4); 
             display: flex; 
             align-items: center; 
             justify-content: center;
             z-index: 1000; 
         }
 
-        /* NEU VERGRÖSSERTES iOS POPUP */
+        /* EXAKT IOS-PROPORTIONEN WIE IM BILD */
         .ios-modal {
             position: relative;
             background: var(--ios-bg);
-            backdrop-filter: blur(12px); /* Etwas mehr Blur für den iOS Glas-Effekt */
-            border-radius: 18px; /* Größerer Radius für iOS-Look */
-            width: 340px; /* DEUTLICH BREITER (Vorher 290px) */
+            backdrop-filter: blur(15px); 
+            border-radius: 14px; 
+            width: 310px; /* Sehr breit, genau wie auf dem Screenshot */
             text-align: center; 
             color: var(--text-color);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .ios-text {
-            padding: 28px 20px 24px 20px; /* Mehr Platz oben/unten */
-            font-size: 1.05rem; /* Größere Schrift */
-            line-height: 1.5; 
-            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+            padding: 22px 16px 20px 16px; 
+            font-size: 1.05rem; /* Echte iOS Schriftgröße */
+            font-weight: 500;
+            line-height: 1.35; 
+            /* Text-Shadow entfernt für den cleanen iOS Look! */
         }
         .ios-buttons {
             display: flex; 
@@ -281,13 +282,12 @@
         }
         .ios-buttons button {
             flex: 1; 
-            padding: 16px; /* Höhere Buttons */
+            padding: 14px; 
             background: none; 
             border: none;
-            font-size: 1.15rem; /* Größere Button-Schrift */
+            font-size: 1.1rem; 
             color: var(--primary-color); 
             cursor: pointer;
-            text-shadow: 0 0 3px rgba(0,0,0,0.8);
             transition: background 0.2s;
         }
         .ios-buttons button:active {
@@ -295,9 +295,9 @@
         }
         .ios-buttons button:first-child { 
             border-right: 1px solid var(--ios-border); 
-            color: var(--text-color);
+            color: var(--primary-color); /* Im Screenshot sind beide grün/farbig */
         }
-        .ios-buttons button:last-child { font-weight: bold; }
+        .ios-buttons button:last-child { font-weight: 600; }
 
         @media (max-width: 768px) {
             .desktop-result { display: none; }
@@ -435,8 +435,8 @@
                     <div class="ios-modal">
                         <div class="ios-text" id="mobile-msg">
                             Deine Telefonnummer<br>
-                            <strong id="mob-num" style="display: block; margin: 6px 0;">+49 15678332333</strong>
-                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.</span>
+                            <strong id="mob-num" style="display: block; margin: 6px 0; font-weight: 600;">+49 15678332333</strong>
+                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
                         </div>
                         <div class="ios-buttons">
                             <button onclick="closeResult()">Abbrechen</button>
@@ -470,7 +470,7 @@
     </div>
 
     <script>
-        const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
+        const DEFAULT_BANNED_TEXT = "ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.";
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedNeon = localStorage.getItem('snowi_neon_color');
@@ -494,10 +494,14 @@
         });
 
         function editBannedText() {
-            const currentText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
-            const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentText);
+            // Für das Text-Bearbeiten-Feld entfernen wir die <br> Tags temporär
+            const currentTextRaw = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            const currentTextClean = currentTextRaw.replace(/<br>/g, '\n');
+            const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentTextClean);
+            
             if (newText !== null && newText.trim() !== "") {
-                const cleaned = newText.trim();
+                // Zeilenumbrüche wieder in <br> umwandeln
+                const cleaned = newText.trim().replace(/\n/g, '<br>');
                 localStorage.setItem('snowi_banned_text', cleaned);
                 updateBannedTextDisplay(cleaned);
             }
@@ -506,8 +510,8 @@
         function updateBannedTextDisplay(text) {
             const deskMsg = document.getElementById('desk-msg');
             const mobCustom = document.getElementById('mob-custom-text');
-            if (deskMsg) deskMsg.innerText = text;
-            if (mobCustom) mobCustom.innerText = text;
+            if (deskMsg) deskMsg.innerHTML = text; // innerHTML damit <br> funktioniert
+            if (mobCustom) mobCustom.innerHTML = text;
         }
 
         function changeThemeColor(hex) {
@@ -604,9 +608,9 @@
             const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
 
             if (isBanned) {
-                deskMsg.innerText = customBannedText;
+                deskMsg.innerHTML = customBannedText; // innerHTML für Zeilenumbrüche
                 deskMsg.style.color = "var(--primary-color)";
-                mobCustom.innerText = customBannedText;
+                mobCustom.innerHTML = customBannedText;
             } else {
                 deskMsg.innerText = "ist Unban";
                 deskMsg.style.color = "#32D74B";
