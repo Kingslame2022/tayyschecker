@@ -587,4 +587,106 @@
 
         function handleImageUpload(input) {
             const file = input.files[0];
-            if (!file) ret
+            if (!file) return;
+
+            const tempUrl = URL.createObjectURL(file);
+            const bgImg = document.getElementById('bg-img');
+            bgImg.src = tempUrl;
+            bgImg.style.display = 'block';
+
+            if (file.size <= 4 * 1024 * 1024) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        localStorage.setItem('snowi_bg_image', e.target.result);
+                    } catch (err) {
+                        console.log("Speicherlimit erreicht, Bild wird nur für diese Sitzung angezeigt.");
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Hinweis: Dein Bild/GIF ist größer als 4 MB. Es wird sofort angezeigt, aber nicht dauerhaft gespeichert.");
+            }
+        }
+
+        function closeResult() {
+            document.getElementById('result-wrapper').style.display = 'none';
+            document.getElementById('desktop-view').classList.remove('active');
+            document.getElementById('mobile-view').classList.remove('active');
+        }
+
+        async function checkNumber() {
+            const cc = document.getElementById('country-code').value.replace('+', ''); 
+            const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
+            const fullNumber = "+" + cc + " " + num;
+
+            if(num.trim() === "") return alert("Bitte eine Nummer eingeben!");
+
+            closeResult();
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch('/check', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ number: fullNumber })
+                });
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.error || 'Unbekannter API Fehler');
+                }
+                
+                let isBannedValue = false;
+                if (responseData.banned !== undefined) isBannedValue = responseData.banned;
+                else if (responseData.isBanned !== undefined) isBannedValue = responseData.isBanned;
+                else if (responseData.data && responseData.data.banned !== undefined) isBannedValue = responseData.data.banned;
+                else if (responseData.data && responseData.data.isBanned !== undefined) isBannedValue = responseData.data.isBanned;
+                else if (responseData.status === "banned" || responseData.status === "BANNED" || responseData.status === true) isBannedValue = true;
+                
+                renderResult(fullNumber, isBannedValue);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.innerHTML = "<strong>Fehler:</strong><br>" + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function renderResult(fullNumber, isBanned) {
+            document.getElementById('loading').style.display = 'none';
+            
+            const deskNum = document.getElementById('desk-num');
+            const deskMsg = document.getElementById('desk-msg');
+            const mobNum = document.getElementById('mob-num');
+            const mobCustom = document.getElementById('mob-custom-text');
+            const mobSystemText = document.getElementById('mob-system-text');
+
+            deskNum.innerText = fullNumber;
+            mobNum.innerText = fullNumber;
+
+            const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+
+            if (isBanned) {
+                deskMsg.innerHTML = customBannedText; 
+                deskMsg.style.color = "var(--primary-color)";
+                
+                mobCustom.innerHTML = customBannedText;
+                mobSystemText.style.display = 'block';
+            } else {
+                deskMsg.innerText = "ist Unban";
+                deskMsg.style.color = "#32D74B";
+                
+                mobCustom.innerText = "ist Unban";
+                mobSystemText.style.display = 'none';
+            }
+
+            document.getElementById('result-wrapper').style.display = 'block';
+            document.getElementById('desktop-view').classList.add('active');
+            document.getElementById('mobile-view').classList.add('active');
+        }
+    </script>
+</body>
+</html>
