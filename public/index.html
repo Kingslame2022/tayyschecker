@@ -10,7 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(25, 25, 25, 0.6); /* Noch etwas durchsichtiger für den Glas-Look */
+            --ios-bg: rgba(20, 20, 20, 0.45); /* Noch transparenter für den perfekten Glass-Look */
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -208,13 +208,15 @@
         /* --- RESULT BOXEN --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
+        /* Desktop Result Screen (Jetzt auch leicht durchsichtig) */
         .desktop-result {
             position: relative;
             border: 1px solid var(--primary-color);
             border-radius: 12px; 
             padding: 22px 20px 18px 20px;
-            background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(20, 20, 25, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 0 18px rgba(255,0,51,0.25);
         }
         .desktop-num { 
@@ -253,28 +255,28 @@
             left: 0; 
             width: 100vw; 
             height: 100vh;
-            background: rgba(0,0,0,0.4); 
+            background: rgba(0,0,0,0.35); 
             display: flex; 
             align-items: center; 
             justify-content: center;
             z-index: 1000; 
         }
 
-        /* --- ANIMATION FÜR DAS POP-UP (Von unten/etwas unter Mitte hoch + Fade-In) --- */
+        /* --- ANIMATION FÜR DAS POP-UP (Von unten hoch + Fade-In) --- */
         @keyframes popupSlideUpFade {
             0% {
                 opacity: 0;
-                transform: translateY(50px); /* Startet etwas unterhalb der Mitte */
+                transform: translateY(50px);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0); /* Gleitet sanft in die exakte Mitte */
+                transform: translateY(0);
             }
         }
 
         .ios-modal {
             position: relative;
-            background: var(--ios-bg);
+            background: var(--ios-bg); /* Durchsichtiges Glas-Design */
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px);
             border-radius: 14px; 
@@ -283,7 +285,6 @@
             color: var(--text-color);
             box-shadow: 0 15px 50px rgba(0,0,0,0.7);
             border: 1px solid rgba(255,255,255,0.12);
-            /* Hier wird die Animation eingebunden */
             animation: popupSlideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
