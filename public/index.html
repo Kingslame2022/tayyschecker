@@ -8,7 +8,7 @@
     <link rel="manifest" href="/manifest.json">
     <style>
         :root {
-            --primary-color: #8a2be2; /* Lila passend zu deinem Screenshot */
+            --primary-color: #8a2be2; /* Lila */
             --text-color: #ffffff;
             --ios-bg: rgba(28, 28, 30, 0.88);
             --ios-border: rgba(255, 255, 255, 0.15);
@@ -24,27 +24,35 @@
         body, html { 
             height: 100%; 
             width: 100%; 
-            background-color: #050505; 
+            background-color: #050505; /* Standard Schwarz */
             color: var(--text-color); 
             overflow-x: hidden; 
             display: flex; 
             justify-content: center;
         }
 
-        /* --- FESTER BILD-HINTERGRUND --- */
-        #bg-layer {
+        /* --- BILD HINTERGRUND --- */
+        #bg-img {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            object-fit: cover;
             z-index: -2;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: #050505; /* Standard Schwarz, bis ein Bild hochgeladen wird */
-            opacity: 0.6; /* Dunkelt das Bild leicht ab, damit die Schrift lesbar bleibt */
-            transition: background-image 0.5s ease;
+            opacity: 0.6; /* Dunkelt das Bild etwas ab für bessere Lesbarkeit */
+            display: none; /* Versteckt, bis ein Bild hochgeladen wird */
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* --- HAUPTLAYOUT --- */
@@ -99,7 +107,6 @@
         }
         .border-right { border-right: 1px solid var(--primary-color); }
         
-        /* Der neue Prüf-Button rechts bekommt beim Hover einen leichten Glow */
         .check-btn-area {
             letter-spacing: 1px;
         }
@@ -108,7 +115,7 @@
         }
 
         /* Eingabebereich */
-        .input-wrapper { margin-bottom: 5px; position: relative; }
+        .input-wrapper { margin-bottom: 25px; position: relative; }
         .input-panel {
             border: 1px solid var(--primary-color);
             border-radius: 8px;
@@ -195,7 +202,6 @@
         /* --- RESULT BOXEN --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
-        /* Desktop Design */
         .desktop-result {
             position: relative;
             border: 1px solid var(--primary-color);
@@ -231,7 +237,6 @@
         }
         .desktop-actions span:hover { color: var(--primary-color); }
 
-        /* Mobile iOS Design */
         .mobile-result { display: none; }
         .ios-overlay {
             position: fixed; 
@@ -364,8 +369,9 @@
 </head>
 <body>
 
-    <!-- Der neue Hintergrund-Layer (ersetzt das Schwarz, wenn ein Bild hochgeladen wird) -->
-    <div id="bg-layer"></div>
+    <!-- Das neue Bild-Element für den Hintergrund -->
+    <img id="bg-img" alt="background">
+    <div class="overlay"></div>
 
     <div class="app-container">
         
@@ -374,7 +380,7 @@
         <!-- Autofill & NEUER PRÜFKNOPF -->
         <div class="top-panel">
             <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
-            <!-- Hier ist der neue Prüfen-Button, der japanische Text bleibt erhalten! -->
+            <!-- Hier ist der Prüfen-Button! (Rechte Seite) -->
             <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
@@ -443,7 +449,7 @@
                 <span>Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
             </div>
-            <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.7;">Hintergrundbild hochladen:</div>
+            <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.7;">Hintergrundbild hochladen (JPG/PNG/GIF):</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
         </div>
 
@@ -466,10 +472,12 @@
                 changeTextColor(savedText);
             }
 
-            // Hintergrundbild als Background-Image setzen
+            // Hintergrundbild laden
             const savedBg = localStorage.getItem('snowi_bg_image');
             if (savedBg) {
-                document.getElementById('bg-layer').style.backgroundImage = `url('${savedBg}')`;
+                const bgImg = document.getElementById('bg-img');
+                bgImg.src = savedBg;
+                bgImg.style.display = 'block';
             }
 
             // Bann-Text
@@ -507,55 +515,31 @@
             localStorage.setItem('snowi_text_color', hex);
         }
 
-        // --- HINTERGRUNDBILD UPLOAD (Base64) ---
+        // --- 100% SICHERER HINTERGRUND UPLOAD ---
         function handleImageUpload(input) {
             const file = input.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    // Komprimierung für LocalStorage
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-                    const maxDim = 1280;
+            // 1. Sofortiges Anzeigen (Funktioniert sofort & immer, ohne laden!)
+            const tempUrl = URL.createObjectURL(file);
+            const bgImg = document.getElementById('bg-img');
+            bgImg.src = tempUrl;
+            bgImg.style.display = 'block';
 
-                    if (width > maxDim || height > maxDim) {
-                        if (width > height) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    let finalDataUrl;
-                    if (file.type === 'image/gif' && file.size < 3 * 1024 * 1024) {
-                        finalDataUrl = e.target.result; // GIF Animation beibehalten
-                    } else {
-                        finalDataUrl = canvas.toDataURL('image/jpeg', 0.82);
-                    }
-
+            // 2. Für den nächsten Besuch im Hintergrund abspeichern (Maximal 4MB wegen Browser-Limit)
+            if (file.size <= 4 * 1024 * 1024) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
                     try {
-                        localStorage.setItem('snowi_bg_image', finalDataUrl);
+                        localStorage.setItem('snowi_bg_image', e.target.result);
                     } catch (err) {
-                        console.warn("Storage Quota überschritten, nur temporär geladen:", err);
+                        console.log("Speicherlimit erreicht, Bild wird nur für diese Sitzung angezeigt.");
                     }
-
-                    // Hintergrund direkt im CSS austauschen
-                    document.getElementById('bg-layer').style.backgroundImage = `url('${finalDataUrl}')`;
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            } else {
+                alert("Hinweis: Dein Bild/GIF ist größer als 4 MB. Es wird jetzt sofort angezeigt, kann aber aufgrund von Browser-Sicherheitslimits nicht für deinen nächsten Besuch dauerhaft gespeichert werden.");
+            }
         }
 
         function closeResult() {
