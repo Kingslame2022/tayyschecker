@@ -4,51 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WhatsApp Banchecker</title>
+    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="manifest" href="/manifest.json">
     <style>
         :root {
             --primary-color: #ff0033;
             --text-color: #ffffff;
-            --bg-overlay: rgba(0, 0, 0, 0.75);
-            --ios-bg: rgba(30, 30, 30, 0.85);
+            --ios-bg: rgba(28, 28, 30, 0.88);
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body, html { 
-            height: 100%; width: 100%; 
-            background-color: #000; 
+            height: 100%; 
+            width: 100%; 
+            background-color: #050505; 
             color: var(--text-color); 
             overflow-x: hidden; 
             display: flex; 
             justify-content: center;
         }
 
-        /* --- Hintergrund --- */
-        .bg-wrapper {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
-        }
-        .bg-wrapper video, .bg-wrapper img {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.5;
-        }
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(to bottom, transparent, #000 95%);
-            z-index: -1;
+        /* --- FESTER BILD-HINTERGRUND --- */
+        #bg-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+            filter: brightness(0.55) contrast(1.1);
+            transition: opacity 0.4s ease;
         }
 
-        /* --- Main Layout --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- HAUPTLAYOUT --- */
         .app-container { 
-            width: 100%; max-width: 420px; 
-            min-height: 100vh; padding: 40px 20px 20px 20px; 
-            display: flex; flex-direction: column; 
+            width: 100%; 
+            max-width: 420px; 
+            min-height: 100vh; 
+            padding: 40px 20px 25px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
         }
 
         .header {
-            text-align: center; font-size: 1.2rem; letter-spacing: 2px;
-            margin-bottom: 40px; position: relative; color: var(--text-color);
+            text-align: center; 
+            font-size: 1.25rem; 
+            letter-spacing: 3px;
+            margin-bottom: 35px; 
+            position: relative; 
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
-        .dots { position: absolute; right: 0; top: 0; font-size: 1.2rem; cursor: pointer; }
+        .dots { 
+            position: absolute; 
+            right: 0; 
+            top: 0; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+        }
 
         /* Top Panel (Autofill) */
         .top-panel {
@@ -57,138 +90,237 @@
             display: flex;
             text-align: center;
             margin-bottom: 25px;
-            background: rgba(0,0,0,0.4);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* Detail */
+            background: rgba(10, 10, 15, 0.65);
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
         }
         .top-panel > div {
-            flex: 1; padding: 15px; cursor: pointer;
-            transition: 0.2s; color: var(--text-color);
+            flex: 1; 
+            padding: 14px; 
+            cursor: pointer;
+            transition: background 0.2s; 
+            color: var(--text-color);
+            font-weight: 500;
         }
-        .top-panel > div:hover { background: rgba(255,255,255,0.1); }
+        .top-panel > div:hover { background: rgba(255,255,255,0.08); }
         .border-right { border-right: 1px solid var(--primary-color); }
 
-        /* Input Area */
+        /* Eingabebereich */
         .input-wrapper { margin-bottom: 5px; position: relative; }
         .input-panel {
             border: 1px solid var(--primary-color);
             border-radius: 8px;
-            display: flex; align-items: center;
-            padding: 10px 15px;
-            background: rgba(0,0,0,0.4);
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.3); /* Detail */
+            display: flex; 
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(10, 10, 15, 0.65);
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
         }
-        .input-panel span { color: var(--text-color); margin-right: 10px; font-weight: bold;}
+        .input-panel span { 
+            color: var(--text-color); 
+            margin-right: 10px; 
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
         input[type="text"] {
-            background: transparent; border: none; color: var(--text-color);
-            font-size: 1rem; outline: none; text-shadow: 0 0 2px rgba(255,255,255,0.2); /* Detail */
+            background: transparent; 
+            border: none; 
+            color: var(--text-color);
+            font-size: 1.05rem; 
+            outline: none; 
+            letter-spacing: 1px;
         }
-        #country-code { width: 40px; border-right: 1px solid rgba(255,255,255,0.2); padding-right: 10px; margin-right: 10px; text-align: center;}
+        #country-code { 
+            width: 45px; 
+            border-right: 1px solid rgba(255,255,255,0.2); 
+            padding-right: 10px; 
+            margin-right: 10px; 
+            text-align: center;
+        }
         #phone-number { flex: 1; }
 
-        /* Animierter Balken */
+        /* Animierter Scan-Balken */
         .progress-bar-container {
-            width: 80%; height: 3px; background: rgba(255,255,255,0.1); 
-            margin: 5px auto 10px auto; border-radius: 2px; overflow: hidden;
+            width: 82%; 
+            height: 3px; 
+            background: rgba(255,255,255,0.1); 
+            margin: 6px auto 10px auto; 
+            border-radius: 3px; 
+            overflow: hidden;
             position: relative;
         }
         .progress-bar {
-            height: 100%; width: 50%; background: var(--primary-color);
-            position: absolute; top: 0; left: 0;
-            box-shadow: 0 0 8px var(--primary-color);
-            animation: moveBar 2s infinite alternate ease-in-out;
+            height: 100%; 
+            width: 40%; 
+            background: var(--primary-color);
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: scanLine 2s infinite alternate ease-in-out;
         }
 
-        @keyframes moveBar {
-            0% { left: 0%; width: 30%; }
-            100% { left: 70%; width: 30%; }
+        @keyframes scanLine {
+            0% { left: 0%; width: 25%; }
+            50% { width: 50%; }
+            100% { left: 75%; width: 25%; }
         }
 
-        .copyright { text-align: center; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 30px; letter-spacing: 1px;}
+        .copyright { 
+            text-align: center; 
+            font-size: 0.72rem; 
+            color: rgba(255,255,255,0.5); 
+            margin-bottom: 25px; 
+            letter-spacing: 1.5px;
+        }
 
+        /* Prüfen Button */
         .btn-check {
-            width: 100%; background: transparent; color: var(--text-color);
-            border: 1px solid var(--primary-color); padding: 15px;
-            border-radius: 8px; font-weight: bold; font-size: 1rem;
-            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s; margin-bottom: 20px;
-            position: relative; overflow: hidden;
+            width: 100%; 
+            background: rgba(10, 10, 15, 0.65); 
+            color: var(--text-color);
+            border: 1px solid var(--primary-color); 
+            padding: 15px;
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 1rem;
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            transition: all 0.3s; 
+            margin-bottom: 20px;
+            position: relative; 
+            overflow: hidden;
+            backdrop-filter: blur(8px);
         }
-        /* Button Glow Effekt */
-        .btn-check::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
-            transform: skewX(-20deg); transition: 0.5s;
+        .btn-check:hover { 
+            background: var(--primary-color); 
+            color: #000; 
+            box-shadow: 0 0 20px var(--primary-color); 
         }
-        .btn-check:hover::before { left: 150%; }
-        .btn-check:hover { background: var(--primary-color); color: #000; box-shadow: 0 0 20px var(--primary-color); }
 
-        #loading { text-align: center; display: none; color: var(--primary-color); margin-bottom: 10px; animation: pulseText 1.5s infinite; }
-        @keyframes pulseText { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        #error-message { color: red; text-align: center; margin-bottom: 10px; display: none; font-size: 0.9rem; }
-
-        /* --- Settings Panel --- */
-        .settings-panel {
-            margin-top: auto; border: 1px solid var(--primary-color);
-            border-radius: 12px; padding: 15px; background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+        #loading { 
+            text-align: center; 
+            display: none; 
+            color: var(--primary-color); 
+            margin-bottom: 12px; 
+            font-weight: 500;
         }
-        .settings-title { font-size: 0.8rem; text-align: center; margin-bottom: 15px; color: var(--text-color); opacity: 0.7; }
-        .settings-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem;}
-        input[type="color"] { -webkit-appearance: none; border: none; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; padding: 0; background: transparent;}
-        input[type="color"]::-webkit-color-swatch { border: 1px solid white; border-radius: 4px; }
+        #error-message { 
+            color: #ff4d4d; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            display: none; 
+            font-size: 0.9rem; 
+        }
+
+        /* --- STIFT-ICON (EDIT BUTTON) --- */
+        .edit-icon {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            opacity: 0.75;
+            transition: transform 0.2s, opacity 0.2s;
+            user-select: none;
+            z-index: 5;
+        }
+        .edit-icon:hover {
+            opacity: 1;
+            transform: scale(1.25);
+        }
+
+        /* --- RESULT BOXEN --- */
+        #result-wrapper { display: none; margin-bottom: 20px; }
         
-        input[type="file"] { width: 100%; padding: 5px; border: 1px dashed var(--primary-color); color: var(--text-color); border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top: 5px;}
-        input[type="file"]::file-selector-button { background: transparent; border: 1px solid var(--primary-color); color: var(--text-color); padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 10px;}
-
-        /* =========================================
-           RESPONSIVE RESULT BOX (DESKTOP VS MOBILE)
-           ========================================= */
-        #result-wrapper { display: none; }
-        
-        /* DESKTOP (Bild 2 Style) */
+        /* Desktop Design */
         .desktop-result {
+            position: relative;
             border: 1px solid var(--primary-color);
-            border-radius: 12px; padding: 20px;
-            background: rgba(0,0,0,0.6);
-            box-shadow: 0 0 15px rgba(255,0,51,0.3); /* Etwas stärkerer Glow */
-            backdrop-filter: blur(5px);
+            border-radius: 12px; 
+            padding: 22px 20px 18px 20px;
+            background: rgba(10, 10, 15, 0.75);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 18px rgba(255,0,51,0.25);
         }
-        .desktop-num { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 5px rgba(255,255,255,0.3);}
-        .desktop-msg { font-style: italic; font-size: 1.1rem; margin-bottom: 30px; text-shadow: 0 0 8px var(--primary-color);}
-        .desktop-actions { display: flex; justify-content: space-between; font-size: 0.9rem; text-transform: uppercase; }
-        .desktop-actions span { cursor: pointer; transition: text-shadow 0.2s;}
-        .desktop-actions span:hover { text-shadow: 0 0 10px var(--text-color); }
+        .desktop-num { 
+            font-size: 1.25rem; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            text-align: center;
+        }
+        .desktop-msg { 
+            font-style: italic; 
+            font-size: 1.15rem; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-weight: 600;
+        }
+        .desktop-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+        }
+        .desktop-actions span { 
+            cursor: pointer; 
+            letter-spacing: 1px;
+            transition: color 0.2s;
+        }
+        .desktop-actions span:hover { color: var(--primary-color); }
 
-        /* MOBILE (Bild 1 Style - iOS Popup) */
+        /* Mobile iOS Design */
         .mobile-result { display: none; }
         .ios-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.6);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; backdrop-filter: blur(4px); /* Etwas mehr Blur */
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: rgba(0,0,0,0.65);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 1000; 
+            backdrop-filter: blur(5px);
         }
         .ios-modal {
-            background: var(--ios-bg); backdrop-filter: blur(20px);
-            border-radius: 14px; width: 280px;
-            text-align: center; color: var(--text-color);
-            box-shadow: 0 4px 30px rgba(0,0,0,0.7); /* Stärkerer Schatten */
+            position: relative;
+            background: var(--ios-bg); 
+            backdrop-filter: blur(25px);
+            border-radius: 14px; 
+            width: 290px;
+            text-align: center; 
+            color: var(--text-color);
+            box-shadow: 0 6px 35px rgba(0,0,0,0.8);
         }
         .ios-text {
-            padding: 20px 15px; font-size: 0.95rem; line-height: 1.4; font-weight: 500;
+            padding: 24px 16px 18px 16px; 
+            font-size: 0.95rem; 
+            line-height: 1.45; 
         }
         .ios-buttons {
-            display: flex; border-top: 1px solid var(--ios-border);
+            display: flex; 
+            border-top: 1px solid var(--ios-border);
         }
         .ios-buttons button {
-            flex: 1; padding: 12px; background: none; border: none;
-            font-size: 1.05rem; color: var(--primary-color); cursor: pointer;
-            transition: background 0.2s;
+            flex: 1; 
+            padding: 13px; 
+            background: none; 
+            border: none;
+            font-size: 1.05rem; 
+            color: var(--primary-color); 
+            cursor: pointer;
         }
-        .ios-buttons button:hover { background: rgba(255,255,255,0.05); } /* Hover Effekt iOS Button */
-        .ios-buttons button:first-child { border-right: 1px solid var(--ios-border); font-weight: 400; border-bottom-left-radius: 14px;}
-        .ios-buttons button:last-child { font-weight: bold; border-bottom-right-radius: 14px;}
+        .ios-buttons button:first-child { 
+            border-right: 1px solid var(--ios-border); 
+            color: var(--text-color);
+        }
+        .ios-buttons button:last-child { font-weight: bold; }
 
-        /* Media Queries für den Switch */
+        /* Umschaltung Desktop / Handy */
         @media (max-width: 768px) {
             .desktop-result { display: none; }
             .mobile-result.active { display: block; }
@@ -197,39 +329,93 @@
             .desktop-result.active { display: block; }
             .mobile-result { display: none !important; }
         }
+
+        /* --- EINSTELLUNGEN PANEL --- */
+        .settings-panel {
+            margin-top: auto; 
+            border: 1px solid var(--primary-color);
+            border-radius: 12px; 
+            padding: 15px; 
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        .settings-title { 
+            font-size: 0.8rem; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            color: var(--text-color); 
+            opacity: 0.7; 
+            letter-spacing: 1px;
+        }
+        .settings-row { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 10px; 
+            font-size: 0.85rem;
+        }
+        input[type="color"] { 
+            -webkit-appearance: none; 
+            border: none; 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            padding: 0; 
+            background: transparent;
+        }
+        input[type="color"]::-webkit-color-swatch { 
+            border: 1px solid rgba(255,255,255,0.4); 
+            border-radius: 4px; 
+        }
+        input[type="file"] { 
+            width: 100%; 
+            padding: 6px; 
+            border: 1px dashed var(--primary-color); 
+            color: var(--text-color); 
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            margin-top: 5px;
+        }
+        input[type="file"]::file-selector-button { 
+            background: transparent; 
+            border: 1px solid var(--primary-color); 
+            color: var(--text-color); 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Hintergrund -->
-    <div class="bg-wrapper">
-        <video id="bg-video" autoplay loop muted playsinline style="display: block;">
-            <source src="https://cdn.pixabay.com/video/2021/08/11/84688-587841581_tiny.mp4" type="video/mp4">
-        </video>
-        <img id="bg-img" style="display: none;" src="" alt="background">
-    </div>
+    <!-- Reines Hintergrundbild (dauerhaft sichtbar hinter der Eingabe) -->
+    <img id="bg-img" src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1287&auto=format&fit=crop" alt="background">
     <div class="overlay"></div>
 
     <div class="app-container">
         
         <div class="header">スノウィ <span class="dots">⋮</span></div>
 
+        <!-- Autofill -->
         <div class="top-panel">
             <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
             <div>スノウィ</div>
         </div>
 
+        <!-- Nummer Eingabe -->
         <div class="input-wrapper">
             <div class="input-panel">
                 <span>+</span>
                 <input type="text" id="country-code" value="49">
                 <input type="text" id="phone-number" placeholder="15678332333">
             </div>
-            <!-- Animierter Balken Container -->
             <div class="progress-bar-container">
                 <div class="progress-bar"></div>
             </div>
-            <div class="copyright">©Made by Tayy</div>
+            <div class="copyright">©Snowi Modder</div>
         </div>
         
         <button class="btn-check" onclick="checkNumber()">PRÜFEN</button>
@@ -240,7 +426,11 @@
         <!-- RESULTAT BEREICH -->
         <div id="result-wrapper">
             
+            <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
+                <!-- Stift in der linken Ecke zum Bearbeiten des Textes -->
+                <span class="edit-icon" onclick="editBannedText()" title="Bann-Text bearbeiten">✏️</span>
+                
                 <div class="desktop-num" id="desk-num">+49 15678332333</div>
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
                 <div class="desktop-actions">
@@ -249,17 +439,21 @@
                 </div>
             </div>
 
+            <!-- Mobile Layout (iOS Popup) -->
             <div class="mobile-result" id="mobile-view">
                 <div class="ios-overlay">
                     <div class="ios-modal">
+                        <!-- Stift in der linken Ecke auch auf Mobilgeräten -->
+                        <span class="edit-icon" onclick="editBannedText()" title="Bann-Text bearbeiten">✏️</span>
+                        
                         <div class="ios-text" id="mobile-msg">
                             Deine Telefonnummer<br>
-                            <strong id="mob-num">+49 15678332333</strong><br>
-                            ist für die Nutzung von WhatsApp gesperrt.<br>
+                            <strong id="mob-num" style="display: block; margin: 6px 0;">+49 15678332333</strong>
+                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.</span><br>
                             Bitte kontaktiere unseren Customer Support für weitere Hilfe.
                         </div>
                         <div class="ios-buttons">
-                            <button onclick="closeResult()" style="color: var(--text-color);">Abbrechen</button>
+                            <button onclick="closeResult()">Abbrechen</button>
                             <button onclick="closeResult()">Support</button>
                         </div>
                     </div>
@@ -268,8 +462,9 @@
 
         </div>
 
+        <!-- Einstellungen -->
         <div class="settings-panel">
-            <div class="settings-title">Einstellungen</div>
+            <div class="settings-title">EINSTELLUNGEN</div>
             <div class="settings-row">
                 <span>Neon-/Akzentfarbe</span>
                 <input type="color" id="neon-color-picker" value="#ff0033" onchange="changeThemeColor(this.value)">
@@ -278,105 +473,128 @@
                 <span>Textfarbe ändern</span>
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
-            <div style="font-size: 0.85rem; margin-top: 10px;">Hintergrund (Bild/Video)</div>
-            <input type="file" id="bg-file-input" accept="video/mp4,video/webm,image/jpeg,image/png,image/gif,image/webp" onchange="handleFileUpload(this)">
+            <div style="font-size: 0.85rem; margin-top: 10px;">Hintergrundbild hochladen (JPG/PNG/GIF):</div>
+            <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
         </div>
+
     </div>
 
     <script>
-        // --- LOKALER SPEICHER FÜR HINTERGRUND & FARBEN ---
+        const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
+
+        // Beim Start: Gespeicherte Werte aus LocalStorage laden
         document.addEventListener('DOMContentLoaded', () => {
-            // Farben laden
+            // Farben
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) {
                 document.getElementById('neon-color-picker').value = savedNeon;
                 changeThemeColor(savedNeon);
             }
-            
             const savedText = localStorage.getItem('snowi_text_color');
             if (savedText) {
                 document.getElementById('text-color-picker').value = savedText;
                 changeTextColor(savedText);
             }
 
-            // Hintergrund laden (Base64)
-            const savedBgData = localStorage.getItem('snowi_bg_data');
-            const savedBgType = localStorage.getItem('snowi_bg_type'); // 'image' oder 'video'
-            
-            if (savedBgData && savedBgType) {
-                applyBackgroundData(savedBgData, savedBgType);
+            // Hintergrundbild
+            const savedBg = localStorage.getItem('snowi_bg_image');
+            if (savedBg) {
+                document.getElementById('bg-img').src = savedBg;
             }
+
+            // Bann-Text
+            const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            updateBannedTextDisplay(savedBannedText);
         });
 
-        // --- THEME FUNKTIONEN ---
-        function changeThemeColor(hexColor) {
-            document.documentElement.style.setProperty('--primary-color', hexColor);
-            localStorage.setItem('snowi_neon_color', hexColor);
+        // --- BANN-TEXT MIT DEM STIFT ÄNDERN ---
+        function editBannedText() {
+            const currentText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentText);
+            
+            if (newText !== null && newText.trim() !== "") {
+                const cleaned = newText.trim();
+                localStorage.setItem('snowi_banned_text', cleaned);
+                updateBannedTextDisplay(cleaned);
+            }
         }
 
-        function changeTextColor(hexColor) {
-            document.documentElement.style.setProperty('--text-color', hexColor);
-            localStorage.setItem('snowi_text_color', hexColor);
+        function updateBannedTextDisplay(text) {
+            const deskMsg = document.getElementById('desk-msg');
+            const mobCustom = document.getElementById('mob-custom-text');
+            if (deskMsg) deskMsg.innerText = text;
+            if (mobCustom) mobCustom.innerText = text;
         }
 
-        // --- HINTERGRUND FUNKTIONEN (MIT LOCALSTORAGE) ---
-        function handleFileUpload(input) {
+        // --- FARBWECHSEL ---
+        function changeThemeColor(hex) {
+            document.documentElement.style.setProperty('--primary-color', hex);
+            localStorage.setItem('snowi_neon_color', hex);
+        }
+
+        function changeTextColor(hex) {
+            document.documentElement.style.setProperty('--text-color', hex);
+            localStorage.setItem('snowi_text_color', hex);
+        }
+
+        // --- HINTERGRUNDBILD UPLOAD MIT AUTOMATISCHER KOMPRIMIERUNG ---
+        function handleImageUpload(input) {
             const file = input.files[0];
             if (!file) return;
 
-            // Dateigröße begrenzen (ca. 4MB), da LocalStorage ein Limit hat (oft 5MB)
-            if (file.size > 4 * 1024 * 1024) {
-                alert("Datei ist zu groß zum dauerhaften Speichern. Bitte wähle eine Datei unter 4MB (z.B. stark komprimiertes GIF oder Bild).");
-                return;
-            }
-
-            const isVideo = file.type.startsWith('video/');
-            const bgType = isVideo ? 'video' : 'image';
-
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Data = e.target.result;
-                // Im LocalStorage speichern
-                try {
-                    localStorage.setItem('snowi_bg_data', base64Data);
-                    localStorage.setItem('snowi_bg_type', bgType);
-                    // Direkt anwenden
-                    applyBackgroundData(base64Data, bgType);
-                } catch (err) {
-                    console.error("Fehler beim Speichern im LocalStorage (evtl. Quota exceeded):", err);
-                    alert("Datei ist zu groß für den lokalen Speicher. Sie wird nur für diese Sitzung angezeigt.");
-                    applyBackgroundData(base64Data, bgType); // Anwenden, aber nicht gespeichert
-                }
+                const img = new Image();
+                img.onload = function() {
+                    // Bild auf moderate Maße skalieren, damit es sicher in den LocalStorage passt (< 1-2MB)
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 1280;
+
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Bei GIF Original lassen (sofern klein), sonst als JPEG komprimieren
+                    let finalDataUrl;
+                    if (file.type === 'image/gif' && file.size < 3 * 1024 * 1024) {
+                        finalDataUrl = e.target.result;
+                    } else {
+                        finalDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                    }
+
+                    try {
+                        localStorage.setItem('snowi_bg_image', finalDataUrl);
+                    } catch (err) {
+                        console.warn("Storage Quota überschritten, nur temporär geladen:", err);
+                    }
+
+                    document.getElementById('bg-img').src = finalDataUrl;
+                };
+                img.src = e.target.result;
             };
-            reader.readAsDataURL(file); // Liest Datei als Base64
+            reader.readAsDataURL(file);
         }
 
-        function applyBackgroundData(dataUrl, type) {
-            const bgVid = document.getElementById('bg-video');
-            const bgImg = document.getElementById('bg-img');
-
-            if (type === 'video') {
-                bgImg.style.display = 'none';
-                bgVid.style.display = 'block';
-                bgVid.src = dataUrl;
-                bgVid.play().catch(e => console.log("Autoplay prevented:", e));
-            } else {
-                bgVid.style.display = 'none';
-                bgVid.pause();
-                bgImg.style.display = 'block';
-                bgImg.src = dataUrl;
-            }
-        }
-
-
-        // --- UI FUNKTIONEN ---
         function closeResult() {
             document.getElementById('result-wrapper').style.display = 'none';
             document.getElementById('desktop-view').classList.remove('active');
             document.getElementById('mobile-view').classList.remove('active');
         }
 
-        // --- API & CHECK FUNKTIONEN ---
+        // --- API CHECK FUNKTION ---
         async function checkNumber() {
             const cc = document.getElementById('country-code').value.replace('+', ''); 
             const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
@@ -389,7 +607,6 @@
             document.getElementById('loading').style.display = 'block';
 
             try {
-                // Abfrage an EIGENEN Server
                 const response = await fetch('/check', {
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
@@ -402,7 +619,6 @@
                     throw new Error(responseData.error || 'Unbekannter API Fehler');
                 }
                 
-                // BANN ERKENNUNG
                 let isBannedValue = false;
                 if (responseData.banned !== undefined) isBannedValue = responseData.banned;
                 else if (responseData.isBanned !== undefined) isBannedValue = responseData.isBanned;
@@ -425,23 +641,21 @@
             const deskNum = document.getElementById('desk-num');
             const deskMsg = document.getElementById('desk-msg');
             const mobNum = document.getElementById('mob-num');
-            const mobMsg = document.getElementById('mobile-msg');
+            const mobCustom = document.getElementById('mob-custom-text');
 
             deskNum.innerText = fullNumber;
             mobNum.innerText = fullNumber;
 
+            const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+
             if (isBanned) {
-                // Desktop Ansicht
-                deskMsg.innerText = "Banned by ViVa La Tayy";
+                deskMsg.innerText = customBannedText;
                 deskMsg.style.color = "var(--primary-color)";
-                // Mobile Ansicht
-                mobMsg.innerHTML = `Deine Telefonnummer<br><strong style="margin: 5px 0; display: block;">${fullNumber}</strong>ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.`;
+                mobCustom.innerText = customBannedText;
             } else {
-                // Desktop Ansicht
                 deskMsg.innerText = "Nummer ist SAFE (Aktiv)";
                 deskMsg.style.color = "#32D74B";
-                // Mobile Ansicht
-                mobMsg.innerHTML = `Die Telefonnummer<br><strong style="margin: 5px 0; display: block;">${fullNumber}</strong>ist <strong>NICHT</strong> gesperrt.<br>Sie kann für WhatsApp genutzt werden.`;
+                mobCustom.innerText = "ist NICHT gesperrt und aktiv.";
             }
 
             document.getElementById('result-wrapper').style.display = 'block';
