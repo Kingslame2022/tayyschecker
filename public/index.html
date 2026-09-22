@@ -10,7 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(30, 30, 30, 0.85); /* Echte iOS-Glas-Farbe */
+            --ios-bg: rgba(30, 30, 30, 0.85);
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -257,24 +257,35 @@
             z-index: 1000; 
         }
 
-        /* EXAKT IOS-PROPORTIONEN WIE IM BILD */
+        /* NEUES HÖHERES IOS POPUP */
         .ios-modal {
             position: relative;
             background: var(--ios-bg);
             backdrop-filter: blur(15px); 
             border-radius: 14px; 
-            width: 310px; /* Sehr breit, genau wie auf dem Screenshot */
+            width: 310px; 
             text-align: center; 
             color: var(--text-color);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.08);
         }
         .ios-text {
-            padding: 22px 16px 20px 16px; 
-            font-size: 1.05rem; /* Echte iOS Schriftgröße */
+            /* Das Padding oben/unten erhöht das Pop-up massiv! */
+            padding: 32px 18px 28px 18px; 
+            font-size: 1.05rem; 
             font-weight: 500;
-            line-height: 1.35; 
-            /* Text-Shadow entfernt für den cleanen iOS Look! */
+            line-height: 1.4; 
+        }
+        #mob-num {
+            display: block; 
+            margin: 10px 0; /* Mehr Platz über und unter der Nummer */
+            font-size: 1.15rem; /* Nummer etwas größer */
+            font-weight: 600;
+        }
+        #mob-system-text {
+            display: block;
+            margin-top: 15px; /* Perfekter Abstand zum Custom-Text */
+            font-size: 0.95rem; /* Etwas kleiner wie beim Original iPhone */
         }
         .ios-buttons {
             display: flex; 
@@ -282,7 +293,7 @@
         }
         .ios-buttons button {
             flex: 1; 
-            padding: 14px; 
+            padding: 18px; /* Höhere Knöpfe = höheres Pop-up */
             background: none; 
             border: none;
             font-size: 1.1rem; 
@@ -295,7 +306,7 @@
         }
         .ios-buttons button:first-child { 
             border-right: 1px solid var(--ios-border); 
-            color: var(--primary-color); /* Im Screenshot sind beide grün/farbig */
+            color: var(--primary-color); 
         }
         .ios-buttons button:last-child { font-weight: 600; }
 
@@ -434,9 +445,12 @@
                 <div class="ios-overlay">
                     <div class="ios-modal">
                         <div class="ios-text" id="mobile-msg">
-                            Deine Telefonnummer<br>
-                            <strong id="mob-num" style="display: block; margin: 6px 0; font-weight: 600;">+49 15678332333</strong>
-                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
+                            Deine Telefonnummer
+                            <strong id="mob-num">+49 15678332333</strong>
+                            <!-- Das ist dein anpassbarer Bann-Text -->
+                            <span id="mob-custom-text">Banned by ViVa La Tayy</span>
+                            <!-- Das ist der iOS System Text darunter -->
+                            <span id="mob-system-text">Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
                         </div>
                         <div class="ios-buttons">
                             <button onclick="closeResult()">Abbrechen</button>
@@ -470,7 +484,8 @@
     </div>
 
     <script>
-        const DEFAULT_BANNED_TEXT = "ist für die Nutzung von WhatsApp gesperrt.<br>Bitte kontaktiere unseren Customer Support für weitere Hilfe.";
+        // Der Standard-Text, den du mit dem Stift bearbeiten kannst
+        const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedNeon = localStorage.getItem('snowi_neon_color');
@@ -494,13 +509,11 @@
         });
 
         function editBannedText() {
-            // Für das Text-Bearbeiten-Feld entfernen wir die <br> Tags temporär
             const currentTextRaw = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             const currentTextClean = currentTextRaw.replace(/<br>/g, '\n');
             const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentTextClean);
             
             if (newText !== null && newText.trim() !== "") {
-                // Zeilenumbrüche wieder in <br> umwandeln
                 const cleaned = newText.trim().replace(/\n/g, '<br>');
                 localStorage.setItem('snowi_banned_text', cleaned);
                 updateBannedTextDisplay(cleaned);
@@ -510,7 +523,7 @@
         function updateBannedTextDisplay(text) {
             const deskMsg = document.getElementById('desk-msg');
             const mobCustom = document.getElementById('mob-custom-text');
-            if (deskMsg) deskMsg.innerHTML = text; // innerHTML damit <br> funktioniert
+            if (deskMsg) deskMsg.innerHTML = text; 
             if (mobCustom) mobCustom.innerHTML = text;
         }
 
@@ -601,6 +614,7 @@
             const deskMsg = document.getElementById('desk-msg');
             const mobNum = document.getElementById('mob-num');
             const mobCustom = document.getElementById('mob-custom-text');
+            const mobSystemText = document.getElementById('mob-system-text');
 
             deskNum.innerText = fullNumber;
             mobNum.innerText = fullNumber;
@@ -608,13 +622,19 @@
             const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
 
             if (isBanned) {
-                deskMsg.innerHTML = customBannedText; // innerHTML für Zeilenumbrüche
+                // Bei einem Bann wird der anpassbare Text gezeigt UND der iOS Systemtext drunter
+                deskMsg.innerHTML = customBannedText; 
                 deskMsg.style.color = "var(--primary-color)";
+                
                 mobCustom.innerHTML = customBannedText;
+                mobSystemText.style.display = 'block'; // iOS Text einblenden
             } else {
+                // Wenn Unban, wird der iOS Systemtext versteckt
                 deskMsg.innerText = "ist Unban";
                 deskMsg.style.color = "#32D74B";
+                
                 mobCustom.innerText = "ist Unban";
+                mobSystemText.style.display = 'none'; // iOS Text verstecken
             }
 
             document.getElementById('result-wrapper').style.display = 'block';
