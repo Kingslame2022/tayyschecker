@@ -8,9 +8,10 @@
     <link rel="manifest" href="/manifest.json">
     <style>
         :root {
-            --primary-color: #8a2be2; /* Lila */
+            --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(28, 28, 30, 0.88);
+            /* SEHR DURCHSICHTIGER HINTERGRUND FÜR HANDY POPUP */
+            --ios-bg: rgba(28, 28, 30, 0.15); 
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -31,7 +32,7 @@
             justify-content: center;
         }
 
-        /* --- BILD HINTERGRUND --- */
+        /* --- BILD HINTERGRUND (Jetzt hell und klar) --- */
         #bg-img {
             position: fixed;
             top: 0;
@@ -40,7 +41,7 @@
             height: 100vh;
             object-fit: cover;
             z-index: 1; 
-            opacity: 0.6; 
+            opacity: 1; /* FIXED: Keine Verdunkelung mehr! */
             display: none; 
         }
 
@@ -50,7 +51,8 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
+            /* FIXED: Nur noch ein extrem leichter Schatten am Rand */
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.3) 100%);
             z-index: 2; 
             pointer-events: none;
         }
@@ -74,7 +76,7 @@
             margin-bottom: 35px; 
             position: relative; 
             color: var(--text-color);
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            text-shadow: 0 0 10px rgba(0,0,0,0.8); /* Schriftlesbarkeit garantiert */
         }
         .dots { 
             position: absolute; 
@@ -84,16 +86,16 @@
             cursor: pointer; 
         }
 
-        /* Top Panel (Autofill & NEUER PRÜFEN BUTTON) */
+        /* Top Panel */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
             display: flex;
             text-align: center;
             margin-bottom: 25px;
-            background: rgba(10, 10, 15, 0.65);
-            backdrop-filter: blur(8px);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
         }
         .top-panel > div {
             flex: 1; 
@@ -123,9 +125,9 @@
             display: flex; 
             align-items: center;
             padding: 12px 15px;
-            background: rgba(10, 10, 15, 0.65);
-            backdrop-filter: blur(8px);
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
         }
         .input-panel span { 
             color: var(--text-color); 
@@ -140,6 +142,7 @@
             font-size: 1.05rem; 
             outline: none; 
             letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         #country-code { 
             width: 45px; 
@@ -150,7 +153,6 @@
         }
         #phone-number { flex: 1; }
 
-        /* Animierter Scan-Balken */
         .progress-bar-container {
             width: 82%; 
             height: 3px; 
@@ -180,9 +182,10 @@
         .copyright { 
             text-align: center; 
             font-size: 0.72rem; 
-            color: rgba(255,255,255,0.5); 
+            color: rgba(255,255,255,0.7); 
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
         }
 
         #loading { 
@@ -191,6 +194,7 @@
             color: var(--primary-color); 
             margin-bottom: 12px; 
             font-weight: 500;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         #error-message { 
             color: #ff4d4d; 
@@ -200,7 +204,7 @@
             font-size: 0.9rem; 
         }
 
-        /* --- RESULT BOXEN --- */
+        /* --- RESULT BOXEN (FAST DURCHSICHTIG) --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
         .desktop-result {
@@ -208,8 +212,9 @@
             border: 1px solid var(--primary-color);
             border-radius: 12px; 
             padding: 22px 20px 18px 20px;
-            background: rgba(10, 10, 15, 0.75);
-            backdrop-filter: blur(12px);
+            /* FIXED: Fast unsichtbar, minimaler Blur */
+            background: rgba(10, 10, 15, 0.15);
+            backdrop-filter: blur(3px);
             box-shadow: 0 0 18px rgba(255,0,51,0.25);
         }
         .desktop-num { 
@@ -217,6 +222,7 @@
             font-weight: bold; 
             margin-bottom: 15px; 
             text-align: center;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         .desktop-msg { 
             font-style: italic; 
@@ -224,6 +230,7 @@
             margin-bottom: 30px; 
             text-align: center;
             font-weight: 600;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         .desktop-actions { 
             display: flex; 
@@ -235,6 +242,7 @@
             cursor: pointer; 
             letter-spacing: 1px;
             transition: color 0.2s;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         .desktop-actions span:hover { color: var(--primary-color); }
 
@@ -245,27 +253,29 @@
             left: 0; 
             width: 100vw; 
             height: 100vh;
-            background: rgba(0,0,0,0.65);
+            /* FIXED: Overlay dunkelt kaum noch ab, kein Blur mehr */
+            background: rgba(0,0,0,0.15);
             display: flex; 
             align-items: center; 
             justify-content: center;
             z-index: 1000; 
-            backdrop-filter: blur(5px);
         }
         .ios-modal {
             position: relative;
-            background: var(--ios-bg); 
-            backdrop-filter: blur(25px);
+            background: var(--ios-bg); /* Fast durchsichtig (siehe :root) */
+            backdrop-filter: blur(4px); /* Minimaler Blur für den Glas-Effekt */
             border-radius: 14px; 
             width: 290px;
             text-align: center; 
             color: var(--text-color);
-            box-shadow: 0 6px 35px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .ios-text {
             padding: 24px 16px 18px 16px; 
             font-size: 0.95rem; 
             line-height: 1.45; 
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
         }
         .ios-buttons {
             display: flex; 
@@ -279,6 +289,7 @@
             font-size: 1.05rem; 
             color: var(--primary-color); 
             cursor: pointer;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
         }
         .ios-buttons button:first-child { 
             border-right: 1px solid var(--ios-border); 
@@ -295,35 +306,38 @@
             .mobile-result { display: none !important; }
         }
 
-        /* --- EINSTELLUNGEN PANEL (KOMPAKT) --- */
+        /* --- EINSTELLUNGEN PANEL --- */
         .settings-panel {
             margin-top: auto; 
             border: 1px solid var(--primary-color);
-            border-radius: 10px; /* Kleinerer Radius */
-            padding: 12px 14px; /* Weniger Padding */
-            background: rgba(10, 10, 15, 0.7);
-            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 12px 14px; 
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
         .settings-title { 
-            font-size: 0.75rem; /* Kleinerer Text */
+            font-size: 0.75rem; 
             text-align: center; 
-            margin-bottom: 10px; /* Weniger Abstand */
+            margin-bottom: 10px; 
             color: var(--text-color); 
-            opacity: 0.7; 
+            opacity: 0.9; 
             letter-spacing: 1px;
             text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         .settings-row { 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            margin-bottom: 8px; /* Boxen enger zusammen */
-            font-size: 0.8rem; /* Kleinerer Text */
+            margin-bottom: 8px; 
+            font-size: 0.8rem;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         input[type="color"] { 
             -webkit-appearance: none; 
             border: none; 
-            width: 24px; /* Deutlich kleinere Farbkästchen */
+            width: 24px; 
             height: 24px; 
             border-radius: 4px; 
             cursor: pointer; 
@@ -335,27 +349,28 @@
             border-radius: 4px; 
         }
         .edit-text-btn {
-            background: transparent;
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--primary-color);
             color: var(--text-color);
-            padding: 4px 8px; /* Kleinerer Button */
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.75rem;
             transition: all 0.2s;
         }
         .edit-text-btn:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.2);
         }
         input[type="file"] { 
             width: 100%; 
-            padding: 4px; /* Schmaleres Feld */
+            padding: 4px; 
             border: 1px dashed var(--primary-color); 
             color: var(--text-color); 
             border-radius: 4px; 
             font-size: 0.7rem; 
             cursor: pointer; 
             margin-top: 4px;
+            background: rgba(0,0,0,0.3);
         }
         input[type="file"]::file-selector-button { 
             background: transparent; 
@@ -371,7 +386,7 @@
 </head>
 <body>
 
-    <!-- Das neue Bild-Element für den Hintergrund -->
+    <!-- Hintergrundbild -->
     <img id="bg-img" alt="background">
     <div class="overlay"></div>
 
@@ -379,13 +394,11 @@
         
         <div class="header">スノウィ <span class="dots">⋮</span></div>
 
-        <!-- Autofill & NEUER PRÜFKNOPF -->
         <div class="top-panel">
             <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
             <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
-        <!-- Nummer Eingabe -->
         <div class="input-wrapper">
             <div class="input-panel">
                 <span>+</span>
@@ -398,7 +411,6 @@
             <div class="copyright">©Made by Tayy</div>
         </div>
 
-        <!-- Lade- & Fehleranzeige -->
         <div id="loading">API wird abgefragt...</div>
         <div id="error-message"></div>
 
@@ -422,8 +434,7 @@
                         <div class="ios-text" id="mobile-msg">
                             Deine Telefonnummer<br>
                             <strong id="mob-num" style="display: block; margin: 6px 0;">+49 15678332333</strong>
-                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.</span><br>
-                            Bitte kontaktiere unseren Customer Support für weitere Hilfe.
+                            <span id="mob-custom-text">ist für die Nutzung von WhatsApp gesperrt.</span>
                         </div>
                         <div class="ios-buttons">
                             <button onclick="closeResult()">Abbrechen</button>
@@ -435,7 +446,7 @@
 
         </div>
 
-        <!-- EINSTELLUNGEN (JETZT KOMPAKT) -->
+        <!-- EINSTELLUNGEN -->
         <div class="settings-panel">
             <div class="settings-title">EINSTELLUNGEN</div>
             <div class="settings-row">
@@ -450,7 +461,7 @@
                 <span>Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
             </div>
-            <div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.7;">Hintergrundbild hochladen:</div>
+            <div style="font-size: 0.75rem; margin-top: 2px; opacity: 0.9; text-shadow: 0 0 5px rgba(0,0,0,0.8);">Hintergrundbild hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
         </div>
 
@@ -459,7 +470,6 @@
     <script>
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
 
-        // Beim Start: Gespeicherte Werte laden
         document.addEventListener('DOMContentLoaded', () => {
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) {
@@ -471,14 +481,12 @@
                 document.getElementById('text-color-picker').value = savedText;
                 changeTextColor(savedText);
             }
-
             const savedBg = localStorage.getItem('snowi_bg_image');
             if (savedBg) {
                 const bgImg = document.getElementById('bg-img');
                 bgImg.src = savedBg;
                 bgImg.style.display = 'block';
             }
-
             const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             updateBannedTextDisplay(savedBannedText);
         });
@@ -486,7 +494,6 @@
         function editBannedText() {
             const currentText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentText);
-            
             if (newText !== null && newText.trim() !== "") {
                 const cleaned = newText.trim();
                 localStorage.setItem('snowi_banned_text', cleaned);
@@ -599,9 +606,10 @@
                 deskMsg.style.color = "var(--primary-color)";
                 mobCustom.innerText = customBannedText;
             } else {
-                deskMsg.innerText = "Nummer ist SAFE (Aktiv)";
-                deskMsg.style.color = "#32D74B";
-                mobCustom.innerText = "ist NICHT gesperrt und aktiv.";
+                // FIXED: Jetzt steht hier das "Unban"
+                deskMsg.innerText = "ist Unban";
+                deskMsg.style.color = "#32D74B"; // Das Grün
+                mobCustom.innerText = "ist Unban";
             }
 
             document.getElementById('result-wrapper').style.display = 'block';
