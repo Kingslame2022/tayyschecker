@@ -10,7 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(30, 30, 30, 0.85);
+            --ios-bg: rgba(30, 30, 30, 0.75); /* Leicht durchsichtig */
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -35,6 +35,557 @@
         #bg-img {
             position: fixed;
             top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 1; 
+            opacity: 0.4; 
+            display: none; 
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 95%);
+            z-index: 2; 
+            pointer-events: none;
+        }
+
+        /* --- HAUPTLAYOUT --- */
+        .app-container { 
+            width: 100%; 
+            max-width: 420px; 
+            min-height: 100vh; 
+            padding: 40px 20px 20px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            z-index: 10; 
+        }
+
+        .header {
+            text-align: center; 
+            font-size: 1.25rem; 
+            letter-spacing: 3px;
+            margin-bottom: 35px; 
+            position: relative; 
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        .dots { 
+            position: absolute; 
+            right: 0; 
+            top: 0; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            padding: 5px;
+        }
+
+        /* Top Panel */
+        .top-panel {
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            text-align: center;
+            margin-bottom: 25px;
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+        }
+        .top-panel > div {
+            flex: 1; 
+            padding: 14px; 
+            cursor: pointer;
+            transition: background 0.2s, text-shadow 0.2s; 
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        .top-panel > div:hover { 
+            background: rgba(255,255,255,0.08); 
+        }
+        .border-right { border-right: 1px solid var(--primary-color); }
+        
+        .check-btn-area {
+            letter-spacing: 1px;
+        }
+        .check-btn-area:hover {
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+
+        /* Eingabebereich */
+        .input-wrapper { margin-bottom: 25px; position: relative; }
+        .input-panel {
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            display: flex; 
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+        }
+        .input-panel span { 
+            color: var(--text-color); 
+            margin-right: 10px; 
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        input[type="text"] {
+            background: transparent; 
+            border: none; 
+            color: var(--text-color);
+            font-size: 1.05rem; 
+            outline: none; 
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        #country-code { 
+            width: 45px; 
+            border-right: 1px solid rgba(255,255,255,0.2); 
+            padding-right: 10px; 
+            margin-right: 10px; 
+            text-align: center;
+        }
+        #phone-number { flex: 1; }
+
+        .progress-bar-container {
+            width: 82%; 
+            height: 3px; 
+            background: rgba(255,255,255,0.1); 
+            margin: 6px auto 10px auto; 
+            border-radius: 3px; 
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%; 
+            width: 40%; 
+            background: var(--primary-color);
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: scanLine 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes scanLine {
+            0% { left: 0%; width: 25%; }
+            50% { width: 50%; }
+            100% { left: 75%; width: 25%; }
+        }
+
+        .copyright { 
+            text-align: center; 
+            font-size: 0.72rem; 
+            color: rgba(255,255,255,0.7); 
+            margin-bottom: 25px; 
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        #loading { 
+            text-align: center; 
+            display: none; 
+            color: var(--primary-color); 
+            margin-bottom: 12px; 
+            font-weight: 500;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        #error-message { 
+            color: #ff4d4d; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            display: none; 
+            font-size: 0.9rem; 
+        }
+
+        /* --- RESULT BOXEN --- */
+        #result-wrapper { display: none; margin-bottom: 20px; }
+        
+        .desktop-result {
+            position: relative;
+            border: 1px solid var(--primary-color);
+            border-radius: 12px; 
+            padding: 22px 20px 18px 20px;
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 18px rgba(255,0,51,0.25);
+        }
+        .desktop-num { 
+            font-size: 1.25rem; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            text-align: center;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .desktop-msg { 
+            font-style: italic; 
+            font-size: 1.15rem; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .desktop-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+        }
+        .desktop-actions span { 
+            cursor: pointer; 
+            letter-spacing: 1px;
+            transition: color 0.2s;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .desktop-actions span:hover { color: var(--primary-color); }
+
+        .mobile-result { display: none; }
+        .ios-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: rgba(0,0,0,0.4); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 1000; 
+        }
+
+        .ios-modal {
+            position: relative;
+            background: var(--ios-bg);
+            backdrop-filter: blur(15px); 
+            border-radius: 14px; 
+            width: 310px; 
+            text-align: center; 
+            color: var(--text-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .ios-text {
+            padding: 32px 18px 28px 18px; 
+            font-size: 1.05rem; 
+            font-weight: 500;
+            line-height: 1.4; 
+        }
+        #mob-num {
+            display: block; 
+            margin: 10px 0; 
+            font-size: 1.15rem; 
+            font-weight: 600;
+        }
+        #mob-system-text {
+            display: block;
+            margin-top: 15px; 
+            font-size: 0.95rem; 
+        }
+        .ios-buttons {
+            display: flex; 
+            border-top: 1px solid var(--ios-border);
+        }
+        .ios-buttons button {
+            flex: 1; 
+            padding: 18px; 
+            background: none; 
+            border: none;
+            font-size: 1.1rem; 
+            color: var(--primary-color); 
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .ios-buttons button:active {
+            background: rgba(255,255,255,0.1);
+        }
+        .ios-buttons button:first-child { 
+            border-right: 1px solid var(--ios-border); 
+            color: var(--primary-color); 
+        }
+        .ios-buttons button:last-child { font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .desktop-result { display: none; }
+            .mobile-result.active { display: block; }
+        }
+        @media (min-width: 769px) {
+            .desktop-result.active { display: block; }
+            .mobile-result { display: none !important; }
+        }
+
+        /* --- EINSTELLUNGEN ALS SLIDE-UP MENÜ (ÜBER DIE 3 PUNKTE) --- */
+        .settings-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            z-index: 2000;
+            display: none;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+        .settings-backdrop.active {
+            display: flex;
+        }
+        .settings-panel {
+            width: 100%;
+            max-width: 420px;
+            border-top: 1px solid var(--primary-color);
+            border-left: 1px solid var(--primary-color);
+            border-right: 1px solid var(--primary-color);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px 20px 30px 20px; 
+            background: rgba(18, 18, 25, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.7);
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .settings-backdrop.active .settings-panel {
+            transform: translateY(0);
+        }
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .settings-title { 
+            font-size: 0.85rem; 
+            color: var(--text-color); 
+            opacity: 0.9; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .close-settings {
+            background: none; border: none; color: var(--text-color);
+            font-size: 1.2rem; cursor: pointer; opacity: 0.8;
+        }
+        .settings-row { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 12px; 
+            font-size: 0.85rem;
+        }
+        input[type="color"] { 
+            -webkit-appearance: none; 
+            border: none; 
+            width: 28px; 
+            height: 28px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            padding: 0; 
+            background: transparent;
+        }
+        input[type="color"]::-webkit-color-swatch { 
+            border: 1px solid rgba(255,255,255,0.4); 
+            border-radius: 4px; 
+        }
+        .edit-text-btn {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .edit-text-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        input[type="file"] { 
+            width: 100%; 
+            padding: 6px; 
+            border: 1px dashed var(--primary-color); 
+            color: var(--text-color); 
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            margin-top: 6px;
+            background: rgba(0,0,0,0.3);
+        }
+        input[type="file"]::file-selector-button { 
+            background: transparent; 
+            border: 1px solid var(--primary-color); 
+            color: var(--text-color); 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 8px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hintergrundbild -->
+    <img id="bg-img" alt="background">
+    <div class="overlay"></div>
+
+    <div class="app-container">
+        
+        <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
+
+        <div class="top-panel">
+            <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
+            <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
+        </div>
+
+        <div class="input-wrapper">
+            <div class="input-panel">
+                <span>+</span>
+                <input type="text" id="country-code" value="49">
+                <input type="text" id="phone-number" placeholder="15678332333">
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="copyright">©Made by Tayy</div>
+        </div>
+
+        <div id="loading">API wird abgefragt...</div>
+        <div id="error-message"></div>
+
+        <!-- RESULTAT BEREICH -->
+        <div id="result-wrapper">
+            
+            <!-- Desktop Layout -->
+            <div class="desktop-result" id="desktop-view">
+                <div class="desktop-num" id="desk-num">+49 15678332333</div>
+                <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
+                <div class="desktop-actions">
+                    <span onclick="closeResult()">EXIT...</span>
+                    <span>サポート</span>
+                </div>
+            </div>
+
+            <!-- Mobile Layout (iOS Popup) -->
+            <div class="mobile-result" id="mobile-view">
+                <div class="ios-overlay">
+                    <div class="ios-modal">
+                        <div class="ios-text" id="mobile-msg">
+                            Deine Telefonnummer
+                            <strong id="mob-num">+49 15678332333</strong>
+                            <span id="mob-custom-text">Banned by ViVa La Tayy</span>
+                            <span id="mob-system-text">Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
+                        </div>
+                        <div class="ios-buttons">
+                            <button onclick="closeResult()">Abbrechen</button>
+                            <button onclick="closeResult()">Support</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EINSTELLUNGEN SLIDE-UP MENÜ (Öffnet sich über die 3 Punkte) -->
+    <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <div class="settings-title">⚙️ Einstellungen</div>
+                <button class="close-settings" onclick="toggleSettings(false)">✕</button>
+            </div>
+            <div class="settings-row">
+                <span>Neon-/Akzentfarbe</span>
+                <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
+            </div>
+            <div class="settings-row">
+                <span>Textfarbe ändern</span>
+                <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
+            </div>
+            <div class="settings-row">
+                <span>Bann-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
+            </div>
+            <div style="font-size: 0.8rem; margin-top: 10px; opacity: 0.9;">Hintergrundbild hochladen:</div>
+            <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedNeon = localStorage.getItem('snowi_neon_color');
+            if (savedNeon) {
+                document.getElementById('neon-color-picker').value = savedNeon;
+                changeThemeColor(savedNeon);
+            }
+            const savedText = localStorage.getItem('snowi_text_color');
+            if (savedText) {
+                document.getElementById('text-color-picker').value = savedText;
+                changeTextColor(savedText);
+            }
+            const savedBg = localStorage.getItem('snowi_bg_image');
+            if (savedBg) {
+                const bgImg = document.getElementById('bg-img');
+                bgImg.src = savedBg;
+                bgImg.style.display = 'block';
+            }
+            const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            updateBannedTextDisplay(savedBannedText);
+        });
+
+        // --- MENÜ STEUERUNG (3 PUNKTE) ---
+        function toggleSettings(open) {
+            const modal = document.getElementById('settings-modal');
+            if (open) {
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function checkCloseSettings(event) {
+            if (event.target.id === 'settings-modal') {
+                toggleSettings(false);
+            }
+        }
+
+        function editBannedText() {
+            const currentTextRaw = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            const currentTextClean = currentTextRaw.replace(/<br>/g, '\n');
+            const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentTextClean);
+            
+            if (newText !== null && newText.trim() !== "") {
+                const cleaned = newText.trim().replace(/\n/g, '<br>');
+                localStorage.setItem('snowi_banned_text', cleaned);
+                updateBannedTextDisplay(cleaned);
+            }
+        }
+
+        function updateBannedTextDisplay(text) {
+            const deskMsg = document.getElementById('desk-msg');
+            const mobCustom = document.getElementById('mob-custom-text');
+            if (deskMsg) deskMsg.innerHTML = text; 
+            if (mobCustom) mobCustom.innerHTML = text;
+        }
+
+        function changeThemeColor(hex) {
+            document.documentElement.style.setProperty('--primary-color', hex);
+            localStorage.setItem('snowi_neon_color', hex);
+        }
+
+        function changeTextColor(hex) {
+            document.documentElement.style.setProperty('--text-color', hex);
+            localStorage.setItem('snowi_text_color', hex);
+        }
+
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return            top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
