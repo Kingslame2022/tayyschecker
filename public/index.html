@@ -31,6 +31,67 @@
             justify-content: center;
         }
 
+        /* --- START SCREEN (WELCOME) --- */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #050505;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 80px 20px 60px 20px;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        #start-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .welcome-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        .start-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+        }
+        .start-by {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .agree-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            border-radius: 30px;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .agree-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+        }
+
         /* --- BILD HINTERGRUND --- */
         #bg-img {
             position: fixed;
@@ -262,7 +323,7 @@
             z-index: 1000; 
         }
 
-        /* --- ANIMATION FÜR DAS POP-UP (Von unten hoch + Fade-In) --- */
+        /* --- ANIMATION FÜR DAS POP-UP --- */
         @keyframes popupSlideUpFade {
             0% {
                 opacity: 0;
@@ -447,6 +508,15 @@
 </head>
 <body>
 
+    <!-- START SCREEN (WELCOME) -->
+    <div id="start-screen">
+        <div class="welcome-text" id="welcome-display">🔥 Welcome Back my Master 🔥</div>
+        <div class="start-bottom">
+            <div class="start-by">by Tayy</div>
+            <button class="agree-btn" onclick="startApp()">AGREE AND CONTINUE</button>
+        </div>
+    </div>
+
     <!-- Hintergrundbild -->
     <img id="bg-img" alt="background">
     <div class="overlay"></div>
@@ -526,6 +596,10 @@
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
             <div class="settings-row">
+                <span>Welcome-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editWelcomeText()">✏️ Text ändern</button>
+            </div>
+            <div class="settings-row">
                 <span>Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
             </div>
@@ -536,8 +610,10 @@
 
     <script>
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
+        const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Farben laden
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) {
                 document.getElementById('neon-color-picker').value = savedNeon;
@@ -548,15 +624,28 @@
                 document.getElementById('text-color-picker').value = savedText;
                 changeTextColor(savedText);
             }
+            // Bild laden
             const savedBg = localStorage.getItem('snowi_bg_image');
             if (savedBg) {
                 const bgImg = document.getElementById('bg-img');
                 bgImg.src = savedBg;
                 bgImg.style.display = 'block';
             }
+            // Texte laden
             const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             updateBannedTextDisplay(savedBannedText);
+
+            const savedWelcomeText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
+            document.getElementById('welcome-display').innerText = savedWelcomeText;
         });
+
+        function startApp() {
+            const startScreen = document.getElementById('start-screen');
+            startScreen.classList.add('hidden');
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+            }, 500); // Wartet bis die Fade-Animation fertig ist
+        }
 
         function toggleSettings(open) {
             const modal = document.getElementById('settings-modal');
@@ -570,6 +659,16 @@
         function checkCloseSettings(event) {
             if (event.target.id === 'settings-modal') {
                 toggleSettings(false);
+            }
+        }
+
+        function editWelcomeText() {
+            const currentText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
+            const newText = prompt("Neuen Welcome-Text eingeben:", currentText);
+            
+            if (newText !== null && newText.trim() !== "") {
+                localStorage.setItem('snowi_welcome_text', newText.trim());
+                document.getElementById('welcome-display').innerText = newText.trim();
             }
         }
 
@@ -632,24 +731,19 @@
             document.getElementById('mobile-view').classList.remove('active');
         }
 
-        // Intelligente, präzise Erkennung für deutsche Vorwahlen (3, 4 oder 5 Ziffern)
         function formatPhoneNumber(cc, rawNum) {
             const clean = rawNum.replace(/\D/g, '');
             if (cc === '49') {
-                // 5-stellige Vorwahlen (z.B. 15678)
                 if (clean.startsWith('15678') || clean.startsWith('1563')) {
                     return `+${cc} ${clean.slice(0, 5)} ${clean.slice(5)}`;
                 }
-                // 4-stellige Vorwahlen (z.B. 1570, 1573, 1575, 1577, 1578)
                 if (clean.startsWith('157') || clean.startsWith('156')) {
                     return `+${cc} ${clean.slice(0, 4)} ${clean.slice(4)}`;
                 }
-                // Standard 3-stellige Vorwahlen (z.B. 151, 152, 159, 160, 162, 163, 170, 171, 172, 173, 174, 175, 176, 177, 178)
                 if (/^(15[129]|16[023]|17[0-8])/.test(clean)) {
                     return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`;
                 }
             }
-            // Allgemeiner Standard für andere Nummern
             if (clean.length > 7) {
                 return `+${cc} ${clean.slice(0, 4)} ${clean.slice(4)}`;
             } else if (clean.length > 3) {
