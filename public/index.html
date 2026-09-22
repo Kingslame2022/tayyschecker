@@ -526,15 +526,16 @@
         <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
 
         <div class="top-panel">
-            <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
+            <div class="border-right" onclick="pasteFromClipboard()">Autofill</div>
             <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
         <div class="input-wrapper">
             <div class="input-panel">
                 <span>+</span>
-                <input type="text" id="country-code" value="49">
-                <input type="text" id="phone-number" placeholder="15678332333">
+                <!-- inputmode="numeric" und Regex blockieren alles außer Ziffern -->
+                <input type="text" id="country-code" value="49" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" id="phone-number" placeholder="15678332333" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
             <div class="progress-bar-container">
                 <div class="progress-bar"></div>
@@ -644,7 +645,31 @@
             startScreen.classList.add('hidden');
             setTimeout(() => {
                 startScreen.style.display = 'none';
-            }, 500); // Wartet bis die Fade-Animation fertig ist
+            }, 500);
+        }
+
+        // Intelligente Zwischenablage
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    // Entferne alle Zeichen, die keine Ziffern sind (Leerzeichen, +, -, etc.)
+                    let cleanText = text.replace(/\D/g, '');
+                    const cc = document.getElementById('country-code').value;
+                    
+                    // Smart-Filter: Wenn die kopierte Nummer schon die Vorwahl (z.B. 49) enthält, schneide sie ab
+                    if (cc && cleanText.startsWith(cc)) {
+                        cleanText = cleanText.substring(cc.length);
+                    } else if (cleanText.startsWith('0')) {
+                        // Bei deutschen Nummern (0175...) die Null entfernen
+                        cleanText = cleanText.substring(1);
+                    }
+                    
+                    document.getElementById('phone-number').value = cleanText;
+                }
+            } catch (err) {
+                alert("Zugriff auf die Zwischenablage verweigert. Bitte erlaube es im Browser oder füge die Nummer manuell ein.");
+            }
         }
 
         function toggleSettings(open) {
