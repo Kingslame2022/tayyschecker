@@ -10,8 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            /* SEHR DURCHSICHTIGER HINTERGRUND FÜR HANDY POPUP */
-            --ios-bg: rgba(28, 28, 30, 0.15); 
+            --ios-bg: rgba(28, 28, 30, 0.25); /* Leicht deckend für bessere Lesbarkeit */
             --ios-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -32,7 +31,7 @@
             justify-content: center;
         }
 
-        /* --- BILD HINTERGRUND (Jetzt hell und klar) --- */
+        /* --- BILD HINTERGRUND --- */
         #bg-img {
             position: fixed;
             top: 0;
@@ -41,7 +40,7 @@
             height: 100vh;
             object-fit: cover;
             z-index: 1; 
-            opacity: 1; /* FIXED: Keine Verdunkelung mehr! */
+            opacity: 0.4; /* WIEDER DUNKLER GEMACHT */
             display: none; 
         }
 
@@ -51,8 +50,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            /* FIXED: Nur noch ein extrem leichter Schatten am Rand */
-            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.3) 100%);
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 95%); /* DUNKLE RÄNDER */
             z-index: 2; 
             pointer-events: none;
         }
@@ -76,7 +74,7 @@
             margin-bottom: 35px; 
             position: relative; 
             color: var(--text-color);
-            text-shadow: 0 0 10px rgba(0,0,0,0.8); /* Schriftlesbarkeit garantiert */
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
         .dots { 
             position: absolute; 
@@ -204,7 +202,7 @@
             font-size: 0.9rem; 
         }
 
-        /* --- RESULT BOXEN (FAST DURCHSICHTIG) --- */
+        /* --- RESULT BOXEN --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
         .desktop-result {
@@ -212,7 +210,6 @@
             border: 1px solid var(--primary-color);
             border-radius: 12px; 
             padding: 22px 20px 18px 20px;
-            /* FIXED: Fast unsichtbar, minimaler Blur */
             background: rgba(10, 10, 15, 0.15);
             backdrop-filter: blur(3px);
             box-shadow: 0 0 18px rgba(255,0,51,0.25);
@@ -253,28 +250,29 @@
             left: 0; 
             width: 100vw; 
             height: 100vh;
-            /* FIXED: Overlay dunkelt kaum noch ab, kein Blur mehr */
-            background: rgba(0,0,0,0.15);
+            background: rgba(0,0,0,0.3); /* Leicht dunkleres Overlay für Fokus */
             display: flex; 
             align-items: center; 
             justify-content: center;
             z-index: 1000; 
         }
+
+        /* NEU VERGRÖSSERTES iOS POPUP */
         .ios-modal {
             position: relative;
-            background: var(--ios-bg); /* Fast durchsichtig (siehe :root) */
-            backdrop-filter: blur(4px); /* Minimaler Blur für den Glas-Effekt */
-            border-radius: 14px; 
-            width: 290px;
+            background: var(--ios-bg);
+            backdrop-filter: blur(12px); /* Etwas mehr Blur für den iOS Glas-Effekt */
+            border-radius: 18px; /* Größerer Radius für iOS-Look */
+            width: 340px; /* DEUTLICH BREITER (Vorher 290px) */
             text-align: center; 
             color: var(--text-color);
-            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.1);
         }
         .ios-text {
-            padding: 24px 16px 18px 16px; 
-            font-size: 0.95rem; 
-            line-height: 1.45; 
+            padding: 28px 20px 24px 20px; /* Mehr Platz oben/unten */
+            font-size: 1.05rem; /* Größere Schrift */
+            line-height: 1.5; 
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
         }
         .ios-buttons {
@@ -283,13 +281,17 @@
         }
         .ios-buttons button {
             flex: 1; 
-            padding: 13px; 
+            padding: 16px; /* Höhere Buttons */
             background: none; 
             border: none;
-            font-size: 1.05rem; 
+            font-size: 1.15rem; /* Größere Button-Schrift */
             color: var(--primary-color); 
             cursor: pointer;
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
+            transition: background 0.2s;
+        }
+        .ios-buttons button:active {
+            background: rgba(255,255,255,0.1);
         }
         .ios-buttons button:first-child { 
             border-right: 1px solid var(--ios-border); 
@@ -606,9 +608,8 @@
                 deskMsg.style.color = "var(--primary-color)";
                 mobCustom.innerText = customBannedText;
             } else {
-                // FIXED: Jetzt steht hier das "Unban"
                 deskMsg.innerText = "ist Unban";
-                deskMsg.style.color = "#32D74B"; // Das Grün
+                deskMsg.style.color = "#32D74B";
                 mobCustom.innerText = "ist Unban";
             }
 
