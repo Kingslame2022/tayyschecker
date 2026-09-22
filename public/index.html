@@ -8,7 +8,7 @@
     <link rel="manifest" href="/manifest.json">
     <style>
         :root {
-            --primary-color: #ff0033;
+            --primary-color: #8a2be2; /* Lila passend zu deinem Screenshot */
             --text-color: #ffffff;
             --ios-bg: rgba(28, 28, 30, 0.88);
             --ios-border: rgba(255, 255, 255, 0.15);
@@ -32,27 +32,19 @@
         }
 
         /* --- FESTER BILD-HINTERGRUND --- */
-        #bg-img {
+        #bg-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            object-fit: cover;
             z-index: -2;
-            filter: brightness(0.55) contrast(1.1);
-            transition: opacity 0.4s ease;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
-            z-index: -1;
-            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #050505; /* Standard Schwarz, bis ein Bild hochgeladen wird */
+            opacity: 0.6; /* Dunkelt das Bild leicht ab, damit die Schrift lesbar bleibt */
+            transition: background-image 0.5s ease;
         }
 
         /* --- HAUPTLAYOUT --- */
@@ -83,7 +75,7 @@
             cursor: pointer; 
         }
 
-        /* Top Panel (Autofill) */
+        /* Top Panel (Autofill & NEUER PRÜFEN BUTTON) */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
@@ -98,12 +90,22 @@
             flex: 1; 
             padding: 14px; 
             cursor: pointer;
-            transition: background 0.2s; 
+            transition: background 0.2s, text-shadow 0.2s; 
             color: var(--text-color);
             font-weight: 500;
         }
-        .top-panel > div:hover { background: rgba(255,255,255,0.08); }
+        .top-panel > div:hover { 
+            background: rgba(255,255,255,0.08); 
+        }
         .border-right { border-right: 1px solid var(--primary-color); }
+        
+        /* Der neue Prüf-Button rechts bekommt beim Hover einen leichten Glow */
+        .check-btn-area {
+            letter-spacing: 1px;
+        }
+        .check-btn-area:hover {
+            text-shadow: 0 0 8px var(--primary-color);
+        }
 
         /* Eingabebereich */
         .input-wrapper { margin-bottom: 5px; position: relative; }
@@ -173,31 +175,6 @@
             color: rgba(255,255,255,0.5); 
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
-        }
-
-        /* Prüfen Button */
-        .btn-check {
-            width: 100%; 
-            background: rgba(10, 10, 15, 0.65); 
-            color: var(--text-color);
-            border: 1px solid var(--primary-color); 
-            padding: 15px;
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 1rem;
-            cursor: pointer; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            transition: all 0.3s; 
-            margin-bottom: 20px;
-            position: relative; 
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-        }
-        .btn-check:hover { 
-            background: var(--primary-color); 
-            color: #000; 
-            box-shadow: 0 0 20px var(--primary-color); 
         }
 
         #loading { 
@@ -303,7 +280,6 @@
         }
         .ios-buttons button:last-child { font-weight: bold; }
 
-        /* Umschaltung Desktop / Handy */
         @media (max-width: 768px) {
             .desktop-result { display: none; }
             .mobile-result.active { display: block; }
@@ -325,16 +301,17 @@
         .settings-title { 
             font-size: 0.8rem; 
             text-align: center; 
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
             color: var(--text-color); 
             opacity: 0.7; 
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
         .settings-row { 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            margin-bottom: 12px; 
+            margin-bottom: 15px; 
             font-size: 0.85rem;
         }
         input[type="color"] { 
@@ -351,17 +328,17 @@
             border: 1px solid rgba(255,255,255,0.4); 
             border-radius: 4px; 
         }
-        .edit-btn {
-            background: transparent; 
-            border: 1px solid var(--primary-color); 
-            color: var(--text-color); 
-            padding: 4px 8px; 
-            border-radius: 4px; 
+        .edit-text-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: 0.2s;
             font-size: 0.8rem;
+            transition: all 0.2s;
         }
-        .edit-btn:hover {
+        .edit-text-btn:hover {
             background: rgba(255,255,255,0.1);
         }
         input[type="file"] { 
@@ -387,18 +364,18 @@
 </head>
 <body>
 
-    <!-- Reines Hintergrundbild (dauerhaft sichtbar hinter der Eingabe) -->
-    <img id="bg-img" src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1287&auto=format&fit=crop" alt="background">
-    <div class="overlay"></div>
+    <!-- Der neue Hintergrund-Layer (ersetzt das Schwarz, wenn ein Bild hochgeladen wird) -->
+    <div id="bg-layer"></div>
 
     <div class="app-container">
         
         <div class="header">スノウィ <span class="dots">⋮</span></div>
 
-        <!-- Autofill -->
+        <!-- Autofill & NEUER PRÜFKNOPF -->
         <div class="top-panel">
             <div class="border-right" onclick="document.getElementById('phone-number').value = '15678332333';">Autofill</div>
-            <div>スノウィ</div>
+            <!-- Hier ist der neue Prüfen-Button, der japanische Text bleibt erhalten! -->
+            <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
         <!-- Nummer Eingabe -->
@@ -413,9 +390,8 @@
             </div>
             <div class="copyright">©Made by Tayy</div>
         </div>
-        
-        <button class="btn-check" onclick="checkNumber()">PRÜFEN</button>
 
+        <!-- Lade- & Fehleranzeige -->
         <div id="loading">API wird abgefragt...</div>
         <div id="error-message"></div>
 
@@ -452,25 +428,22 @@
 
         </div>
 
-        <!-- Einstellungen -->
+        <!-- EINSTELLUNGEN -->
         <div class="settings-panel">
             <div class="settings-title">EINSTELLUNGEN</div>
             <div class="settings-row">
                 <span>Neon-/Akzentfarbe</span>
-                <input type="color" id="neon-color-picker" value="#ff0033" onchange="changeThemeColor(this.value)">
+                <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
             </div>
             <div class="settings-row">
                 <span>Textfarbe ändern</span>
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
-            
-            <!-- NEU: Bann-Text bearbeiten Button direkt im Einstellungsmenü -->
             <div class="settings-row">
                 <span>Bann-Text anpassen</span>
-                <button class="edit-btn" onclick="editBannedText()">✏️ Text ändern</button>
+                <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
             </div>
-
-            <div style="font-size: 0.85rem; margin-top: 10px;">Hintergrundbild hochladen (JPG/PNG/GIF):</div>
+            <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.7;">Hintergrundbild hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
         </div>
 
@@ -479,7 +452,7 @@
     <script>
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
 
-        // Beim Start: Gespeicherte Werte aus LocalStorage laden
+        // Beim Start: Gespeicherte Werte laden
         document.addEventListener('DOMContentLoaded', () => {
             // Farben
             const savedNeon = localStorage.getItem('snowi_neon_color');
@@ -493,10 +466,10 @@
                 changeTextColor(savedText);
             }
 
-            // Hintergrundbild
+            // Hintergrundbild als Background-Image setzen
             const savedBg = localStorage.getItem('snowi_bg_image');
             if (savedBg) {
-                document.getElementById('bg-img').src = savedBg;
+                document.getElementById('bg-layer').style.backgroundImage = `url('${savedBg}')`;
             }
 
             // Bann-Text
@@ -534,7 +507,7 @@
             localStorage.setItem('snowi_text_color', hex);
         }
 
-        // --- HINTERGRUNDBILD UPLOAD MIT AUTOMATISCHER KOMPRIMIERUNG ---
+        // --- HINTERGRUNDBILD UPLOAD (Base64) ---
         function handleImageUpload(input) {
             const file = input.files[0];
             if (!file) return;
@@ -543,7 +516,7 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // Bild auf moderate Maße skalieren, damit es sicher in den LocalStorage passt (< 1-2MB)
+                    // Komprimierung für LocalStorage
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
@@ -564,10 +537,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Bei GIF Original lassen (sofern klein), sonst als JPEG komprimieren
                     let finalDataUrl;
                     if (file.type === 'image/gif' && file.size < 3 * 1024 * 1024) {
-                        finalDataUrl = e.target.result;
+                        finalDataUrl = e.target.result; // GIF Animation beibehalten
                     } else {
                         finalDataUrl = canvas.toDataURL('image/jpeg', 0.82);
                     }
@@ -578,7 +550,8 @@
                         console.warn("Storage Quota überschritten, nur temporär geladen:", err);
                     }
 
-                    document.getElementById('bg-img').src = finalDataUrl;
+                    // Hintergrund direkt im CSS austauschen
+                    document.getElementById('bg-layer').style.backgroundImage = `url('${finalDataUrl}')`;
                 };
                 img.src = e.target.result;
             };
