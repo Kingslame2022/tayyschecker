@@ -10,7 +10,7 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtig */
+            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtiges Glas-Design */
             --ios-border: rgba(255, 255, 255, 0.12);
         }
 
@@ -276,11 +276,11 @@
 
         .ios-modal {
             position: relative;
-            background: var(--ios-bg); /* Extrem durchsichtig */
-            backdrop-filter: blur(6px); /* Weniger Blur */
+            background: var(--ios-bg); /* Extrem durchsichtiges Glas-Design */
+            backdrop-filter: blur(6px); 
             -webkit-backdrop-filter: blur(6px);
             border-radius: 14px; 
-            width: 275px; /* Kleiner gemacht */
+            width: 275px; /* Schmaler und kompakter */
             text-align: center; 
             color: var(--text-color);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -289,7 +289,7 @@
         }
 
         .ios-text {
-            padding: 24px 14px 20px 14px; /* Kompakterer Textbereich */
+            padding: 24px 14px 20px 14px; 
             font-size: 0.95rem; 
             font-weight: 500;
             line-height: 1.35; 
@@ -311,7 +311,7 @@
         }
         .ios-buttons button {
             flex: 1; 
-            padding: 13px; /* Kleinere Buttons */
+            padding: 13px; 
             background: none; 
             border: none;
             font-size: 1rem; 
@@ -480,7 +480,7 @@
             
             <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
-                <div class="desktop-num" id="desk-num">+49 15678332333</div>
+                <div class="desktop-num" id="desk-num">+49 7747 777</div>
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
                 <div class="desktop-actions">
                     <span onclick="closeResult()">EXIT...</span>
@@ -494,7 +494,7 @@
                     <div class="ios-modal">
                         <div class="ios-text" id="mobile-msg">
                             Deine Telefonnummer
-                            <strong id="mob-num">+49 15678332333</strong>
+                            <strong id="mob-num">+49 7747 777</strong>
                             <span id="mob-custom-text">Banned by ViVa La Tayy</span>
                             <span id="mob-system-text">Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
                         </div>
@@ -632,10 +632,21 @@
             document.getElementById('mobile-view').classList.remove('active');
         }
 
+        // Hilfsfunktion zum Formatieren der Telefonnummer (unterteilt die Ziffern in saubere Blöcke)
+        function formatPhoneNumber(cc, rawNum) {
+            const clean = rawNum.replace(/\D/g, '');
+            if (clean.length > 7) {
+                return `+${cc} ${clean.slice(0, 4)} ${clean.slice(4)}`;
+            } else if (clean.length > 4) {
+                return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`;
+            }
+            return `+${cc} ${clean}`;
+        }
+
         async function checkNumber() {
             const cc = document.getElementById('country-code').value.replace('+', ''); 
             const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
-            const fullNumber = "+" + cc + " " + num;
+            const formattedNumber = formatPhoneNumber(cc, num);
 
             if(num.trim() === "") return alert("Bitte eine Nummer eingeben!");
 
@@ -644,10 +655,12 @@
             document.getElementById('loading').style.display = 'block';
 
             try {
+                // Für den API Call senden wir die saubere Nummer ohne Formatierungsschritte
+                const apiNumber = "+" + cc + " " + num;
                 const response = await fetch('/check', {
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ number: fullNumber })
+                    body: JSON.stringify({ number: apiNumber })
                 });
 
                 const responseData = await response.json();
@@ -663,7 +676,7 @@
                 else if (responseData.data && responseData.data.isBanned !== undefined) isBannedValue = responseData.data.isBanned;
                 else if (responseData.status === "banned" || responseData.status === "BANNED" || responseData.status === true) isBannedValue = true;
                 
-                renderResult(fullNumber, isBannedValue);
+                renderResult(formattedNumber, isBannedValue);
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 const errorDiv = document.getElementById('error-message');
@@ -672,7 +685,7 @@
             }
         }
 
-        function renderResult(fullNumber, isBanned) {
+        function renderResult(formattedNumber, isBanned) {
             document.getElementById('loading').style.display = 'none';
             
             const deskNum = document.getElementById('desk-num');
@@ -681,8 +694,8 @@
             const mobCustom = document.getElementById('mob-custom-text');
             const mobSystemText = document.getElementById('mob-system-text');
 
-            deskNum.innerText = fullNumber;
-            mobNum.innerText = fullNumber;
+            deskNum.innerText = formattedNumber;
+            mobNum.innerText = formattedNumber;
 
             const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
 
