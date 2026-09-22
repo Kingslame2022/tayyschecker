@@ -39,7 +39,7 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            z-index: -2;
+            z-index: 1; /* FIXED: Liegt jetzt ÜBER dem schwarzen Body-Hintergrund! */
             opacity: 0.6; /* Dunkelt das Bild etwas ab für bessere Lesbarkeit */
             display: none; /* Versteckt, bis ein Bild hochgeladen wird */
         }
@@ -51,7 +51,7 @@
             width: 100vw;
             height: 100vh;
             background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 95%);
-            z-index: -1;
+            z-index: 2; /* FIXED: Liegt über dem Bild für den dunklen Rand-Effekt */
             pointer-events: none;
         }
 
@@ -64,6 +64,7 @@
             display: flex; 
             flex-direction: column; 
             position: relative;
+            z-index: 10; /* FIXED: Alle Buttons liegen über dem Bild */
         }
 
         .header {
@@ -520,13 +521,13 @@
             const file = input.files[0];
             if (!file) return;
 
-            // 1. Sofortiges Anzeigen (Funktioniert sofort & immer, ohne laden!)
+            // 1. Sofortiges Anzeigen (Ohne Komprimierungs-Verzögerung)
             const tempUrl = URL.createObjectURL(file);
             const bgImg = document.getElementById('bg-img');
             bgImg.src = tempUrl;
             bgImg.style.display = 'block';
 
-            // 2. Für den nächsten Besuch im Hintergrund abspeichern (Maximal 4MB wegen Browser-Limit)
+            // 2. Im Hintergrund für den nächsten Besuch abspeichern
             if (file.size <= 4 * 1024 * 1024) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
