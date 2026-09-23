@@ -398,7 +398,7 @@
             .mobile-result { display: none !important; }
         }
 
-        /* --- EINSTELLUNGEN SLIDE-UP MENÜ --- */
+        /* --- SLIDE-UP MENÜS (EINSTELLUNGEN & SUPPORT) --- */
         .settings-backdrop {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -504,6 +504,12 @@
             margin-right: 8px;
             font-size: 0.75rem;
         }
+        .support-info-text {
+            text-align: center; 
+            font-size: 0.85rem; 
+            margin-bottom: 20px; 
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -555,7 +561,8 @@
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
                 <div class="desktop-actions">
                     <span onclick="closeResult()">EXIT...</span>
-                    <span>サポート</span>
+                    <!-- HIER IST DER SUPPORT BUTTON (DESKTOP) -->
+                    <span onclick="openSupport()">サポート</span>
                 </div>
             </div>
 
@@ -571,7 +578,8 @@
                         </div>
                         <div class="ios-buttons">
                             <button onclick="closeResult()">Abbrechen</button>
-                            <button onclick="closeResult()">Support</button>
+                            <!-- HIER IST DER SUPPORT BUTTON (MOBILE) -->
+                            <button onclick="openSupport()">Support</button>
                         </div>
                     </div>
                 </div>
@@ -579,6 +587,19 @@
 
         </div>
 
+    </div>
+
+    <!-- SUPPORT AUSWAHL MENÜ -->
+    <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
+        <div class="settings-panel" onclick="event.stopPropagation()">
+            <div class="settings-header">
+                <div class="settings-title">💬 Support kontaktieren</div>
+                <button class="close-settings" onclick="toggleSupport(false)">✕</button>
+            </div>
+            <div class="support-info-text">Wo möchtest du uns kontaktieren?</div>
+            <button class="agree-btn" style="margin-bottom: 15px;" onclick="window.open('https://t.me/tayy1773', '_blank')">✈️ Telegram</button>
+            <button class="agree-btn" onclick="window.open('https://wa.me/4995434449848', '_blank')">📞 WhatsApp</button>
+        </div>
     </div>
 
     <!-- EINSTELLUNGEN SLIDE-UP MENÜ -->
@@ -606,6 +627,10 @@
             </div>
             <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;">Hintergrundbild hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
+            
+            <div style="margin-top: 25px;">
+                <button class="agree-btn" style="padding: 10px;" onclick="openSupport()">💬 Support kontaktieren</button>
+            </div>
         </div>
     </div>
 
@@ -646,6 +671,27 @@
             setTimeout(() => {
                 startScreen.style.display = 'none';
             }, 500);
+        }
+
+        // Support Modal Steuerung
+        function toggleSupport(open) {
+            const modal = document.getElementById('support-modal');
+            if (open) {
+                toggleSettings(false); // Einstellungen schließen, falls offen
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function checkCloseSupport(event) {
+            if (event.target.id === 'support-modal') {
+                toggleSupport(false);
+            }
+        }
+
+        function openSupport() {
+            toggleSupport(true);
         }
 
         // Intelligente Zwischenablage
