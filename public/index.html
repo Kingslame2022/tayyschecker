@@ -269,7 +269,6 @@
         /* --- RESULT BOXEN --- */
         #result-wrapper { display: none; margin-bottom: 20px; }
         
-        /* Desktop Result Screen */
         .desktop-result {
             position: relative;
             border: 1px solid var(--primary-color);
@@ -325,14 +324,8 @@
 
         /* --- ANIMATION FÜR DAS POP-UP --- */
         @keyframes popupSlideUpFade {
-            0% {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .ios-modal {
@@ -510,6 +503,21 @@
             margin-bottom: 20px; 
             opacity: 0.8;
         }
+        /* Glas-Dropdown für die Sprache */
+        select.glass-select {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        select.glass-select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -519,7 +527,7 @@
         <div class="welcome-text" id="welcome-display">🔥 Welcome Back my Master 🔥</div>
         <div class="start-bottom">
             <div class="start-by">by Tayy</div>
-            <button class="agree-btn" onclick="startApp()">AGREE AND CONTINUE</button>
+            <button class="agree-btn" onclick="startApp()" data-i18n="agree_btn">AGREE AND CONTINUE</button>
         </div>
     </div>
 
@@ -532,14 +540,13 @@
         <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
 
         <div class="top-panel">
-            <div class="border-right" onclick="pasteFromClipboard()">Autofill</div>
+            <div class="border-right" onclick="pasteFromClipboard()" data-i18n="autofill">Autofill</div>
             <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
         <div class="input-wrapper">
             <div class="input-panel">
                 <span>+</span>
-                <!-- inputmode="numeric" und Regex blockieren alles außer Ziffern -->
                 <input type="text" id="country-code" value="49" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 <input type="text" id="phone-number" placeholder="15678332333" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
@@ -549,7 +556,7 @@
             <div class="copyright">©Made by Tayy</div>
         </div>
 
-        <div id="loading">API wird abgefragt...</div>
+        <div id="loading" data-i18n="api_loading">API wird abgefragt...</div>
         <div id="error-message"></div>
 
         <!-- RESULTAT BEREICH -->
@@ -561,8 +568,7 @@
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
                 <div class="desktop-actions">
                     <span onclick="closeResult()">EXIT...</span>
-                    <!-- HIER IST DER SUPPORT BUTTON (DESKTOP) -->
-                    <span onclick="openSupport()">サポート</span>
+                    <span onclick="openSupport()" data-i18n="support_desk">サポート</span>
                 </div>
             </div>
 
@@ -571,15 +577,14 @@
                 <div class="ios-overlay">
                     <div class="ios-modal">
                         <div class="ios-text" id="mobile-msg">
-                            Deine Telefonnummer
+                            <span data-i18n="your_phone">Deine Telefonnummer</span>
                             <strong id="mob-num">+49 175 2821649</strong>
                             <span id="mob-custom-text">Banned by ViVa La Tayy</span>
-                            <span id="mob-system-text">Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
+                            <span id="mob-system-text" data-i18n="contact_support">Bitte kontaktiere unseren Customer Support für weitere Hilfe.</span>
                         </div>
                         <div class="ios-buttons">
-                            <button onclick="closeResult()">Abbrechen</button>
-                            <!-- HIER IST DER SUPPORT BUTTON (MOBILE) -->
-                            <button onclick="openSupport()">Support</button>
+                            <button onclick="closeResult()" data-i18n="cancel">Abbrechen</button>
+                            <button onclick="openSupport()" data-i18n="support">Support</button>
                         </div>
                     </div>
                 </div>
@@ -593,10 +598,10 @@
     <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <div class="settings-title">💬 Support kontaktieren</div>
+                <div class="settings-title" data-i18n="support_btn">💬 Support kontaktieren</div>
                 <button class="close-settings" onclick="toggleSupport(false)">✕</button>
             </div>
-            <div class="support-info-text">Wo möchtest du uns kontaktieren?</div>
+            <div class="support-info-text" data-i18n="support_where">Wo möchtest du uns kontaktieren?</div>
             <button class="agree-btn" style="margin-bottom: 15px;" onclick="window.open('https://t.me/tayy1773', '_blank')">✈️ Telegram</button>
             <button class="agree-btn" onclick="window.open('https://wa.me/4995434449848', '_blank')">📞 WhatsApp</button>
         </div>
@@ -606,30 +611,43 @@
     <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <div class="settings-title">⚙️ Einstellungen</div>
+                <div class="settings-title" data-i18n="settings_title">⚙️ Einstellungen</div>
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
+
+            <!-- Sprachauswahl -->
             <div class="settings-row">
-                <span>Neon-/Akzentfarbe</span>
+                <span data-i18n="change_lang">Sprache / Language</span>
+                <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="ru">Русский</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+
+            <div class="settings-row">
+                <span data-i18n="color_neon">Neon-/Akzentfarbe</span>
                 <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
             </div>
             <div class="settings-row">
-                <span>Textfarbe ändern</span>
+                <span data-i18n="color_text">Textfarbe ändern</span>
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
             <div class="settings-row">
-                <span>Welcome-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editWelcomeText()">✏️ Text ändern</button>
+                <span data-i18n="edit_welcome">Welcome-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editWelcomeText()" data-i18n="btn_edit">✏️ Text ändern</button>
             </div>
             <div class="settings-row">
-                <span>Bann-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editBannedText()">✏️ Text ändern</button>
+                <span data-i18n="edit_ban">Bann-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Text ändern</button>
             </div>
-            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;">Hintergrundbild hochladen:</div>
+            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
             
             <div style="margin-top: 25px;">
-                <button class="agree-btn" style="padding: 10px;" onclick="openSupport()">💬 Support kontaktieren</button>
+                <button class="agree-btn" style="padding: 10px;" onclick="openSupport()" data-i18n="support_btn">💬 Support kontaktieren</button>
             </div>
         </div>
     </div>
@@ -638,7 +656,152 @@
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
+        // Übersetzungs-Wörterbuch (Englisch, Deutsch, Spanisch, Russisch, Arabisch)
+        const translations = {
+            en: {
+                agree_btn: "AGREE AND CONTINUE",
+                autofill: "Autofill",
+                api_loading: "Checking API...",
+                your_phone: "Your phone number",
+                is_unban: "is Unbanned",
+                contact_support: "Please contact our Customer Support for further assistance.",
+                cancel: "Cancel",
+                support: "Support",
+                support_desk: "Support",
+                settings_title: "⚙️ Settings",
+                color_neon: "Neon/Accent Color",
+                color_text: "Change Text Color",
+                edit_welcome: "Edit Welcome Text",
+                edit_ban: "Edit Ban Text",
+                btn_edit: "✏️ Edit Text",
+                upload_bg: "Upload Background Image:",
+                support_btn: "💬 Contact Support",
+                support_where: "Where do you want to contact us?",
+                change_lang: "Language",
+                alert_empty: "Please enter a number!",
+                alert_clipboard: "Clipboard access denied. Please allow it in your browser or paste manually.",
+                prompt_welcome: "Enter new Welcome text:",
+                prompt_ban: "Enter new text if the number is banned:",
+                alert_size: "Note: Your image/GIF is larger than 4 MB. It will be shown immediately but not saved permanently.",
+                error_msg: "Error:"
+            },
+            de: {
+                agree_btn: "ZUSTIMMEN UND WEITER",
+                autofill: "Autofill",
+                api_loading: "API wird abgefragt...",
+                your_phone: "Deine Telefonnummer",
+                is_unban: "ist Unban",
+                contact_support: "Bitte kontaktiere unseren Customer Support für weitere Hilfe.",
+                cancel: "Abbrechen",
+                support: "Support",
+                support_desk: "サポート", 
+                settings_title: "⚙️ Einstellungen",
+                color_neon: "Neon-/Akzentfarbe",
+                color_text: "Textfarbe ändern",
+                edit_welcome: "Welcome-Text anpassen",
+                edit_ban: "Bann-Text anpassen",
+                btn_edit: "✏️ Text ändern",
+                upload_bg: "Hintergrundbild hochladen:",
+                support_btn: "💬 Support kontaktieren",
+                support_where: "Wo möchtest du uns kontaktieren?",
+                change_lang: "Sprache",
+                alert_empty: "Bitte eine Nummer eingeben!",
+                alert_clipboard: "Zugriff auf die Zwischenablage verweigert. Bitte erlaube es im Browser oder füge die Nummer manuell ein.",
+                prompt_welcome: "Neuen Welcome-Text eingeben:",
+                prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
+                alert_size: "Hinweis: Dein Bild/GIF ist größer als 4 MB. Es wird sofort angezeigt, aber nicht dauerhaft gespeichert.",
+                error_msg: "Fehler:"
+            },
+            es: {
+                agree_btn: "ACEPTAR Y CONTINUAR",
+                autofill: "Autocompletar",
+                api_loading: "Consultando API...",
+                your_phone: "Tu número de teléfono",
+                is_unban: "no está baneado",
+                contact_support: "Por favor, contacta a nuestro Soporte para más ayuda.",
+                cancel: "Cancelar",
+                support: "Soporte",
+                support_desk: "Soporte",
+                settings_title: "⚙️ Ajustes",
+                color_neon: "Color Neón/Acento",
+                color_text: "Cambiar Color de Texto",
+                edit_welcome: "Editar texto de bienvenida",
+                edit_ban: "Editar texto de baneo",
+                btn_edit: "✏️ Cambiar Texto",
+                upload_bg: "Subir imagen de fondo:",
+                support_btn: "💬 Contactar Soporte",
+                support_where: "¿Dónde deseas contactarnos?",
+                change_lang: "Idioma",
+                alert_empty: "¡Por favor, introduzca un número!",
+                alert_clipboard: "Acceso al portapapeles denegado. Permítelo en el navegador o pega manualmente.",
+                prompt_welcome: "Introduzca el nuevo texto de bienvenida:",
+                prompt_ban: "Introduce un nuevo texto si el número está baneado:",
+                alert_size: "Nota: Su imagen/GIF tiene más de 4 MB. Se mostrará inmediatamente pero no se guardará.",
+                error_msg: "Error:"
+            },
+            ru: {
+                agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ",
+                autofill: "Автозаполнение",
+                api_loading: "Проверка API...",
+                your_phone: "Ваш номер телефона",
+                is_unban: "Разблокирован",
+                contact_support: "Пожалуйста, свяжитесь с нашей службой поддержки для получения помощи.",
+                cancel: "Отмена",
+                support: "Поддержка",
+                support_desk: "Поддержка",
+                settings_title: "⚙️ Настройки",
+                color_neon: "Неоновый/Акцентный цвет",
+                color_text: "Изменить цвет текста",
+                edit_welcome: "Изменить текст приветствия",
+                edit_ban: "Изменить текст блокировки",
+                btn_edit: "✏️ Изменить текст",
+                upload_bg: "Загрузить фоновое изображение:",
+                support_btn: "💬 Связаться с поддержкой",
+                support_where: "Где вы хотите с нами связаться?",
+                change_lang: "Язык",
+                alert_empty: "Пожалуйста, введите номер!",
+                alert_clipboard: "Доступ к буферу обмена запрещен. Разрешите его в браузере или вставьте вручную.",
+                prompt_welcome: "Введите новый текст приветствия:",
+                prompt_ban: "Введите новый текст, если номер заблокирован:",
+                alert_size: "Примечание: Ваше изображение/GIF больше 4 МБ. Оно будет показано сразу, но не сохранится навсегда.",
+                error_msg: "Ошибка:"
+            },
+            ar: {
+                agree_btn: "موافق ومتابعة",
+                autofill: "ملء تلقائي",
+                api_loading: "جاري فحص API...",
+                your_phone: "رقم هاتفك",
+                is_unban: "غير محظور",
+                contact_support: "يرجى الاتصال بدعم العملاء للحصول على مزيد من المساعدة.",
+                cancel: "إلغاء",
+                support: "الدعم",
+                support_desk: "الدعم",
+                settings_title: "⚙️ الإعدادات",
+                color_neon: "لون النيون/التمييز",
+                color_text: "تغيير لون النص",
+                edit_welcome: "تعديل نص الترحيب",
+                edit_ban: "تعديل نص الحظر",
+                btn_edit: "✏️ تغيير النص",
+                upload_bg: "تحميل صورة الخلفية:",
+                support_btn: "💬 اتصل بالدعم",
+                support_where: "أين تريد الاتصال بنا؟",
+                change_lang: "اللغة",
+                alert_empty: "الرجاء إدخال رقم!",
+                alert_clipboard: "تم رفض الوصول إلى الحافظة. يرجى السماح بذلك أو اللصق يدويًا.",
+                prompt_welcome: "أدخل نص الترحيب الجديد:",
+                prompt_ban: "أدخل نصًا جديدًا إذا كان الرقم محظورًا:",
+                alert_size: "ملاحظة: صورتك أكبر من 4 ميغابايت. سيتم عرضها على الفور ولكن لن يتم حفظها بشكل دائم.",
+                error_msg: "خطأ:"
+            }
+        };
+
+        let currentLang = 'en';
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Sprache laden & anwenden
+            const savedLang = localStorage.getItem('snowi_lang') || 'en';
+            changeLanguage(savedLang);
+
             // Farben laden
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) {
@@ -665,6 +828,30 @@
             document.getElementById('welcome-display').innerText = savedWelcomeText;
         });
 
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('snowi_lang', lang);
+            document.documentElement.lang = lang;
+            
+            // RTL-Support für Arabisch
+            if (lang === 'ar') {
+                document.body.style.direction = 'rtl';
+            } else {
+                document.body.style.direction = 'ltr';
+            }
+
+            const t = translations[lang];
+            // Update alle Elemente mit "data-i18n"
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.innerText = t[key];
+                }
+            });
+
+            document.getElementById('lang-select').value = lang;
+        }
+
         function startApp() {
             const startScreen = document.getElementById('start-screen');
             startScreen.classList.add('hidden');
@@ -677,7 +864,7 @@
         function toggleSupport(open) {
             const modal = document.getElementById('support-modal');
             if (open) {
-                toggleSettings(false); // Einstellungen schließen, falls offen
+                toggleSettings(false); 
                 modal.classList.add('active');
             } else {
                 modal.classList.remove('active');
@@ -699,22 +886,18 @@
             try {
                 const text = await navigator.clipboard.readText();
                 if (text) {
-                    // Entferne alle Zeichen, die keine Ziffern sind (Leerzeichen, +, -, etc.)
                     let cleanText = text.replace(/\D/g, '');
                     const cc = document.getElementById('country-code').value;
                     
-                    // Smart-Filter: Wenn die kopierte Nummer schon die Vorwahl (z.B. 49) enthält, schneide sie ab
                     if (cc && cleanText.startsWith(cc)) {
                         cleanText = cleanText.substring(cc.length);
                     } else if (cleanText.startsWith('0')) {
-                        // Bei deutschen Nummern (0175...) die Null entfernen
                         cleanText = cleanText.substring(1);
                     }
-                    
                     document.getElementById('phone-number').value = cleanText;
                 }
             } catch (err) {
-                alert("Zugriff auf die Zwischenablage verweigert. Bitte erlaube es im Browser oder füge die Nummer manuell ein.");
+                alert(translations[currentLang].alert_clipboard);
             }
         }
 
@@ -735,7 +918,7 @@
 
         function editWelcomeText() {
             const currentText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
-            const newText = prompt("Neuen Welcome-Text eingeben:", currentText);
+            const newText = prompt(translations[currentLang].prompt_welcome, currentText);
             
             if (newText !== null && newText.trim() !== "") {
                 localStorage.setItem('snowi_welcome_text', newText.trim());
@@ -746,7 +929,7 @@
         function editBannedText() {
             const currentTextRaw = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
             const currentTextClean = currentTextRaw.replace(/<br>/g, '\n');
-            const newText = prompt("Neuen Text eingeben, wenn die Nummer gebannt ist:", currentTextClean);
+            const newText = prompt(translations[currentLang].prompt_ban, currentTextClean);
             
             if (newText !== null && newText.trim() !== "") {
                 const cleaned = newText.trim().replace(/\n/g, '<br>');
@@ -787,12 +970,12 @@
                     try {
                         localStorage.setItem('snowi_bg_image', e.target.result);
                     } catch (err) {
-                        console.log("Speicherlimit erreicht, Bild wird nur für diese Sitzung angezeigt.");
+                        console.log("Storage limit reached.");
                     }
                 };
                 reader.readAsDataURL(file);
             } else {
-                alert("Hinweis: Dein Bild/GIF ist größer als 4 MB. Es wird sofort angezeigt, aber nicht dauerhaft gespeichert.");
+                alert(translations[currentLang].alert_size);
             }
         }
 
@@ -824,11 +1007,12 @@
         }
 
         async function checkNumber() {
+            const t = translations[currentLang];
             const cc = document.getElementById('country-code').value.replace('+', ''); 
             const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
             const formattedNumber = formatPhoneNumber(cc, num);
 
-            if(num.trim() === "") return alert("Bitte eine Nummer eingeben!");
+            if(num.trim() === "") return alert(t.alert_empty);
 
             closeResult();
             document.getElementById('error-message').style.display = 'none';
@@ -845,7 +1029,7 @@
                 const responseData = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(responseData.error || 'Unbekannter API Fehler');
+                    throw new Error(responseData.error || 'Unknown API Error');
                 }
                 
                 let isBannedValue = false;
@@ -859,12 +1043,13 @@
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 const errorDiv = document.getElementById('error-message');
-                errorDiv.innerHTML = "<strong>Fehler:</strong><br>" + error.message;
+                errorDiv.innerHTML = `<strong>${t.error_msg}</strong><br>${error.message}`;
                 errorDiv.style.display = 'block';
             }
         }
 
         function renderResult(formattedNumber, isBanned) {
+            const t = translations[currentLang];
             document.getElementById('loading').style.display = 'none';
             
             const deskNum = document.getElementById('desk-num');
@@ -885,10 +1070,11 @@
                 mobCustom.innerHTML = customBannedText;
                 mobSystemText.style.display = 'block';
             } else {
-                deskMsg.innerText = "ist Unban";
+                // Dynamische Übersetzung für den "Unban" Status
+                deskMsg.innerText = t.is_unban;
                 deskMsg.style.color = "#32D74B";
                 
-                mobCustom.innerText = "ist Unban";
+                mobCustom.innerText = t.is_unban;
                 mobSystemText.style.display = 'none';
             }
 
