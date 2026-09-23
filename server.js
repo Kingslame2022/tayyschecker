@@ -1,33 +1,50 @@
-require('dotenv').config();
 const express = require('express');
-const app = express();
+const cors = require('cors');
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Erlaube Frontend-Kommunikation und JSON
+app.use(cors());
 app.use(express.json());
-// Stellt die index.html aus dem Unterordner "public" bereit
+
+// Zeigt deine Website aus dem "public" Ordner an
 app.use(express.static('public'));
 
-const BANCHECK_KEY = process.env.BANCHECK_API_KEY;
-
 app.post('/check', async (req, res) => {
-  const { number } = req.body || {};
-  if (!number) return res.status(400).json({ error: 'Nummer fehlt' });
+    try {
+        const { number } = req.body;
+        
+        // Macht aus "+49 1567 8332333" -> "4915678332333" für die API
+        const cleanNum = number.replace(/\D/g, ''); 
 
-  try {
-      const bcRes = await fetch('https://baron0.com/api/v2/check', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${BANCHECK_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ number }),
-      });
-      
-      const body = await bcRes.json();
-      res.status(bcRes.status).json(body);
-  } catch (error) {
-      console.error("Fehler im Backend:", error);
-      res.status(500).json({ error: 'Serverfehler bei der API-Abfrage' });
-  }
+        const url = `https://xzc-corporation.biz.id/lrp?number=${cleanNum}`;
+        const headers = {
+            'accept-encoding': 'gzip',
+            'content-type': 'application/json',
+            'host': 'xzc-corporation.biz.id',
+            'neckhurt': 'hate4jew',
+            'user-agent': 'Dart/3.12 (dart:io)'
+        };
+
+        // API Abfrage an deinen Server
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: headers
+        });
+
+        // Antwort in JSON umwandeln
+        const data = await response.json();
+        
+        // Das Ergebnis zurück an deine index.html schicken
+        res.json(data);
+
+    } catch (error) {
+        console.error("API Fehler:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.listen(3000, () => console.log('Server läuft auf http://localhost:3000'));
+app.listen(PORT, () => {
+    console.log(`🚀 Server läuft auf Port ${PORT}`);
+});
