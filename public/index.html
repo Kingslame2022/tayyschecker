@@ -10,9 +10,9 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(20, 20, 20, 0.08); /* Für Pop-ups */
+            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtiges Glas-Design */
             --ios-border: rgba(255, 255, 255, 0.12);
-            /* NEU: Eigene Variablen für die Panels (oben) */
+            /* Variablen für die Panels (oben) */
             --panel-bg: rgba(20, 20, 20, 0.08);
             --panel-blur: 8px;
         }
@@ -157,7 +157,7 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) - JETZT MIT DYNAMISCHEM BLUR & ALPHA */
+        /* Top Panel (Knöpfe) - DYNAMISCHER BLUR & ALPHA */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
@@ -195,7 +195,7 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        /* Eingabebereich - JETZT MIT DYNAMISCHEM BLUR & ALPHA */
+        /* Eingabebereich - DYNAMISCHER BLUR & ALPHA */
         .input-wrapper { 
             margin-bottom: 25px; 
             position: relative; 
@@ -718,7 +718,7 @@
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- LAYOUT BEREICH -->
+            <!-- LAYOUT BEREICH (INDEXEDDB UNTERSTÜTZT) -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
@@ -731,7 +731,7 @@
                 <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
             </div>
 
-            <!-- NEU: BLUR & ALPHA (TRANSPARENZ) EINSTELLUNGEN -->
+            <!-- BLUR & ALPHA (TRANSPARENZ) EINSTELLUNGEN -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="panel_settings">🎛️ Panel Design</div>
                 <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
@@ -747,10 +747,10 @@
                     </div>
                     <input type="range" id="alpha-slider" min="0" max="100" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
                 </div>
-                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()" data-i18n="btn_default_reset">🔄 Default wiederherstellen</button>
+                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()" data-i18n="btn_default_reset">🔄 Standard wiederherstellen</button>
             </div>
 
-            <!-- Sprachauswahl (3 NEUE SPRACHEN HINZUGEFÜGT) -->
+            <!-- Sprachauswahl (INKLUSIVE JP, LA, IT) -->
             <div class="settings-row">
                 <span data-i18n="change_lang">Sprache / Language</span>
                 <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
@@ -891,7 +891,7 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH (INKL. JP, LA, IT)
+        // SPRACH-WÖRTERBUCH
         // ==========================================
         const translations = {
             en: {
@@ -1036,10 +1036,10 @@
             document.getElementById('lang-select').value = lang;
         }
 
-        // --- NEU: PANEL DESIGN EINSTELLUNGEN (BLUR & TRANSPARENZ) ---
+        // --- PANEL DESIGN EINSTELLUNGEN (BLUR & TRANSPARENZ) ---
         function updatePanelStyle() {
             const blurVal = document.getElementById('blur-slider').value;
-            const alphaVal = document.getElementById('alpha-slider').value; // 0 bis 100
+            const alphaVal = document.getElementById('alpha-slider').value; 
             
             // CSS Variablen updaten
             document.documentElement.style.setProperty('--panel-blur', blurVal + 'px');
@@ -1056,7 +1056,7 @@
 
         function resetPanelStyle() {
             document.getElementById('blur-slider').value = 8;
-            document.getElementById('alpha-slider').value = 8; // Standard 8%
+            document.getElementById('alpha-slider').value = 8; 
             updatePanelStyle();
         }
 
@@ -1168,7 +1168,6 @@
             };
 
             try {
-                // Bild oder animiertes GIF in IndexedDB speichern
                 if (bgData) {
                     await saveMedia('snowi_layout_img_' + cleanName, bgData);
                 } else {
@@ -1219,14 +1218,12 @@
                 changeTextColor(layout.text);
                 document.getElementById('text-color-picker').value = layout.text;
 
-                // Slider-Werte laden
                 const blur = layout.blur !== undefined ? layout.blur : 8;
                 const alpha = layout.alpha !== undefined ? layout.alpha : 8;
                 document.getElementById('blur-slider').value = blur;
                 document.getElementById('alpha-slider').value = alpha;
                 updatePanelStyle();
                 
-                // Bild laden
                 const bgData = await loadMedia('snowi_layout_img_' + name) || layout.bg || '';
                 const bgImg = document.getElementById('bg-img');
 
@@ -1273,14 +1270,12 @@
                 changeTextColor(savedText); 
             }
 
-            // Slider-Werte wiederherstellen
             const savedBlur = localStorage.getItem('snowi_panel_blur') || 8;
             const savedAlpha = localStorage.getItem('snowi_panel_alpha') || 8;
             document.getElementById('blur-slider').value = savedBlur;
             document.getElementById('alpha-slider').value = savedAlpha;
             updatePanelStyle();
             
-            // Bild oder animiertes GIF laden
             const savedBg = await loadMedia('snowi_bg_image');
             if (savedBg) { 
                 const bgImg = document.getElementById('bg-img'); 
@@ -1513,11 +1508,12 @@
                     mobCustom.style.color = "var(--primary-color)";
                     mobSystem.style.display = 'block';
                 } else {
+                    // NEU: HIER WURDE GRÜN DURCH DIE STANDARDFARBE (WEISS) ERSETZT!
                     deskMsg.innerText = t.is_unban;
-                    deskMsg.style.color = "#32D74B";
+                    deskMsg.style.color = "var(--text-color)";
                     
                     mobCustom.innerText = t.is_unban;
-                    mobCustom.style.color = "#32D74B";
+                    mobCustom.style.color = "var(--text-color)";
                     mobSystem.style.display = 'none';
                 }
                 
