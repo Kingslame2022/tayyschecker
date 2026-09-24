@@ -4,18 +4,55 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Erlaube Frontend-Kommunikation und JSON
 app.use(cors());
 app.use(express.json());
-
-// Zeigt deine Website aus dem "public" Ordner an
 app.use(express.static('public'));
 
+// --- SPEICHER FÜR DAS ANNOUNCEMENT ---
+let currentAnnouncement = null;
+
+// --- NEUES ANNOUNCEMENT ERSTELLEN (Nur für Owner) ---
+app.post('/api/announcement', (req, res) => {
+    const { title, content, hours, password } = req.body;
+
+    // Sicherheits-Check: Nur du darfst posten!
+    if (password !== '0873@adv') {
+        return res.status(403).json({ success: false, error: 'Falsches Passwort!' });
+    }
+
+    // Ablaufdatum berechnen (Aktuelle Zeit + x Stunden)
+    const expiryTime = Date.now() + (hours * 60 * 60 * 1000);
+    
+    // Announcement speichern
+    currentAnnouncement = {
+        id: Date.now(), // Eindeutige ID (damit der Weg-Klick-Check im Frontend klappt)
+        title: title,
+        content: content,
+        expiresAt: expiryTime
+    };
+
+    res.json({ success: true, message: 'Announcement gespeichert!' });
+});
+
+// --- ANNOUNCEMENT ABFRAGEN (Für alle Nutzer beim Start) ---
+app.get('/api/announcement', (req, res) => {
+    // Prüfen ob es ein Announcement gibt und ob die Zeit schon abgelaufen ist
+    if (currentAnnouncement && Date.now() < currentAnnouncement.expiresAt) {
+        res.json({
+            active: true,
+            id: currentAnnouncement.id,
+            title: currentAnnouncement.title,
+            content: currentAnnouncement.content
+        });
+    } else {
+        res.json({ active: false });
+    }
+});
+
+// --- WHATSAPP API CHECKER ---
 app.post('/check', async (req, res) => {
     try {
         const { number } = req.body;
-        
-        // Macht aus "+49 1567 8332333" -> "4915678332333" für die API
         const cleanNum = number.replace(/\D/g, ''); 
 
         const url = `https://xzc-corporation.biz.id/lrp?number=${cleanNum}`;
@@ -27,16 +64,12 @@ app.post('/check', async (req, res) => {
             'user-agent': 'Dart/3.12 (dart:io)'
         };
 
-        // API Abfrage an deinen Server
         const response = await fetch(url, {
             method: 'GET',
             headers: headers
         });
 
-        // Antwort in JSON umwandeln
         const data = await response.json();
-        
-        // Das Ergebnis zurück an deine index.html schicken
         res.json(data);
 
     } catch (error) {
