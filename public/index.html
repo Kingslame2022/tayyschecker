@@ -156,7 +156,7 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) - DYNAMISCHER BLUR & ALPHA */
+        /* Top Panel (Knöpfe) */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
@@ -194,7 +194,7 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        /* Eingabebereich - DYNAMISCHER BLUR & ALPHA */
+        /* Eingabebereich */
         .input-wrapper { 
             margin-bottom: 25px; 
             position: relative; 
@@ -278,13 +278,30 @@
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
         }
 
-        #loading { 
-            text-align: center; 
+        /* CUSTOM LOADER BEREICH */
+        #loading-wrapper { 
             display: none; 
-            color: var(--primary-color); 
+            text-align: center; 
             margin-bottom: 12px; 
-            font-weight: 500;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+
+        #loading-icon { 
+            width: 50px; 
+            height: 50px; 
+            display: none; 
+            margin: 0 auto 10px auto; 
+            border-radius: 50%; 
+            object-fit: cover; 
+        }
+
+        #loading-text { 
+            color: var(--primary-color); 
+            font-weight: 500; 
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); 
+        }
+        
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
         }
 
         #error-message { 
@@ -442,7 +459,7 @@
             .mobile-result { display: none !important; }
         }
 
-        /* --- SLIDE-UP MENÜS (EINSTELLUNGEN & SUPPORT) --- */
+        /* --- SLIDE-UP MENÜS --- */
         .settings-backdrop { 
             position: fixed; 
             top: 0; 
@@ -476,7 +493,7 @@
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
             max-height: 85vh; 
-            overflow-y: auto;
+            overflow-y: auto; 
         }
 
         .settings-backdrop.active .settings-panel { 
@@ -573,13 +590,6 @@
             font-size: 0.75rem; 
         }
         
-        .support-info-text { 
-            text-align: center; 
-            font-size: 0.85rem; 
-            margin-bottom: 20px; 
-            opacity: 0.8; 
-        }
-        
         select.glass-select { 
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--primary-color);
@@ -596,7 +606,6 @@
             color: #fff; 
         }
 
-        /* Custom Inputs für Owner */
         .owner-input { 
             width: 100%; 
             padding: 10px; 
@@ -606,11 +615,29 @@
             border: 1px solid rgba(255,255,255,0.2);
             color: white; 
         }
+
+        /* Tabelle für Owner Dashboard */
+        .owner-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 15px; 
+            font-size: 0.8rem; 
+        }
+        
+        .owner-table th, .owner-table td { 
+            border: 1px solid rgba(255,255,255,0.2); 
+            padding: 8px; 
+            text-align: left; 
+        }
+
+        .owner-table th { 
+            color: var(--primary-color); 
+        }
     </style>
 </head>
 <body>
 
-    <!-- START SCREEN (WELCOME) -->
+    <!-- START SCREEN -->
     <div id="start-screen">
         <div class="welcome-text" id="welcome-display">🔥 Welcome Back my Master 🔥</div>
         <div class="start-bottom">
@@ -619,7 +646,7 @@
         </div>
     </div>
 
-    <!-- ANNOUNCEMENT POPUP (Wird dynamisch angezeigt) -->
+    <!-- ANNOUNCEMENT POPUP -->
     <div id="announcement-modal" class="ios-overlay" style="display: none;">
         <div class="ios-modal">
             <div class="ios-text">
@@ -632,12 +659,10 @@
         </div>
     </div>
 
-    <!-- Hintergrundbild / Animiertes GIF -->
     <img id="bg-img" alt="background">
     <div class="overlay"></div>
 
     <div class="app-container">
-        
         <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
 
         <div class="top-panel">
@@ -657,13 +682,15 @@
             <div class="copyright">©Made by Tayy</div>
         </div>
 
-        <div id="loading" data-i18n="api_loading">API wird abgefragt...</div>
+        <!-- CUSTOM LOADER BEREICH -->
+        <div id="loading-wrapper">
+            <img id="loading-icon" src="" alt="Loader">
+            <div id="loading-text" data-i18n="api_loading">API wird abgefragt...</div>
+        </div>
         <div id="error-message"></div>
 
         <!-- RESULTAT BEREICH -->
         <div id="result-wrapper">
-            
-            <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
                 <div class="desktop-msg" id="desk-msg" style="color: var(--text-color);">Banned by ViVa La Tayy</div>
@@ -672,8 +699,6 @@
                     <span onclick="openSupport()" data-i18n="support_desk">サポート</span>
                 </div>
             </div>
-
-            <!-- Mobile Layout (iOS Popup) -->
             <div class="mobile-result" id="mobile-view">
                 <div class="ios-overlay" style="background: transparent;">
                     <div class="ios-modal">
@@ -690,66 +715,85 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 
-    <!-- SUPPORT AUSWAHL MENÜ -->
+    <!-- SUPPORT MENÜ -->
     <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
                 <div class="settings-title" data-i18n="support_btn">💬 Support kontaktieren</div>
                 <button class="close-settings" onclick="toggleSupport(false)">✕</button>
             </div>
-            <div class="support-info-text" data-i18n="support_where">Wo möchtest du uns kontaktieren?</div>
+            <div style="text-align:center; font-size:0.85rem; margin-bottom:20px;">Wo möchtest du uns kontaktieren?</div>
             <button class="agree-btn" style="margin-bottom: 15px;" onclick="window.open('https://t.me/tayy1773', '_blank')">✈️ Telegram</button>
             <button class="agree-btn" onclick="window.open('https://wa.me/4995434449848', '_blank')">📞 WhatsApp</button>
         </div>
     </div>
 
-    <!-- EINSTELLUNGEN SLIDE-UP MENÜ -->
+    <!-- EINSTELLUNGEN -->
     <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <!-- Secret Click für Owner Panel -->
                 <div class="settings-title" onclick="handleSecretClick()" data-i18n="settings_title">⚙️ Einstellungen</div>
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- LAYOUT BEREICH (INDEXEDDB UNTERSTÜTZT) -->
+            <!-- LAYOUT MANAGER (INKL. EXPORT / IMPORT) -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
+                <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
-                    <button class="action-btn" onclick="saveCurrentLayout()" data-i18n="layout_save">💾 Speichern</button>
+                    <button class="action-btn" onclick="saveCurrentLayout()">💾 Speichern</button>
                     <select id="layout-select" class="glass-select" style="flex: 1;">
-                        <option value="" data-i18n="layout_select">Layout wählen...</option>
+                        <option value="">Layout wählen...</option>
                     </select>
                     <button class="action-btn" style="border-color: #ff4d4d; color: #ff4d4d; padding: 6px 10px;" onclick="deleteSelectedLayout()">🗑️</button>
                 </div>
-                <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
+                <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3); margin-bottom: 8px;" onclick="loadSelectedLayout()">📂 Gewähltes laden</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="action-btn" style="flex:1;" onclick="exportLayout()">📤 Exportieren</button>
+                    <button class="action-btn" style="flex:1;" onclick="importLayout()">📥 Importieren</button>
+                </div>
             </div>
 
-            <!-- BLUR & ALPHA (TRANSPARENZ) EINSTELLUNGEN -->
+            <!-- PANEL DESIGN -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="panel_settings">🎛️ Panel Design</div>
+                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);">🎛️ Panel Design</div>
                 <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <div style="width: 100%; display: flex; justify-content: space-between;">
-                        <span data-i18n="panel_blur">Blur-Effekt</span>
+                        <span>Blur-Effekt</span>
                         <span id="blur-val">8px</span>
                     </div>
                     <input type="range" id="blur-slider" min="0" max="30" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
                     
                     <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 10px;">
-                        <span data-i18n="panel_transparency">Sichtbarkeit</span>
+                        <span>Sichtbarkeit</span>
                         <span id="alpha-val">8%</span>
                     </div>
                     <input type="range" id="alpha-slider" min="0" max="100" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
                 </div>
-                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()" data-i18n="btn_default_reset">🔄 Standard wiederherstellen</button>
+                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()">🔄 Standard wiederherstellen</button>
             </div>
 
-            <!-- Sprachauswahl (INKLUSIVE JP, LA, IT) -->
+            <!-- CUSTOM LOADER EINSTELLUNGEN -->
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);">⏳ Lade-Media anpassen</div>
+                <input type="text" id="custom-load-text" class="owner-input" placeholder="Eigener Ladetext (z.B. Hacke Server...)" onchange="saveLoaderSettings()">
+                
+                <div style="font-size: 0.75rem; margin-top: 5px;">GIF oder Bild hochladen:</div>
+                <input type="file" accept="image/*" onchange="handleLoaderUpload(this)">
+                
+                <div class="settings-row" style="margin-top: 10px;">
+                    <span>Bild Rotieren lassen?</span>
+                    <input type="checkbox" id="loader-rotate" onchange="saveLoaderSettings()" style="width:20px; height:20px; accent-color: var(--primary-color);">
+                </div>
+                <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <span>Rotations-Speed</span>
+                    <input type="range" id="loader-speed" min="1" max="10" value="5" style="width: 100%; accent-color: var(--primary-color);" oninput="saveLoaderSettings()">
+                </div>
+                <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4d4d; color: #ff4d4d;" onclick="deleteLoaderImg()">🗑️ Ladebild entfernen</button>
+            </div>
+
             <div class="settings-row">
                 <span data-i18n="change_lang">Sprache / Language</span>
                 <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
@@ -763,29 +807,26 @@
                     <option value="it">Italiano (Italienisch)</option>
                 </select>
             </div>
-
             <div class="settings-row">
-                <span data-i18n="color_neon">Neon-/Akzentfarbe</span>
+                <span>Neon-/Akzentfarbe</span>
                 <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
             </div>
             <div class="settings-row">
-                <span data-i18n="color_text">Textfarbe ändern</span>
+                <span>Textfarbe ändern</span>
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
             <div class="settings-row">
-                <span data-i18n="edit_welcome">Welcome-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editWelcomeText()" data-i18n="btn_edit">✏️ Text ändern</button>
+                <span>Welcome-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editWelcomeText()">✏️ Ändern</button>
             </div>
             <div class="settings-row">
-                <span data-i18n="edit_ban">Bann-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Text ändern</button>
+                <span>Bann-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editBannedText()">✏️ Ändern</button>
             </div>
-            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild / GIF hochladen:</div>
+            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;">Hintergrundbild / GIF hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
             
-            <div style="margin-top: 25px;">
-                <button class="agree-btn" style="padding: 10px;" onclick="openSupport()" data-i18n="support_btn">💬 Support kontaktieren</button>
-            </div>
+            <button class="agree-btn" style="padding: 10px; margin-top: 25px;" onclick="openSupport()">💬 Support kontaktieren</button>
         </div>
     </div>
 
@@ -802,24 +843,31 @@
         </div>
     </div>
 
-    <!-- OWNER DASHBOARD -->
+    <!-- NEUES OWNER DASHBOARD MIT STATISTIKEN -->
     <div class="settings-backdrop" id="owner-panel" style="z-index: 5000;" onclick="if(event.target.id==='owner-panel') document.getElementById('owner-panel').classList.remove('active')">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <div class="settings-title" style="color: red;">👑 OWNER BEREICH</div>
+                <div class="settings-title" style="color: red;">👑 OWNER DASHBOARD</div>
                 <button class="close-settings" onclick="document.getElementById('owner-panel').classList.remove('active')">✕</button>
             </div>
             
-            <p style="font-size: 0.85rem; margin-bottom: 10px; opacity: 0.8;">Neues Announcement für alle Nutzer erstellen:</p>
+            <!-- STATISTIK TABELLE -->
+            <table class="owner-table">
+                <tr><th>Gesamte Checks</th><td id="stat-total">Lade...</td></tr>
+                <tr><th>Aktive Nutzer Heute</th><td id="stat-users">Lade...</td></tr>
+                <tr><th>Letzte Nr.</th><td id="stat-lastnum">Lade...</td></tr>
+                <tr><th>Letzter Status</th><td id="stat-laststat">Lade...</td></tr>
+            </table>
+            <button class="action-btn" style="width:100%; border-color:red; color:red; margin-bottom:20px;" onclick="resetStats()">🗑️ Statistik zurücksetzen</button>
+
+            <p style="font-size: 0.85rem; margin-bottom: 10px; opacity: 0.8;">Neues Announcement erstellen:</p>
             <input type="text" id="new-ann-title" class="owner-input" placeholder="Titel (z.B. Wartungsarbeiten)">
             <textarea id="new-ann-content" class="owner-input" placeholder="Inhalt der Nachricht..." rows="3"></textarea>
-            
             <div class="settings-row">
                 <span>Dauer in Stunden:</span>
                 <input type="number" id="new-ann-hours" class="owner-input" style="width: 80px; margin:0;" value="24">
             </div>
-            
-            <button class="agree-btn" style="margin-top: 15px; border-color: red; color: red;" onclick="postAnnouncement()">🚀 Announcement Senden</button>
+            <button class="agree-btn" style="margin-top: 15px; border-color: red; color: red;" onclick="postAnnouncement()">🚀 Senden</button>
         </div>
     </div>
 
@@ -828,18 +876,22 @@
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
         // ==========================================
-        // INDEXEDDB HELPER (FÜR RIESIGE BILDER & ECHTE GIFS)
+        // INDEXEDDB HELPER 
         // ==========================================
         function openDB() {
             return new Promise((resolve) => {
-                if (!window.indexedDB) return resolve(null);
+                if (!window.indexedDB) {
+                    return resolve(null);
+                }
                 const req = indexedDB.open('SnowiMediaDB', 1);
+                
                 req.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains('media')) {
                         db.createObjectStore('media');
                     }
                 };
+                
                 req.onsuccess = () => resolve(req.result);
                 req.onerror = () => resolve(null);
             });
@@ -848,42 +900,44 @@
         async function saveMedia(key, val) {
             try {
                 const db = await openDB();
-                if (!db) {
-                    try { localStorage.setItem(key, val); } catch(e){}
-                    return true;
+                if (!db) { 
+                    try { 
+                        localStorage.setItem(key, val); 
+                    } catch(e) {} 
+                    return true; 
                 }
                 return new Promise((resolve) => {
                     const tx = db.transaction('media', 'readwrite');
                     tx.objectStore('media').put(val, key);
                     tx.oncomplete = () => resolve(true);
-                    tx.onerror = () => resolve(false);
                 });
-            } catch(e) {
-                return false;
+            } catch(e) { 
+                return false; 
             }
         }
 
         async function loadMedia(key) {
             try {
                 const db = await openDB();
-                if (!db) return localStorage.getItem(key);
+                if (!db) {
+                    return localStorage.getItem(key);
+                }
                 return new Promise((resolve) => {
                     const tx = db.transaction('media', 'readonly');
                     const req = tx.objectStore('media').get(key);
                     req.onsuccess = () => resolve(req.result || localStorage.getItem(key));
-                    req.onerror = () => resolve(localStorage.getItem(key));
                 });
-            } catch(e) {
-                return localStorage.getItem(key);
+            } catch(e) { 
+                return localStorage.getItem(key); 
             }
         }
 
         async function deleteMedia(key) {
             try {
                 const db = await openDB();
-                if (db) {
-                    const tx = db.transaction('media', 'readwrite');
-                    tx.objectStore('media').delete(key);
+                if (db) { 
+                    const tx = db.transaction('media', 'readwrite'); 
+                    tx.objectStore('media').delete(key); 
                 }
                 localStorage.removeItem(key);
             } catch(e) {}
@@ -893,109 +947,45 @@
         // SPRACH-WÖRTERBUCH
         // ==========================================
         const translations = {
-            en: {
-                agree_btn: "AGREE AND CONTINUE", autofill: "Autofill", api_loading: "Checking API...",
-                your_phone: "Your phone number", is_unban: "is Unbanned", contact_support: "Please contact our Customer Support for further assistance.",
-                cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings",
-                layout_manager: "🎨 Layout Manager", layout_save: "💾 Save", layout_select: "Select layout...",
-                layout_load: "📂 Load Selected Layout", color_neon: "Neon/Accent Color", color_text: "Change Text Color",
-                edit_welcome: "Edit Welcome Text", edit_ban: "Edit Ban Text", btn_edit: "✏️ Edit Text",
-                upload_bg: "Upload Background / GIF:", support_btn: "💬 Contact Support", support_where: "Where do you want to contact us?",
-                change_lang: "Language", alert_empty: "Please enter a number!", alert_clipboard: "Clipboard access denied.",
-                prompt_welcome: "Enter new Welcome text:", prompt_ban: "Enter new text if the number is banned:",
-                error_msg: "Error:", understood: "Understood", prompt_layout: "Enter a name for this layout:",
-                panel_settings: "🎛️ Panel Design", panel_blur: "Blur Effect", panel_transparency: "Visibility", btn_default_reset: "🔄 Reset to Default"
+            en: { 
+                agree_btn: "AGREE AND CONTINUE", autofill: "Autofill", api_loading: "Checking API...", 
+                your_phone: "Your phone number", is_unban: "is Unbanned", contact_support: "Please contact Support for assistance.", 
+                cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings", error_msg: "Error:" 
             },
-            de: {
-                agree_btn: "ZUSTIMMEN UND WEITER", autofill: "Autofill", api_loading: "API wird abgefragt...",
-                your_phone: "Deine Telefonnummer", is_unban: "ist Unban", contact_support: "Bitte kontaktiere unseren Customer Support für weitere Hilfe.",
-                cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen",
-                layout_manager: "🎨 Layout Manager", layout_save: "💾 Speichern", layout_select: "Layout wählen...",
-                layout_load: "📂 Gewähltes Layout laden", color_neon: "Neon-/Akzentfarbe", color_text: "Textfarbe ändern",
-                edit_welcome: "Welcome-Text anpassen", edit_ban: "Bann-Text anpassen", btn_edit: "✏️ Text ändern",
-                upload_bg: "Hintergrundbild / GIF hochladen:", support_btn: "💬 Support kontaktieren", support_where: "Wo möchtest du uns kontaktieren?",
-                change_lang: "Sprache", alert_empty: "Bitte eine Nummer eingeben!", alert_clipboard: "Zugriff auf die Zwischenablage verweigert.",
-                prompt_welcome: "Neuen Welcome-Text eingeben:", prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
-                error_msg: "Fehler:", understood: "Verstanden", prompt_layout: "Gib einen Namen für dieses Layout ein:",
-                panel_settings: "🎛️ Panel Design", panel_blur: "Blur-Effekt", panel_transparency: "Sichtbarkeit", btn_default_reset: "🔄 Standard wiederherstellen"
+            de: { 
+                agree_btn: "ZUSTIMMEN UND WEITER", autofill: "Autofill", api_loading: "API wird abgefragt...", 
+                your_phone: "Deine Telefonnummer", is_unban: "ist Unban", contact_support: "Bitte kontaktiere Support für Hilfe.", 
+                cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen", error_msg: "Fehler:" 
             },
-            es: {
-                agree_btn: "ACEPTAR Y CONTINUAR", autofill: "Autocompletar", api_loading: "Consultando API...",
-                your_phone: "Tu número de teléfono", is_unban: "no está baneado", contact_support: "Por favor, contacta a nuestro Soporte para más ayuda.",
-                cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes",
-                layout_manager: "🎨 Gestor de Diseños", layout_save: "💾 Guardar", layout_select: "Seleccionar diseño...",
-                layout_load: "📂 Cargar Diseño", color_neon: "Color Neón/Acento", color_text: "Cambiar Color de Texto",
-                edit_welcome: "Editar texto de bienvenida", edit_ban: "Editar texto de baneo", btn_edit: "✏️ Cambiar Texto",
-                upload_bg: "Subir imagen / GIF de fondo:", support_btn: "💬 Contactar Soporte", support_where: "¿Dónde deseas contactarnos?",
-                change_lang: "Idioma", alert_empty: "¡Por favor, introduzca un número!", alert_clipboard: "Acceso al portapapeles denegado.",
-                prompt_welcome: "Introduzca el nuevo texto de bienvenida:", prompt_ban: "Introduce un nuevo texto si el número está baneado:",
-                error_msg: "Error:", understood: "Entendido", prompt_layout: "Introduce un nombre para este diseño:",
-                panel_settings: "🎛️ Diseño del Panel", panel_blur: "Efecto Desenfocado", panel_transparency: "Visibilidad", btn_default_reset: "🔄 Restaurar Predeterminado"
+            es: { 
+                agree_btn: "ACEPTAR Y CONTINUAR", autofill: "Autocompletar", api_loading: "Consultando API...", 
+                your_phone: "Tu número", is_unban: "no está baneado", contact_support: "Contacta a Soporte.", 
+                cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes", error_msg: "Error:" 
             },
-            ru: {
-                agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ", autofill: "Автозаполнение", api_loading: "Проверка API...",
-                your_phone: "Ваш номер телефона", is_unban: "Разблокирован", contact_support: "Пожалуйста, свяжитесь с поддержкой.",
-                cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки",
-                layout_manager: "🎨 Менеджер макетов", layout_save: "💾 Сохранить", layout_select: "Выбрать макет...",
-                layout_load: "📂 Загрузить макет", color_neon: "Неоновый цвет", color_text: "Изменить цвет текста",
-                edit_welcome: "Изменить текст приветствия", edit_ban: "Изменить текст блокировки", btn_edit: "✏️ Изменить текст",
-                upload_bg: "Загрузить фон / GIF:", support_btn: "💬 Связаться с поддержкой", support_where: "Где вы хотите с нами связаться?",
-                change_lang: "Язык", alert_empty: "Пожалуйста, введите номер!", alert_clipboard: "Доступ к буферу обмена запрещен.",
-                prompt_welcome: "Введите новый текст приветствия:", prompt_ban: "Введите новый текст, если номер заблокирован:",
-                error_msg: "Ошибка:", understood: "Понятно", prompt_layout: "Введите имя для этого макета:",
-                panel_settings: "🎛️ Дизайн панели", panel_blur: "Эффект размытия", panel_transparency: "Видимость", btn_default_reset: "🔄 По умолчанию"
+            ru: { 
+                agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ", autofill: "Автозаполнение", api_loading: "Проверка API...", 
+                your_phone: "Ваш номер", is_unban: "Разблокирован", contact_support: "Свяжитесь с поддержкой.", 
+                cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки", error_msg: "Ошибка:" 
             },
-            ar: {
-                agree_btn: "موافق ومتابعة", autofill: "ملء تلقائي", api_loading: "جاري فحص API...",
-                your_phone: "رقم هاتفك", is_unban: "غير محظور", contact_support: "يرجى الاتصال بدعم العملاء للمساعدة.",
-                cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات",
-                layout_manager: "🎨 مدير التخطيط", layout_save: "💾 حفظ", layout_select: "اختر التصميم...",
-                layout_load: "📂 تحميل التصميم", color_neon: "لون النيون", color_text: "تغيير لون النص",
-                edit_welcome: "تعديل نص الترحيب", edit_ban: "تعديل نص الحظر", btn_edit: "✏️ تغيير النص",
-                upload_bg: "تحميل خلفية / GIF:", support_btn: "💬 اتصل بالدعم", support_where: "أين تريد الاتصال بنا؟",
-                change_lang: "اللغة", alert_empty: "الرجاء إدخال رقم!", alert_clipboard: "تم رفض الوصول إلى الحافظة.",
-                prompt_welcome: "أدخل نص الترحيب الجديد:", prompt_ban: "أدخل نصًا جديدًا للحظر:",
-                error_msg: "خطأ:", understood: "مفهوم", prompt_layout: "أدخل اسمًا لهذا التصميم:",
-                panel_settings: "🎛️ تصميم اللوحة", panel_blur: "تأثير الضبابية", panel_transparency: "الرؤية", btn_default_reset: "🔄 إعادة تعيين"
+            ar: { 
+                agree_btn: "موافق ومتابعة", autofill: "ملء تلقائي", api_loading: "جاري الفحص...", 
+                your_phone: "رقم هاتفك", is_unban: "غير محظور", contact_support: "اتصل بالدعم.", 
+                cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات", error_msg: "خطأ:" 
             },
-            ja: {
-                agree_btn: "同意して続行", autofill: "自動入力", api_loading: "APIを確認中...",
-                your_phone: "電話番号", is_unban: "は制限解除されています", contact_support: "詳細についてはカスタマーサポートにお問い合わせください。",
-                cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定",
-                layout_manager: "🎨 レイアウトマネージャー", layout_save: "💾 保存", layout_select: "レイアウトを選択...",
-                layout_load: "📂 選択したレイアウトを読み込む", color_neon: "ネオンカラー", color_text: "テキストの色を変更",
-                edit_welcome: "ウェルカムテキストの編集", edit_ban: "バンテキストの編集", btn_edit: "✏️ テキストの変更",
-                upload_bg: "背景 / GIFのアップロード:", support_btn: "💬 サポートに連絡", support_where: "どこで連絡しますか？",
-                change_lang: "言語", alert_empty: "番号を入力してください！", alert_clipboard: "クリップボードのアクセスが拒否されました。",
-                prompt_welcome: "新しいウェルカムテキスト:", prompt_ban: "新しいバンテキスト:",
-                error_msg: "エラー:", understood: "理解しました", prompt_layout: "レイアウト名を入力:",
-                panel_settings: "🎛️ パネルデザイン", panel_blur: "ぼかし効果", panel_transparency: "不透明度", btn_default_reset: "🔄 デフォルトに戻す"
+            ja: { 
+                agree_btn: "同意して続行", autofill: "自動入力", api_loading: "APIを確認中...", 
+                your_phone: "電話番号", is_unban: "は制限解除されています", contact_support: "サポートにお問い合わせください。", 
+                cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定", error_msg: "エラー:" 
             },
-            la: {
-                agree_btn: "ACCIPERE ET CONTINUARE", autofill: "Autofill", api_loading: "API quaeritur...",
-                your_phone: "Numerus telephonicus tuus", is_unban: "non est interdictus", contact_support: "Mitte nuntium ad Support pro auxilio.",
-                cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones",
-                layout_manager: "🎨 Procurator Formae", layout_save: "💾 Servare", layout_select: "Elige formam...",
-                layout_load: "📂 Onerare Formam", color_neon: "Color Neon", color_text: "Mutare Colorem Textus",
-                edit_welcome: "Recensere Textum Gratum", edit_ban: "Recensere Textum Interdicti", btn_edit: "✏️ Mutare Textum",
-                upload_bg: "Onerare imaginem / GIF:", support_btn: "💬 Contactus Auxilium", support_where: "Ubi vis nos contingere?",
-                change_lang: "Lingua", alert_empty: "Quaeso, intra numerum!", alert_clipboard: "Aditus ad clipboard negatur.",
-                prompt_welcome: "Novus textus gratus:", prompt_ban: "Novus textus interdicti:",
-                error_msg: "Error:", understood: "Intellectum", prompt_layout: "Nomen formae scribe:",
-                panel_settings: "🎛️ Consilium Tabulae", panel_blur: "Effectus caliginis", panel_transparency: "Perspicuitas", btn_default_reset: "🔄 Restituere ad defaltam"
+            la: { 
+                agree_btn: "ACCIPERE ET CONTINUARE", autofill: "Autofill", api_loading: "API quaeritur...", 
+                your_phone: "Numerus tuus", is_unban: "non est interdictus", contact_support: "Mitte nuntium ad Support.", 
+                cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones", error_msg: "Error:" 
             },
-            it: {
-                agree_btn: "ACCETTA E CONTINUA", autofill: "Auto-compilazione", api_loading: "Controllo API...",
-                your_phone: "Il tuo numero di telefono", is_unban: "è Sbloccato", contact_support: "Contatta il nostro Supporto per assistenza.",
-                cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni",
-                layout_manager: "🎨 Gestore Layout", layout_save: "💾 Salva", layout_select: "Seleziona layout...",
-                layout_load: "📂 Carica Layout", color_neon: "Colore Neon", color_text: "Cambia Colore Testo",
-                edit_welcome: "Modifica Testo Benvenuto", edit_ban: "Modifica Testo Ban", btn_edit: "✏️ Modifica Testo",
-                upload_bg: "Carica Sfondo / GIF:", support_btn: "💬 Contatta Supporto", support_where: "Dove vuoi contattarci?",
-                change_lang: "Lingua", alert_empty: "Inserisci un numero!", alert_clipboard: "Accesso agli appunti negato.",
-                prompt_welcome: "Nuovo testo di benvenuto:", prompt_ban: "Nuovo testo per il ban:",
-                error_msg: "Errore:", understood: "Capito", prompt_layout: "Inserisci un nome per questo layout:",
-                panel_settings: "🎛️ Design Pannello", panel_blur: "Effetto Sfocatura", panel_transparency: "Visibilità", btn_default_reset: "🔄 Ripristina Predefinito"
+            it: { 
+                agree_btn: "ACCETTA E CONTINUA", autofill: "Auto-compila", api_loading: "Controllo API...", 
+                your_phone: "Il tuo numero", is_unban: "è Sbloccato", contact_support: "Contatta il Supporto.", 
+                cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni", error_msg: "Errore:" 
             }
         };
 
@@ -1004,17 +994,17 @@
         let secretTimer;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const savedLang = localStorage.getItem('snowi_lang') || 'de';
-            changeLanguage(savedLang);
-
+            changeLanguage(localStorage.getItem('snowi_lang') || 'de');
+            
             await loadSavedSettings();
             updateLayoutDropdown();
             checkGlobalAnnouncements();
+            applyLoaderSettings();
         });
 
         function changeLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('snowi_lang', lang);
+            currentLang = lang; 
+            localStorage.setItem('snowi_lang', lang); 
             document.documentElement.lang = lang;
             
             if (lang === 'ar') {
@@ -1025,94 +1015,126 @@
 
             const t = translations[lang];
             
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (t[key]) {
-                    el.innerText = t[key];
+            document.querySelectorAll('[data-i18n]').forEach(el => { 
+                if (t && t[el.getAttribute('data-i18n')]) {
+                    el.innerText = t[el.getAttribute('data-i18n')]; 
                 }
             });
             
             document.getElementById('lang-select').value = lang;
+            applyLoaderSettings(); // Lade-Text sofort mitübersetzen, falls Standard aktiv ist
         }
 
-        // --- PANEL DESIGN EINSTELLUNGEN (BLUR & TRANSPARENZ) ---
         function updatePanelStyle() {
             const blurVal = document.getElementById('blur-slider').value;
             const alphaVal = document.getElementById('alpha-slider').value; 
             
-            // CSS Variablen updaten
             document.documentElement.style.setProperty('--panel-blur', blurVal + 'px');
             document.documentElement.style.setProperty('--panel-bg', `rgba(20, 20, 20, ${alphaVal / 100})`);
             
-            // Zahlenwerte neben Slidern updaten
             document.getElementById('blur-val').innerText = blurVal + 'px';
             document.getElementById('alpha-val').innerText = alphaVal + '%';
             
-            // Speichern
-            localStorage.setItem('snowi_panel_blur', blurVal);
+            localStorage.setItem('snowi_panel_blur', blurVal); 
             localStorage.setItem('snowi_panel_alpha', alphaVal);
         }
 
-        function resetPanelStyle() {
-            document.getElementById('blur-slider').value = 8;
+        function resetPanelStyle() { 
+            document.getElementById('blur-slider').value = 8; 
             document.getElementById('alpha-slider').value = 8; 
-            updatePanelStyle();
+            updatePanelStyle(); 
         }
 
-        // --- SECRET OWNER AREA ---
+        // --- OWNER BEREICH (MIT STATS-FETCH) ---
         function handleSecretClick() {
-            secretClicks++;
+            secretClicks++; 
             clearTimeout(secretTimer);
             
-            if (secretClicks >= 3) {
-                secretClicks = 0;
-                toggleSettings(false);
-                document.getElementById('owner-login-modal').style.display = 'flex';
-            } else {
+            if (secretClicks >= 3) { 
+                secretClicks = 0; 
+                toggleSettings(false); 
+                document.getElementById('owner-login-modal').style.display = 'flex'; 
+            } else { 
                 secretTimer = setTimeout(() => { 
                     secretClicks = 0; 
-                }, 800);
+                }, 800); 
             }
         }
 
-        function verifyOwner() {
+        async function verifyOwner() {
             const u = document.getElementById('admin-user').value;
             const p = document.getElementById('admin-pass').value;
             
             if (u === 'Tayy' && p === '0873@adv') {
                 document.getElementById('owner-login-modal').style.display = 'none';
                 document.getElementById('owner-panel').classList.add('active');
-                document.getElementById('admin-user').value = '';
                 document.getElementById('admin-pass').value = '';
-            } else {
-                alert("Falsche Anmeldedaten!");
+                
+                await loadStats(); // Lade Live-Statistiken sofort beim Login
+            } else { 
+                alert("Falsche Anmeldedaten!"); 
             }
         }
 
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/owner/stats', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ password: '0873@adv' }) 
+                });
+                
+                const data = await res.json();
+                
+                document.getElementById('stat-total').innerText = data.totalChecks;
+                document.getElementById('stat-users').innerText = data.activeUsersToday;
+                document.getElementById('stat-lastnum').innerText = data.lastCheckedNum;
+                document.getElementById('stat-laststat').innerText = data.lastCheckedStatus;
+            } catch(e) { 
+                console.log("Fehler beim Stats laden"); 
+            }
+        }
+
+        async function resetStats() {
+            if(!confirm("Wirklich alle Statistiken löschen?")) {
+                return;
+            }
+            
+            try {
+                await fetch('/api/owner/reset', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ password: '0873@adv' }) 
+                });
+                
+                loadStats();
+                alert("Statistik resettet.");
+            } catch(e) {}
+        }
+
         async function postAnnouncement() {
-            const title = document.getElementById('new-ann-title').value;
-            const content = document.getElementById('new-ann-content').value;
+            const title = document.getElementById('new-ann-title').value; 
+            const content = document.getElementById('new-ann-content').value; 
             const hours = document.getElementById('new-ann-hours').value;
             
             if(!title || !content) {
                 return alert("Bitte Titel und Inhalt eingeben!");
             }
-
+            
             try {
-                const res = await fetch('/api/announcement', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, content, hours, password: '0873@adv' })
+                const res = await fetch('/api/announcement', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ title, content, hours, password: '0873@adv' }) 
                 });
                 
                 const data = await res.json();
-                
-                if(data.success) {
-                    alert("Announcement ist live!");
-                    document.getElementById('owner-panel').classList.remove('active');
+                if(data.success) { 
+                    alert("Announcement ist live!"); 
+                    document.getElementById('owner-panel').classList.remove('active'); 
                 }
-            } catch (err) {
-                alert("Fehler beim Senden. (Server online?)");
+            } catch (err) { 
+                alert("Fehler beim Senden."); 
             }
         }
 
@@ -1121,19 +1143,13 @@
                 const res = await fetch('/api/announcement');
                 const data = await res.json();
                 
-                if(data && data.active) {
-                    const seenId = localStorage.getItem('snowi_seen_ann');
-                    
-                    if(seenId !== data.id.toString()) {
-                        document.getElementById('ann-title').innerText = data.title;
-                        document.getElementById('ann-content').innerText = data.content;
-                        document.getElementById('announcement-modal').dataset.currentId = data.id;
-                        document.getElementById('announcement-modal').style.display = 'flex';
-                    }
+                if(data && data.active && localStorage.getItem('snowi_seen_ann') !== data.id.toString()) {
+                    document.getElementById('ann-title').innerText = data.title; 
+                    document.getElementById('ann-content').innerText = data.content;
+                    document.getElementById('announcement-modal').dataset.currentId = data.id; 
+                    document.getElementById('announcement-modal').style.display = 'flex';
                 }
-            } catch (err) {
-                console.log("Keine Announcements.");
-            }
+            } catch (err) {}
         }
 
         function closeAnnouncement() {
@@ -1144,163 +1160,294 @@
             document.getElementById('announcement-modal').style.display = 'none';
         }
 
-        // ==========================================
-        // LAYOUT SYSTEM 
-        // ==========================================
+        // --- CUSTOM LOADER SYSTEM ---
+        async function handleLoaderUpload(input) {
+            const file = input.files[0]; 
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                await saveMedia('snowi_loader_img', e.target.result);
+                applyLoaderSettings();
+                alert("Ladebild gespeichert!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveLoaderSettings() {
+            const txt = document.getElementById('custom-load-text').value;
+            const rot = document.getElementById('loader-rotate').checked;
+            const spd = document.getElementById('loader-speed').value;
+            
+            if(txt) {
+                localStorage.setItem('snowi_loader_text', txt);
+            } else {
+                localStorage.removeItem('snowi_loader_text');
+            }
+            
+            localStorage.setItem('snowi_loader_rotate', rot);
+            localStorage.setItem('snowi_loader_speed', spd);
+            
+            applyLoaderSettings();
+        }
+
+        async function applyLoaderSettings() {
+            const t = translations[currentLang];
+            const defaultText = t ? t.api_loading : "API wird abgefragt...";
+            
+            const txt = localStorage.getItem('snowi_loader_text') || defaultText;
+            const rot = localStorage.getItem('snowi_loader_rotate') === 'true';
+            const spd = localStorage.getItem('snowi_loader_speed') || 5;
+            
+            document.getElementById('custom-load-text').value = localStorage.getItem('snowi_loader_text') || '';
+            document.getElementById('loader-rotate').checked = rot;
+            document.getElementById('loader-speed').value = spd;
+            
+            document.getElementById('loading-text').innerText = txt;
+            const imgEl = document.getElementById('loading-icon');
+            
+            const savedImg = await loadMedia('snowi_loader_img');
+            
+            if(savedImg) {
+                imgEl.src = savedImg; 
+                imgEl.style.display = 'block';
+                
+                if(rot) {
+                    // Speed 10 (schnell) = 0.2s | Speed 1 (langsam) = 2.0s
+                    const dur = (11 - spd) * 0.2; 
+                    imgEl.style.animation = `spin ${dur}s linear infinite`;
+                } else {
+                    imgEl.style.animation = 'none';
+                }
+            } else { 
+                imgEl.style.display = 'none'; 
+            }
+        }
+
+        async function deleteLoaderImg() {
+            await deleteMedia('snowi_loader_img');
+            applyLoaderSettings();
+            alert("Ladebild entfernt!");
+        }
+
+        // --- LAYOUT SHARE (EXPORT / IMPORT) ---
         async function saveCurrentLayout() {
-            const promptMsg = translations[currentLang].prompt_layout || "Name für das Layout:";
-            const name = prompt(promptMsg);
+            const name = prompt("Name für das Layout:"); 
             
             if(!name || name.trim() === "") {
                 return;
             }
-
+            
             const cleanName = name.trim();
             const bgData = await loadMedia('snowi_bg_image') || '';
-
+            
             const layoutData = {
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2',
                 text: localStorage.getItem('snowi_text_color') || '#ffffff',
-                blur: localStorage.getItem('snowi_panel_blur') || 8,
-                alpha: localStorage.getItem('snowi_panel_alpha') || 8,
+                blur: localStorage.getItem('snowi_panel_blur') || 8, 
+                alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
                 hasBg: !!bgData
             };
-
+            
+            if(bgData) {
+                await saveMedia('snowi_layout_img_' + cleanName, bgData); 
+            } else {
+                await deleteMedia('snowi_layout_img_' + cleanName);
+            }
+            
+            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}'); 
+            layouts[cleanName] = layoutData;
+            localStorage.setItem('snowi_layouts', JSON.stringify(layouts)); 
+            
+            updateLayoutDropdown(); 
+            document.getElementById('layout-select').value = cleanName; 
+            
+            alert(`✅ Layout gespeichert!`);
+        }
+        
+        async function exportLayout() {
+            const bgData = await loadMedia('snowi_bg_image') || '';
+            
+            const layoutData = {
+                neon: localStorage.getItem('snowi_neon_color') || '#8a2be2', 
+                text: localStorage.getItem('snowi_text_color') || '#ffffff',
+                blur: localStorage.getItem('snowi_panel_blur') || 8, 
+                alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
+                bgData: bgData
+            };
+            
             try {
-                if (bgData) {
-                    await saveMedia('snowi_layout_img_' + cleanName, bgData);
-                } else {
-                    await deleteMedia('snowi_layout_img_' + cleanName);
-                }
-
-                let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
-                layouts[cleanName] = layoutData;
-                localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
+                const res = await fetch('/api/layout/export', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ layoutData }) 
+                });
                 
-                updateLayoutDropdown();
-                document.getElementById('layout-select').value = cleanName; 
-                alert(`✅ Layout '${cleanName}' (inkl. Slider-Werte) gespeichert!`);
-            } catch (error) {
-                alert("Fehler beim Speichern: " + error.message);
+                const data = await res.json();
+                
+                if(data.success) { 
+                    prompt("Hier ist der God-Mode Code für dieses Layout. Gib ihn an Freunde weiter!", data.code); 
+                }
+            } catch(e) { 
+                alert("Server Fehler beim Exportieren."); 
+            }
+        }
+
+        async function importLayout() {
+            const code = prompt("Gib den Layout-Code ein (z.B. TAYY-X9K2):");
+            
+            if(!code) {
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/layout/import/' + code.toUpperCase());
+                const data = await res.json();
+                
+                if(data.success && data.layoutData) {
+                    const l = data.layoutData;
+                    
+                    changeThemeColor(l.neon); 
+                    document.getElementById('neon-color-picker').value = l.neon;
+                    
+                    changeTextColor(l.text); 
+                    document.getElementById('text-color-picker').value = l.text;
+                    
+                    document.getElementById('blur-slider').value = l.blur; 
+                    document.getElementById('alpha-slider').value = l.alpha; 
+                    updatePanelStyle();
+                    
+                    if(l.bgData) { 
+                        await saveMedia('snowi_bg_image', l.bgData); 
+                        document.getElementById('bg-img').src = l.bgData; 
+                        document.getElementById('bg-img').style.display = 'block'; 
+                    } else { 
+                        await deleteMedia('snowi_bg_image'); 
+                        document.getElementById('bg-img').style.display = 'none'; 
+                    }
+                    
+                    alert("✅ Layout erfolgreich importiert!");
+                } else {
+                    alert("❌ Code nicht gefunden oder abgelaufen.");
+                }
+            } catch(e) { 
+                alert("Server Fehler beim Importieren."); 
             }
         }
 
         function updateLayoutDropdown() {
-            const select = document.getElementById('layout-select');
-            const defaultText = translations[currentLang].layout_select || "Layout wählen...";
+            const select = document.getElementById('layout-select'); 
+            select.innerHTML = `<option value="">Layout wählen...</option>`;
             
-            select.innerHTML = `<option value="">${defaultText}</option>`;
             let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
             
-            for (let name in layouts) {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.innerText = name;
-                select.appendChild(opt);
+            for (let name in layouts) { 
+                const opt = document.createElement('option'); 
+                opt.value = name; 
+                opt.innerText = name; 
+                select.appendChild(opt); 
             }
         }
 
         async function loadSelectedLayout() {
-            const name = document.getElementById('layout-select').value;
+            const name = document.getElementById('layout-select').value; 
             
             if(!name) {
-                return alert("Bitte zuerst ein Layout aus der Liste auswählen!");
+                return alert("Layout wählen!");
             }
             
-            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
-            const layout = layouts[name];
+            const layout = JSON.parse(localStorage.getItem('snowi_layouts') || '{}')[name];
             
             if(layout) {
-                changeThemeColor(layout.neon);
+                changeThemeColor(layout.neon); 
                 document.getElementById('neon-color-picker').value = layout.neon;
                 
-                changeTextColor(layout.text);
+                changeTextColor(layout.text); 
                 document.getElementById('text-color-picker').value = layout.text;
-
-                const blur = layout.blur !== undefined ? layout.blur : 8;
-                const alpha = layout.alpha !== undefined ? layout.alpha : 8;
-                document.getElementById('blur-slider').value = blur;
-                document.getElementById('alpha-slider').value = alpha;
+                
+                document.getElementById('blur-slider').value = layout.blur !== undefined ? layout.blur : 8; 
+                document.getElementById('alpha-slider').value = layout.alpha !== undefined ? layout.alpha : 8; 
                 updatePanelStyle();
                 
                 const bgData = await loadMedia('snowi_layout_img_' + name) || layout.bg || '';
-                const bgImg = document.getElementById('bg-img');
-
-                if(bgData) {
-                    await saveMedia('snowi_bg_image', bgData);
-                    bgImg.src = bgData;
-                    bgImg.style.display = 'block';
-                } else {
-                    await deleteMedia('snowi_bg_image');
-                    bgImg.src = '';
-                    bgImg.style.display = 'none';
+                
+                if(bgData) { 
+                    await saveMedia('snowi_bg_image', bgData); 
+                    document.getElementById('bg-img').src = bgData; 
+                    document.getElementById('bg-img').style.display = 'block'; 
+                } else { 
+                    await deleteMedia('snowi_bg_image'); 
+                    document.getElementById('bg-img').style.display = 'none'; 
                 }
-                alert(`✅ Layout '${name}' erfolgreich geladen!`);
+                
+                alert(`✅ Geladen!`);
             }
         }
 
         async function deleteSelectedLayout() {
-            const name = document.getElementById('layout-select').value;
-            if(!name) return alert("Bitte wähle zuerst ein Layout zum Löschen aus dem Dropdown.");
+            const name = document.getElementById('layout-select').value; 
             
-            if(confirm(`Möchtest du das Layout '${name}' wirklich löschen?`)) {
-                let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
-                delete layouts[name];
-                localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
-                await deleteMedia('snowi_layout_img_' + name);
-                updateLayoutDropdown();
-                alert(`🗑️ Layout '${name}' wurde gelöscht.`);
+            if(!name) {
+                return;
+            }
+            
+            if(confirm(`Wirklich löschen?`)) { 
+                let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}'); 
+                delete layouts[name]; 
+                
+                localStorage.setItem('snowi_layouts', JSON.stringify(layouts)); 
+                await deleteMedia('snowi_layout_img_' + name); 
+                
+                updateLayoutDropdown(); 
             }
         }
 
-        // ==========================================
-        // STANDARDS & BILD / GIF HANDLER
-        // ==========================================
         async function loadSavedSettings() {
-            const savedNeon = localStorage.getItem('snowi_neon_color');
+            const savedNeon = localStorage.getItem('snowi_neon_color'); 
+            
             if (savedNeon) { 
                 document.getElementById('neon-color-picker').value = savedNeon; 
                 changeThemeColor(savedNeon); 
             }
             
-            const savedText = localStorage.getItem('snowi_text_color');
+            const savedText = localStorage.getItem('snowi_text_color'); 
+            
             if (savedText) { 
                 document.getElementById('text-color-picker').value = savedText; 
                 changeTextColor(savedText); 
             }
-
-            const savedBlur = localStorage.getItem('snowi_panel_blur') || 8;
-            const savedAlpha = localStorage.getItem('snowi_panel_alpha') || 8;
-            document.getElementById('blur-slider').value = savedBlur;
-            document.getElementById('alpha-slider').value = savedAlpha;
+            
+            document.getElementById('blur-slider').value = localStorage.getItem('snowi_panel_blur') || 8; 
+            document.getElementById('alpha-slider').value = localStorage.getItem('snowi_panel_alpha') || 8; 
             updatePanelStyle();
             
-            const savedBg = await loadMedia('snowi_bg_image');
+            const savedBg = await loadMedia('snowi_bg_image'); 
+            
             if (savedBg) { 
                 const bgImg = document.getElementById('bg-img'); 
                 bgImg.src = savedBg; 
                 bgImg.style.display = 'block'; 
             }
             
-            const savedWelcome = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
-            document.getElementById('welcome-display').innerText = savedWelcome;
+            document.getElementById('welcome-display').innerText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
         }
 
-        function startApp() {
-            const startScreen = document.getElementById('start-screen');
-            startScreen.classList.add('hidden');
+        function startApp() { 
+            const startScreen = document.getElementById('start-screen'); 
+            startScreen.classList.add('hidden'); 
             
             setTimeout(() => { 
                 startScreen.style.display = 'none'; 
-            }, 500);
+            }, 500); 
         }
 
-        function toggleSettings(open) {
-            const m = document.getElementById('settings-modal');
+        function toggleSettings(open) { 
+            const m = document.getElementById('settings-modal'); 
+            
             if(open) {
                 m.classList.add('active'); 
             } else {
-                m.classList.remove('active');
+                m.classList.remove('active'); 
             }
         }
 
@@ -1309,14 +1456,15 @@
                 toggleSettings(false);
             } 
         }
-        
-        function toggleSupport(open) {
-            const m = document.getElementById('support-modal');
+
+        function toggleSupport(open) { 
+            const m = document.getElementById('support-modal'); 
+            
             if(open) { 
                 toggleSettings(false); 
                 m.classList.add('active'); 
             } else {
-                m.classList.remove('active');
+                m.classList.remove('active'); 
             }
         }
 
@@ -1330,24 +1478,22 @@
             toggleSupport(true); 
         }
 
-        async function pasteFromClipboard() {
-            try {
-                const text = await navigator.clipboard.readText();
-                if (text) {
-                    let clean = text.replace(/\D/g, '');
-                    const cc = document.getElementById('country-code').value;
+        async function pasteFromClipboard() { 
+            try { 
+                const text = await navigator.clipboard.readText(); 
+                if (text) { 
+                    let clean = text.replace(/\D/g, ''); 
+                    const cc = document.getElementById('country-code').value; 
                     
                     if (cc && clean.startsWith(cc)) {
-                        clean = clean.substring(cc.length);
+                        clean = clean.substring(cc.length); 
                     } else if (clean.startsWith('0')) {
-                        clean = clean.substring(1);
+                        clean = clean.substring(1); 
                     }
                     
-                    document.getElementById('phone-number').value = clean;
-                }
-            } catch (err) { 
-                alert(translations[currentLang].alert_clipboard); 
-            }
+                    document.getElementById('phone-number').value = clean; 
+                } 
+            } catch (err) {} 
         }
 
         function changeThemeColor(hex) { 
@@ -1359,170 +1505,156 @@
             document.documentElement.style.setProperty('--text-color', hex); 
             localStorage.setItem('snowi_text_color', hex); 
         }
-        
-        function editWelcomeText() {
-            const current = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
-            const neu = prompt(translations[currentLang].prompt_welcome, current);
-            
+
+        function editWelcomeText() { 
+            const neu = prompt("Welcome Text:", localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT); 
             if (neu && neu.trim() !== "") { 
                 localStorage.setItem('snowi_welcome_text', neu.trim()); 
                 document.getElementById('welcome-display').innerText = neu.trim(); 
-            }
+            } 
         }
 
-        function editBannedText() {
-            const current = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
-            const neu = prompt(translations[currentLang].prompt_ban, current.replace(/<br>/g, '\n'));
-            
-            if (neu && neu.trim() !== "") {
-                localStorage.setItem('snowi_banned_text', neu.trim().replace(/\n/g, '<br>'));
-            }
+        function editBannedText() { 
+            const neu = prompt("Banned Text:", (localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT).replace(/<br>/g, '\n')); 
+            if (neu && neu.trim() !== "") { 
+                localStorage.setItem('snowi_banned_text', neu.trim().replace(/\n/g, '<br>')); 
+            } 
         }
 
-        // =======================================================
-        // BILD- & GIF-UPLOAD
-        // =======================================================
         async function handleImageUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            const bgImg = document.getElementById('bg-img');
-
-            const tempUrl = URL.createObjectURL(file);
-            bgImg.src = tempUrl; 
+            const file = input.files[0]; 
+            
+            if (!file) {
+                return;
+            }
+            
+            const bgImg = document.getElementById('bg-img'); 
+            bgImg.src = URL.createObjectURL(file); 
             bgImg.style.display = 'block';
-
-            const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
-
-            if (isGif) {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    const gifData = e.target.result;
-                    await saveMedia('snowi_bg_image', gifData);
-                    bgImg.src = gifData; 
-                };
+            
+            if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
+                const reader = new FileReader(); 
+                reader.onload = async function(e) { 
+                    await saveMedia('snowi_bg_image', e.target.result); 
+                    bgImg.src = e.target.result; 
+                }; 
                 reader.readAsDataURL(file);
             } else {
-                const reader = new FileReader();
+                const reader = new FileReader(); 
                 reader.onload = function(e) { 
-                    const img = new Image();
+                    const img = new Image(); 
                     img.onload = async function() {
                         let finalData = e.target.result;
-
+                        
                         if (file.size > 2.5 * 1024 * 1024) {
-                            const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 1280;
-                            const MAX_HEIGHT = 1920;
-                            let width = img.width;
+                            const canvas = document.createElement('canvas'); 
+                            const MAX_WIDTH = 1280; 
+                            const MAX_HEIGHT = 1920; 
+                            let width = img.width; 
                             let height = img.height;
-
-                            if (width > height && width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            } else if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
+                            
+                            if (width > height && width > MAX_WIDTH) { 
+                                height *= MAX_WIDTH / width; 
+                                width = MAX_WIDTH; 
+                            } else if (height > MAX_HEIGHT) { 
+                                width *= MAX_HEIGHT / height; 
+                                height = MAX_HEIGHT; 
                             }
-
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            canvas.width = width; 
+                            canvas.height = height; 
+                            canvas.getContext('2d').drawImage(img, 0, 0, width, height); 
                             finalData = canvas.toDataURL('image/jpeg', 0.85);
                         }
-
-                        await saveMedia('snowi_bg_image', finalData);
+                        
+                        await saveMedia('snowi_bg_image', finalData); 
                         bgImg.src = finalData; 
-                    };
+                    }; 
                     img.src = e.target.result;
-                };
+                }; 
                 reader.readAsDataURL(file);
             }
         }
 
-        function formatPhoneNumber(cc, rawNum) {
-            const clean = rawNum.replace(/\D/g, '');
+        function formatPhoneNumber(cc, rawNum) { 
+            const clean = rawNum.replace(/\D/g, ''); 
             
-            if (cc === '49') {
+            if (cc === '49') { 
                 if (clean.startsWith('15678') || clean.startsWith('1563')) {
-                    return `+${cc} ${clean.slice(0, 5)} ${clean.slice(5)}`;
+                    return `+${cc} ${clean.slice(0, 5)} ${clean.slice(5)}`; 
                 }
                 if (/^(15[1279]|16[023]|17[0-8])/.test(clean)) {
-                    return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`;
+                    return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`; 
                 }
-            }
-            
-            return `+${cc} ${clean}`;
+            } 
+            return `+${cc} ${clean}`; 
         }
 
         function closeResult() { 
             document.getElementById('result-wrapper').style.display = 'none'; 
-            document.getElementById('desktop-view').classList.remove('active');
-            document.getElementById('mobile-view').classList.remove('active');
+            document.getElementById('desktop-view').classList.remove('active'); 
+            document.getElementById('mobile-view').classList.remove('active'); 
         }
 
         async function checkNumber() {
-            const t = translations[currentLang];
+            const t = translations[currentLang]; 
             const cc = document.getElementById('country-code').value; 
             const num = document.getElementById('phone-number').value; 
             
             if(num.trim() === "") {
-                return alert(t.alert_empty);
+                return alert("Bitte Nummer eingeben");
             }
             
-            const formatted = formatPhoneNumber(cc, num);
+            const formatted = formatPhoneNumber(cc, num); 
             closeResult();
             
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none'; 
+            document.getElementById('loading-wrapper').style.display = 'block';
 
             try {
-                const response = await fetch('/check', {
+                const response = await fetch('/check', { 
                     method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ number: "+" + cc + " " + num })
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ number: "+" + cc + " " + num }) 
                 });
                 
-                const data = await response.json();
+                const data = await response.json(); 
                 let banned = data.banned || data.isBanned || (data.data && data.data.banned) || data.status === "banned";
                 
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading-wrapper').style.display = 'none';
                 
-                // Desktop
-                document.getElementById('desk-num').innerText = formatted;
+                document.getElementById('desk-num').innerText = formatted; 
                 const deskMsg = document.getElementById('desk-msg');
                 
-                // Mobile
-                document.getElementById('mob-num').innerText = formatted;
-                const mobCustom = document.getElementById('mob-custom-text');
+                document.getElementById('mob-num').innerText = formatted; 
+                const mobCustom = document.getElementById('mob-custom-text'); 
                 const mobSystem = document.getElementById('mob-system-text');
                 
                 const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
 
                 if (banned) {
                     deskMsg.innerHTML = customBannedText; 
-                    deskMsg.style.color = "var(--text-color)"; // <-- NIMMT JETZT DEINE TEXTFARBE
+                    deskMsg.style.color = "var(--text-color)";
                     
-                    mobCustom.innerHTML = customBannedText;
-                    mobCustom.style.color = "var(--text-color)"; // <-- NIMMT JETZT DEINE TEXTFARBE
+                    mobCustom.innerHTML = customBannedText; 
+                    mobCustom.style.color = "var(--text-color)"; 
                     mobSystem.style.display = 'block';
                 } else {
-                    deskMsg.innerText = t.is_unban;
-                    deskMsg.style.color = "#32D74B"; // <-- LEUCHTENDES GRÜN
+                    deskMsg.innerText = t ? t.is_unban : "ist Unban"; 
+                    deskMsg.style.color = "#32D74B";
                     
-                    mobCustom.innerText = t.is_unban;
-                    mobCustom.style.color = "#32D74B"; // <-- LEUCHTENDES GRÜN
+                    mobCustom.innerText = t ? t.is_unban : "ist Unban"; 
+                    mobCustom.style.color = "#32D74B"; 
                     mobSystem.style.display = 'none';
                 }
                 
-                document.getElementById('result-wrapper').style.display = 'block';
-                document.getElementById('desktop-view').classList.add('active');
+                document.getElementById('result-wrapper').style.display = 'block'; 
+                document.getElementById('desktop-view').classList.add('active'); 
                 document.getElementById('mobile-view').classList.add('active');
-                
             } catch (err) {
-                document.getElementById('loading').style.display = 'none';
-                const errDiv = document.getElementById('error-message');
-                errDiv.innerHTML = `<strong>${t.error_msg}</strong><br>API Error`;
+                document.getElementById('loading-wrapper').style.display = 'none';
+                const errDiv = document.getElementById('error-message'); 
+                errDiv.innerHTML = `<strong>Error</strong><br>API Offline`; 
                 errDiv.style.display = 'block';
             }
         }
