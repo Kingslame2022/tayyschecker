@@ -715,7 +715,7 @@
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- LAYOUT BEREICH -->
+            <!-- LAYOUT BEREICH MIT FIX & MÜLLEIMER -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
@@ -1302,6 +1302,7 @@
             }
         }
 
+        // AUTO KOMPRESSOR (Fixt den 5MB Speicherfehler)
         function handleImageUpload(input) {
             const file = input.files[0];
             
@@ -1309,20 +1310,49 @@
                 return;
             }
             
+            // Sofortige Vorschau
             const tempUrl = URL.createObjectURL(file);
             const bgImg = document.getElementById('bg-img');
             bgImg.src = tempUrl; 
             bgImg.style.display = 'block';
             
-            if (file.size <= 4 * 1024 * 1024) {
-                const reader = new FileReader();
-                reader.onload = function(e) { 
-                    localStorage.setItem('snowi_bg_image', e.target.result); 
+            // Bild komprimieren
+            const reader = new FileReader();
+            reader.onload = function(e) { 
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    
+                    const MAX_WIDTH = 1080;
+                    const MAX_HEIGHT = 1920;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height && width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    } else if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    
+                    try {
+                        localStorage.setItem('snowi_bg_image', compressedDataUrl);
+                        bgImg.src = compressedDataUrl; 
+                    } catch (err) {
+                        alert("Kritischer Fehler: Dein Browser-Speicher ist komplett voll. Bitte drücke auf den Mülleimer 🗑️ bei alten Layouts, um Platz zu machen!");
+                    }
                 };
-                reader.readAsDataURL(file);
-            } else {
-                alert(translations[currentLang].alert_size);
-            }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function formatPhoneNumber(cc, rawNum) {
