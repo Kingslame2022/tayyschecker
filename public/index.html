@@ -10,9 +10,8 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtiges Glas-Design */
+            --ios-bg: rgba(20, 20, 20, 0.08); 
             --ios-border: rgba(255, 255, 255, 0.12);
-            /* Variablen für die Panels (oben) */
             --panel-bg: rgba(20, 20, 20, 0.08);
             --panel-blur: 8px;
         }
@@ -667,7 +666,7 @@
             <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
-                <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
+                <div class="desktop-msg" id="desk-msg" style="color: var(--text-color);">Banned by ViVa La Tayy</div>
                 <div class="desktop-actions">
                     <span onclick="closeResult()">EXIT...</span>
                     <span onclick="openSupport()" data-i18n="support_desk">サポート</span>
@@ -1502,18 +1501,17 @@
 
                 if (banned) {
                     deskMsg.innerHTML = customBannedText; 
-                    deskMsg.style.color = "var(--primary-color)";
+                    deskMsg.style.color = "var(--text-color)"; // <-- NIMMT JETZT DEINE TEXTFARBE
                     
                     mobCustom.innerHTML = customBannedText;
-                    mobCustom.style.color = "var(--primary-color)";
+                    mobCustom.style.color = "var(--text-color)"; // <-- NIMMT JETZT DEINE TEXTFARBE
                     mobSystem.style.display = 'block';
                 } else {
-                    // NEU: HIER WURDE GRÜN DURCH DIE STANDARDFARBE (WEISS) ERSETZT!
                     deskMsg.innerText = t.is_unban;
-                    deskMsg.style.color = "var(--text-color)";
+                    deskMsg.style.color = "#32D74B"; // <-- LEUCHTENDES GRÜN
                     
                     mobCustom.innerText = t.is_unban;
-                    mobCustom.style.color = "var(--text-color)";
+                    mobCustom.style.color = "#32D74B"; // <-- LEUCHTENDES GRÜN
                     mobSystem.style.display = 'none';
                 }
                 
