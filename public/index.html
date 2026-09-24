@@ -718,11 +718,12 @@
             <!-- LAYOUT BEREICH -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
-                <div class="settings-row" style="margin-bottom: 8px;">
+                <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
                     <button class="action-btn" onclick="saveCurrentLayout()" data-i18n="layout_save">💾 Speichern</button>
-                    <select id="layout-select" class="glass-select" style="max-width: 140px;">
+                    <select id="layout-select" class="glass-select" style="flex: 1;">
                         <option value="" data-i18n="layout_select">Layout wählen...</option>
                     </select>
+                    <button class="action-btn" style="border-color: #ff4d4d; color: #ff4d4d; padding: 6px 10px;" onclick="deleteSelectedLayout()">🗑️</button>
                 </div>
                 <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
             </div>
@@ -1109,11 +1110,17 @@
                 bg: localStorage.getItem('snowi_bg_image') || ''
             };
 
-            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
-            layouts[name] = layoutData;
-            localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
-            
-            updateLayoutDropdown();
+            try {
+                let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
+                layouts[name] = layoutData;
+                localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
+                
+                updateLayoutDropdown();
+                document.getElementById('layout-select').value = name; 
+                alert(`✅ Layout '${name}' erfolgreich gespeichert!`);
+            } catch (error) {
+                alert("❌ Speicherfehler! Das Hintergrundbild ist zu groß. Bitte lösche ein altes Layout oder lade ein Bild mit weniger MB hoch.");
+            }
         }
 
         function updateLayoutDropdown() {
@@ -1135,7 +1142,7 @@
             const name = document.getElementById('layout-select').value;
             
             if(!name) {
-                return;
+                return alert("Bitte zuerst ein Layout aus der Liste auswählen!");
             }
             
             let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
@@ -1153,7 +1160,24 @@
                     const bgImg = document.getElementById('bg-img');
                     bgImg.src = layout.bg;
                     bgImg.style.display = 'block';
+                } else {
+                    localStorage.removeItem('snowi_bg_image');
+                    document.getElementById('bg-img').style.display = 'none';
                 }
+                alert(`✅ Layout '${name}' erfolgreich geladen!`);
+            }
+        }
+
+        function deleteSelectedLayout() {
+            const name = document.getElementById('layout-select').value;
+            if(!name) return alert("Bitte wähle zuerst ein Layout zum Löschen aus dem Dropdown.");
+            
+            if(confirm(`Möchtest du das Layout '${name}' wirklich löschen?`)) {
+                let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
+                delete layouts[name];
+                localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
+                updateLayoutDropdown();
+                alert(`🗑️ Layout '${name}' wurde gelöscht.`);
             }
         }
 
