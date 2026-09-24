@@ -10,8 +10,11 @@
         :root {
             --primary-color: #8a2be2;
             --text-color: #ffffff;
-            --ios-bg: rgba(20, 20, 20, 0.08); /* Extrem durchsichtiges Glas-Design */
+            --ios-bg: rgba(20, 20, 20, 0.08); /* Für Pop-ups */
             --ios-border: rgba(255, 255, 255, 0.12);
+            /* NEU: Eigene Variablen für die Panels (oben) */
+            --panel-bg: rgba(20, 20, 20, 0.08);
+            --panel-blur: 8px;
         }
 
         * { 
@@ -154,16 +157,16 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) */
+        /* Top Panel (Knöpfe) - JETZT MIT DYNAMISCHEM BLUR & ALPHA */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
             display: flex;
             text-align: center;
             margin-bottom: 10px;
-            background: var(--ios-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--panel-blur));
+            -webkit-backdrop-filter: blur(var(--panel-blur));
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
@@ -192,7 +195,7 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        /* Eingabebereich */
+        /* Eingabebereich - JETZT MIT DYNAMISCHEM BLUR & ALPHA */
         .input-wrapper { 
             margin-bottom: 25px; 
             position: relative; 
@@ -204,9 +207,9 @@
             display: flex; 
             align-items: center;
             padding: 12px 15px;
-            background: var(--ios-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--panel-blur));
+            -webkit-backdrop-filter: blur(var(--panel-blur));
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
@@ -608,6 +611,7 @@
 </head>
 <body>
 
+    <!-- START SCREEN (WELCOME) -->
     <div id="start-screen">
         <div class="welcome-text" id="welcome-display">🔥 Welcome Back my Master 🔥</div>
         <div class="start-bottom">
@@ -616,6 +620,7 @@
         </div>
     </div>
 
+    <!-- ANNOUNCEMENT POPUP (Wird dynamisch angezeigt) -->
     <div id="announcement-modal" class="ios-overlay" style="display: none;">
         <div class="ios-modal">
             <div class="ios-text">
@@ -628,6 +633,7 @@
         </div>
     </div>
 
+    <!-- Hintergrundbild / Animiertes GIF -->
     <img id="bg-img" alt="background">
     <div class="overlay"></div>
 
@@ -655,8 +661,10 @@
         <div id="loading" data-i18n="api_loading">API wird abgefragt...</div>
         <div id="error-message"></div>
 
+        <!-- RESULTAT BEREICH -->
         <div id="result-wrapper">
             
+            <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
@@ -666,6 +674,7 @@
                 </div>
             </div>
 
+            <!-- Mobile Layout (iOS Popup) -->
             <div class="mobile-result" id="mobile-view">
                 <div class="ios-overlay" style="background: transparent;">
                     <div class="ios-modal">
@@ -687,6 +696,7 @@
 
     </div>
 
+    <!-- SUPPORT AUSWAHL MENÜ -->
     <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
@@ -699,13 +709,16 @@
         </div>
     </div>
 
+    <!-- EINSTELLUNGEN SLIDE-UP MENÜ -->
     <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
+                <!-- Secret Click für Owner Panel -->
                 <div class="settings-title" onclick="handleSecretClick()" data-i18n="settings_title">⚙️ Einstellungen</div>
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
+            <!-- LAYOUT BEREICH -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
@@ -718,6 +731,26 @@
                 <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
             </div>
 
+            <!-- NEU: BLUR & ALPHA (TRANSPARENZ) EINSTELLUNGEN -->
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="panel_settings">🎛️ Panel Design</div>
+                <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <div style="width: 100%; display: flex; justify-content: space-between;">
+                        <span data-i18n="panel_blur">Blur-Effekt</span>
+                        <span id="blur-val">8px</span>
+                    </div>
+                    <input type="range" id="blur-slider" min="0" max="30" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
+                    
+                    <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 10px;">
+                        <span data-i18n="panel_transparency">Sichtbarkeit</span>
+                        <span id="alpha-val">8%</span>
+                    </div>
+                    <input type="range" id="alpha-slider" min="0" max="100" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
+                </div>
+                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()" data-i18n="btn_default_reset">🔄 Default wiederherstellen</button>
+            </div>
+
+            <!-- Sprachauswahl (3 NEUE SPRACHEN HINZUGEFÜGT) -->
             <div class="settings-row">
                 <span data-i18n="change_lang">Sprache / Language</span>
                 <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
@@ -726,6 +759,9 @@
                     <option value="es">Español</option>
                     <option value="ru">Русский</option>
                     <option value="ar">العربية</option>
+                    <option value="ja">日本語 (Japanisch)</option>
+                    <option value="la">Latina (Latein)</option>
+                    <option value="it">Italiano (Italienisch)</option>
                 </select>
             </div>
 
@@ -754,6 +790,7 @@
         </div>
     </div>
 
+    <!-- OWNER LOGIN MODAL -->
     <div id="owner-login-modal" class="ios-overlay" style="display: none; z-index: 5000;">
         <div class="ios-modal" style="padding: 20px;">
             <h3 style="margin-bottom: 15px; color: var(--primary-color);">Admin Login</h3>
@@ -766,6 +803,7 @@
         </div>
     </div>
 
+    <!-- OWNER DASHBOARD -->
     <div class="settings-backdrop" id="owner-panel" style="z-index: 5000;" onclick="if(event.target.id==='owner-panel') document.getElementById('owner-panel').classList.remove('active')">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
@@ -853,168 +891,112 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH
+        // SPRACH-WÖRTERBUCH (INKL. JP, LA, IT)
         // ==========================================
         const translations = {
             en: {
-                agree_btn: "AGREE AND CONTINUE",
-                autofill: "Autofill",
-                api_loading: "Checking API...",
-                your_phone: "Your phone number",
-                is_unban: "is Unbanned",
-                contact_support: "Please contact our Customer Support for further assistance.",
-                cancel: "Cancel",
-                support: "Support",
-                support_desk: "Support",
-                settings_title: "⚙️ Settings",
-                layout_manager: "🎨 Layout Manager",
-                layout_save: "💾 Save",
-                layout_select: "Select layout...",
-                layout_load: "📂 Load Selected Layout",
-                color_neon: "Neon/Accent Color",
-                color_text: "Change Text Color",
-                edit_welcome: "Edit Welcome Text",
-                edit_ban: "Edit Ban Text",
-                btn_edit: "✏️ Edit Text",
-                upload_bg: "Upload Background / GIF:",
-                support_btn: "💬 Contact Support",
-                support_where: "Where do you want to contact us?",
-                change_lang: "Language",
-                alert_empty: "Please enter a number!",
-                alert_clipboard: "Clipboard access denied. Please allow it or paste manually.",
-                prompt_welcome: "Enter new Welcome text:",
-                prompt_ban: "Enter new text if the number is banned:",
-                error_msg: "Error:",
-                understood: "Understood",
-                prompt_layout: "Enter a name for this layout:"
+                agree_btn: "AGREE AND CONTINUE", autofill: "Autofill", api_loading: "Checking API...",
+                your_phone: "Your phone number", is_unban: "is Unbanned", contact_support: "Please contact our Customer Support for further assistance.",
+                cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings",
+                layout_manager: "🎨 Layout Manager", layout_save: "💾 Save", layout_select: "Select layout...",
+                layout_load: "📂 Load Selected Layout", color_neon: "Neon/Accent Color", color_text: "Change Text Color",
+                edit_welcome: "Edit Welcome Text", edit_ban: "Edit Ban Text", btn_edit: "✏️ Edit Text",
+                upload_bg: "Upload Background / GIF:", support_btn: "💬 Contact Support", support_where: "Where do you want to contact us?",
+                change_lang: "Language", alert_empty: "Please enter a number!", alert_clipboard: "Clipboard access denied.",
+                prompt_welcome: "Enter new Welcome text:", prompt_ban: "Enter new text if the number is banned:",
+                error_msg: "Error:", understood: "Understood", prompt_layout: "Enter a name for this layout:",
+                panel_settings: "🎛️ Panel Design", panel_blur: "Blur Effect", panel_transparency: "Visibility", btn_default_reset: "🔄 Reset to Default"
             },
             de: {
-                agree_btn: "ZUSTIMMEN UND WEITER",
-                autofill: "Autofill",
-                api_loading: "API wird abgefragt...",
-                your_phone: "Deine Telefonnummer",
-                is_unban: "ist Unban",
-                contact_support: "Bitte kontaktiere unseren Customer Support für weitere Hilfe.",
-                cancel: "Abbrechen",
-                support: "Support",
-                support_desk: "サポート", 
-                settings_title: "⚙️ Einstellungen",
-                layout_manager: "🎨 Layout Manager",
-                layout_save: "💾 Speichern",
-                layout_select: "Layout wählen...",
-                layout_load: "📂 Gewähltes Layout laden",
-                color_neon: "Neon-/Akzentfarbe",
-                color_text: "Textfarbe ändern",
-                edit_welcome: "Welcome-Text anpassen",
-                edit_ban: "Bann-Text anpassen",
-                btn_edit: "✏️ Text ändern",
-                upload_bg: "Hintergrundbild / GIF hochladen:",
-                support_btn: "💬 Support kontaktieren",
-                support_where: "Wo möchtest du uns kontaktieren?",
-                change_lang: "Sprache",
-                alert_empty: "Bitte eine Nummer eingeben!",
-                alert_clipboard: "Zugriff auf die Zwischenablage verweigert.",
-                prompt_welcome: "Neuen Welcome-Text eingeben:",
-                prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
-                error_msg: "Fehler:",
-                understood: "Verstanden",
-                prompt_layout: "Gib einen Namen für dieses Layout ein:"
+                agree_btn: "ZUSTIMMEN UND WEITER", autofill: "Autofill", api_loading: "API wird abgefragt...",
+                your_phone: "Deine Telefonnummer", is_unban: "ist Unban", contact_support: "Bitte kontaktiere unseren Customer Support für weitere Hilfe.",
+                cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen",
+                layout_manager: "🎨 Layout Manager", layout_save: "💾 Speichern", layout_select: "Layout wählen...",
+                layout_load: "📂 Gewähltes Layout laden", color_neon: "Neon-/Akzentfarbe", color_text: "Textfarbe ändern",
+                edit_welcome: "Welcome-Text anpassen", edit_ban: "Bann-Text anpassen", btn_edit: "✏️ Text ändern",
+                upload_bg: "Hintergrundbild / GIF hochladen:", support_btn: "💬 Support kontaktieren", support_where: "Wo möchtest du uns kontaktieren?",
+                change_lang: "Sprache", alert_empty: "Bitte eine Nummer eingeben!", alert_clipboard: "Zugriff auf die Zwischenablage verweigert.",
+                prompt_welcome: "Neuen Welcome-Text eingeben:", prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
+                error_msg: "Fehler:", understood: "Verstanden", prompt_layout: "Gib einen Namen für dieses Layout ein:",
+                panel_settings: "🎛️ Panel Design", panel_blur: "Blur-Effekt", panel_transparency: "Sichtbarkeit", btn_default_reset: "🔄 Standard wiederherstellen"
             },
             es: {
-                agree_btn: "ACEPTAR Y CONTINUAR",
-                autofill: "Autocompletar",
-                api_loading: "Consultando API...",
-                your_phone: "Tu número de teléfono",
-                is_unban: "no está baneado",
-                contact_support: "Por favor, contacta a nuestro Soporte para más ayuda.",
-                cancel: "Cancelar",
-                support: "Soporte",
-                support_desk: "Soporte",
-                settings_title: "⚙️ Ajustes",
-                layout_manager: "🎨 Gestor de Diseños",
-                layout_save: "💾 Guardar",
-                layout_select: "Seleccionar diseño...",
-                layout_load: "📂 Cargar Diseño",
-                color_neon: "Color Neón/Acento",
-                color_text: "Cambiar Color de Texto",
-                edit_welcome: "Editar texto de bienvenida",
-                edit_ban: "Editar texto de baneo",
-                btn_edit: "✏️ Cambiar Texto",
-                upload_bg: "Subir imagen / GIF de fondo:",
-                support_btn: "💬 Contactar Soporte",
-                support_where: "¿Dónde deseas contactarnos?",
-                change_lang: "Idioma",
-                alert_empty: "¡Por favor, introduzca un número!",
-                alert_clipboard: "Acceso al portapapeles denegado.",
-                prompt_welcome: "Introduzca el nuevo texto de bienvenida:",
-                prompt_ban: "Introduce un nuevo texto si el número está baneado:",
-                error_msg: "Error:",
-                understood: "Entendido",
-                prompt_layout: "Introduce un nombre para este diseño:"
+                agree_btn: "ACEPTAR Y CONTINUAR", autofill: "Autocompletar", api_loading: "Consultando API...",
+                your_phone: "Tu número de teléfono", is_unban: "no está baneado", contact_support: "Por favor, contacta a nuestro Soporte para más ayuda.",
+                cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes",
+                layout_manager: "🎨 Gestor de Diseños", layout_save: "💾 Guardar", layout_select: "Seleccionar diseño...",
+                layout_load: "📂 Cargar Diseño", color_neon: "Color Neón/Acento", color_text: "Cambiar Color de Texto",
+                edit_welcome: "Editar texto de bienvenida", edit_ban: "Editar texto de baneo", btn_edit: "✏️ Cambiar Texto",
+                upload_bg: "Subir imagen / GIF de fondo:", support_btn: "💬 Contactar Soporte", support_where: "¿Dónde deseas contactarnos?",
+                change_lang: "Idioma", alert_empty: "¡Por favor, introduzca un número!", alert_clipboard: "Acceso al portapapeles denegado.",
+                prompt_welcome: "Introduzca el nuevo texto de bienvenida:", prompt_ban: "Introduce un nuevo texto si el número está baneado:",
+                error_msg: "Error:", understood: "Entendido", prompt_layout: "Introduce un nombre para este diseño:",
+                panel_settings: "🎛️ Diseño del Panel", panel_blur: "Efecto Desenfocado", panel_transparency: "Visibilidad", btn_default_reset: "🔄 Restaurar Predeterminado"
             },
             ru: {
-                agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ",
-                autofill: "Автозаполнение",
-                api_loading: "Проверка API...",
-                your_phone: "Ваш номер телефона",
-                is_unban: "Разблокирован",
-                contact_support: "Пожалуйста, свяжитесь с поддержкой.",
-                cancel: "Отмена",
-                support: "Поддержка",
-                support_desk: "Поддержка",
-                settings_title: "⚙️ Настройки",
-                layout_manager: "🎨 Менеджер макетов",
-                layout_save: "💾 Сохранить",
-                layout_select: "Выбрать макет...",
-                layout_load: "📂 Загрузить макет",
-                color_neon: "Неоновый цвет",
-                color_text: "Изменить цвет текста",
-                edit_welcome: "Изменить текст приветствия",
-                edit_ban: "Изменить текст блокировки",
-                btn_edit: "✏️ Изменить текст",
-                upload_bg: "Загрузить фон / GIF:",
-                support_btn: "💬 Связаться с поддержкой",
-                support_where: "Где вы хотите с нами связаться?",
-                change_lang: "Язык",
-                alert_empty: "Пожалуйста, введите номер!",
-                alert_clipboard: "Доступ к буферу обмена запрещен.",
-                prompt_welcome: "Введите новый текст приветствия:",
-                prompt_ban: "Введите новый текст, если номер заблокирован:",
-                error_msg: "Ошибка:",
-                understood: "Понятно",
-                prompt_layout: "Введите имя для этого макета:"
+                agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ", autofill: "Автозаполнение", api_loading: "Проверка API...",
+                your_phone: "Ваш номер телефона", is_unban: "Разблокирован", contact_support: "Пожалуйста, свяжитесь с поддержкой.",
+                cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки",
+                layout_manager: "🎨 Менеджер макетов", layout_save: "💾 Сохранить", layout_select: "Выбрать макет...",
+                layout_load: "📂 Загрузить макет", color_neon: "Неоновый цвет", color_text: "Изменить цвет текста",
+                edit_welcome: "Изменить текст приветствия", edit_ban: "Изменить текст блокировки", btn_edit: "✏️ Изменить текст",
+                upload_bg: "Загрузить фон / GIF:", support_btn: "💬 Связаться с поддержкой", support_where: "Где вы хотите с нами связаться?",
+                change_lang: "Язык", alert_empty: "Пожалуйста, введите номер!", alert_clipboard: "Доступ к буферу обмена запрещен.",
+                prompt_welcome: "Введите новый текст приветствия:", prompt_ban: "Введите новый текст, если номер заблокирован:",
+                error_msg: "Ошибка:", understood: "Понятно", prompt_layout: "Введите имя для этого макета:",
+                panel_settings: "🎛️ Дизайн панели", panel_blur: "Эффект размытия", panel_transparency: "Видимость", btn_default_reset: "🔄 По умолчанию"
             },
             ar: {
-                agree_btn: "موافق ومتابعة",
-                autofill: "ملء تلقائي",
-                api_loading: "جاري فحص API...",
-                your_phone: "رقم هاتفك",
-                is_unban: "غير محظور",
-                contact_support: "يرجى الاتصال بدعم العملاء للمساعدة.",
-                cancel: "إلغاء",
-                support: "الدعم",
-                support_desk: "الدعم",
-                settings_title: "⚙️ الإعدادات",
-                layout_manager: "🎨 مدير التخطيط",
-                layout_save: "💾 حفظ",
-                layout_select: "اختر التصميم...",
-                layout_load: "📂 تحميل التصميم",
-                color_neon: "لون النيون",
-                color_text: "تغيير لون النص",
-                edit_welcome: "تعديل نص الترحيب",
-                edit_ban: "تعديل نص الحظر",
-                btn_edit: "✏️ تغيير النص",
-                upload_bg: "تحميل خلفية / GIF:",
-                support_btn: "💬 اتصل بالدعم",
-                support_where: "أين تريد الاتصال بنا؟",
-                change_lang: "اللغة",
-                alert_empty: "الرجاء إدخال رقم!",
-                alert_clipboard: "تم رفض الوصول إلى الحافظة.",
-                prompt_welcome: "أدخل نص الترحيب الجديد:",
-                prompt_ban: "أدخل نصًا جديدًا للحظر:",
-                error_msg: "خطأ:",
-                understood: "مفهوم",
-                prompt_layout: "أدخل اسمًا لهذا التصميم:"
+                agree_btn: "موافق ومتابعة", autofill: "ملء تلقائي", api_loading: "جاري فحص API...",
+                your_phone: "رقم هاتفك", is_unban: "غير محظور", contact_support: "يرجى الاتصال بدعم العملاء للمساعدة.",
+                cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات",
+                layout_manager: "🎨 مدير التخطيط", layout_save: "💾 حفظ", layout_select: "اختر التصميم...",
+                layout_load: "📂 تحميل التصميم", color_neon: "لون النيون", color_text: "تغيير لون النص",
+                edit_welcome: "تعديل نص الترحيب", edit_ban: "تعديل نص الحظر", btn_edit: "✏️ تغيير النص",
+                upload_bg: "تحميل خلفية / GIF:", support_btn: "💬 اتصل بالدعم", support_where: "أين تريد الاتصال بنا؟",
+                change_lang: "اللغة", alert_empty: "الرجاء إدخال رقم!", alert_clipboard: "تم رفض الوصول إلى الحافظة.",
+                prompt_welcome: "أدخل نص الترحيب الجديد:", prompt_ban: "أدخل نصًا جديدًا للحظر:",
+                error_msg: "خطأ:", understood: "مفهوم", prompt_layout: "أدخل اسمًا لهذا التصميم:",
+                panel_settings: "🎛️ تصميم اللوحة", panel_blur: "تأثير الضبابية", panel_transparency: "الرؤية", btn_default_reset: "🔄 إعادة تعيين"
+            },
+            ja: {
+                agree_btn: "同意して続行", autofill: "自動入力", api_loading: "APIを確認中...",
+                your_phone: "電話番号", is_unban: "は制限解除されています", contact_support: "詳細についてはカスタマーサポートにお問い合わせください。",
+                cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定",
+                layout_manager: "🎨 レイアウトマネージャー", layout_save: "💾 保存", layout_select: "レイアウトを選択...",
+                layout_load: "📂 選択したレイアウトを読み込む", color_neon: "ネオンカラー", color_text: "テキストの色を変更",
+                edit_welcome: "ウェルカムテキストの編集", edit_ban: "バンテキストの編集", btn_edit: "✏️ テキストの変更",
+                upload_bg: "背景 / GIFのアップロード:", support_btn: "💬 サポートに連絡", support_where: "どこで連絡しますか？",
+                change_lang: "言語", alert_empty: "番号を入力してください！", alert_clipboard: "クリップボードのアクセスが拒否されました。",
+                prompt_welcome: "新しいウェルカムテキスト:", prompt_ban: "新しいバンテキスト:",
+                error_msg: "エラー:", understood: "理解しました", prompt_layout: "レイアウト名を入力:",
+                panel_settings: "🎛️ パネルデザイン", panel_blur: "ぼかし効果", panel_transparency: "不透明度", btn_default_reset: "🔄 デフォルトに戻す"
+            },
+            la: {
+                agree_btn: "ACCIPERE ET CONTINUARE", autofill: "Autofill", api_loading: "API quaeritur...",
+                your_phone: "Numerus telephonicus tuus", is_unban: "non est interdictus", contact_support: "Mitte nuntium ad Support pro auxilio.",
+                cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones",
+                layout_manager: "🎨 Procurator Formae", layout_save: "💾 Servare", layout_select: "Elige formam...",
+                layout_load: "📂 Onerare Formam", color_neon: "Color Neon", color_text: "Mutare Colorem Textus",
+                edit_welcome: "Recensere Textum Gratum", edit_ban: "Recensere Textum Interdicti", btn_edit: "✏️ Mutare Textum",
+                upload_bg: "Onerare imaginem / GIF:", support_btn: "💬 Contactus Auxilium", support_where: "Ubi vis nos contingere?",
+                change_lang: "Lingua", alert_empty: "Quaeso, intra numerum!", alert_clipboard: "Aditus ad clipboard negatur.",
+                prompt_welcome: "Novus textus gratus:", prompt_ban: "Novus textus interdicti:",
+                error_msg: "Error:", understood: "Intellectum", prompt_layout: "Nomen formae scribe:",
+                panel_settings: "🎛️ Consilium Tabulae", panel_blur: "Effectus caliginis", panel_transparency: "Perspicuitas", btn_default_reset: "🔄 Restituere ad defaltam"
+            },
+            it: {
+                agree_btn: "ACCETTA E CONTINUA", autofill: "Auto-compilazione", api_loading: "Controllo API...",
+                your_phone: "Il tuo numero di telefono", is_unban: "è Sbloccato", contact_support: "Contatta il nostro Supporto per assistenza.",
+                cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni",
+                layout_manager: "🎨 Gestore Layout", layout_save: "💾 Salva", layout_select: "Seleziona layout...",
+                layout_load: "📂 Carica Layout", color_neon: "Colore Neon", color_text: "Cambia Colore Testo",
+                edit_welcome: "Modifica Testo Benvenuto", edit_ban: "Modifica Testo Ban", btn_edit: "✏️ Modifica Testo",
+                upload_bg: "Carica Sfondo / GIF:", support_btn: "💬 Contatta Supporto", support_where: "Dove vuoi contattarci?",
+                change_lang: "Lingua", alert_empty: "Inserisci un numero!", alert_clipboard: "Accesso agli appunti negato.",
+                prompt_welcome: "Nuovo testo di benvenuto:", prompt_ban: "Nuovo testo per il ban:",
+                error_msg: "Errore:", understood: "Capito", prompt_layout: "Inserisci un nome per questo layout:",
+                panel_settings: "🎛️ Design Pannello", panel_blur: "Effetto Sfocatura", panel_transparency: "Visibilità", btn_default_reset: "🔄 Ripristina Predefinito"
             }
         };
 
@@ -1052,6 +1034,30 @@
             });
             
             document.getElementById('lang-select').value = lang;
+        }
+
+        // --- NEU: PANEL DESIGN EINSTELLUNGEN (BLUR & TRANSPARENZ) ---
+        function updatePanelStyle() {
+            const blurVal = document.getElementById('blur-slider').value;
+            const alphaVal = document.getElementById('alpha-slider').value; // 0 bis 100
+            
+            // CSS Variablen updaten
+            document.documentElement.style.setProperty('--panel-blur', blurVal + 'px');
+            document.documentElement.style.setProperty('--panel-bg', `rgba(20, 20, 20, ${alphaVal / 100})`);
+            
+            // Zahlenwerte neben Slidern updaten
+            document.getElementById('blur-val').innerText = blurVal + 'px';
+            document.getElementById('alpha-val').innerText = alphaVal + '%';
+            
+            // Speichern
+            localStorage.setItem('snowi_panel_blur', blurVal);
+            localStorage.setItem('snowi_panel_alpha', alphaVal);
+        }
+
+        function resetPanelStyle() {
+            document.getElementById('blur-slider').value = 8;
+            document.getElementById('alpha-slider').value = 8; // Standard 8%
+            updatePanelStyle();
         }
 
         // --- SECRET OWNER AREA ---
@@ -1140,7 +1146,7 @@
         }
 
         // ==========================================
-        // LAYOUT SYSTEM (MIT ECHTEM GIF & INDEXEDDB SUPPORT)
+        // LAYOUT SYSTEM 
         // ==========================================
         async function saveCurrentLayout() {
             const promptMsg = translations[currentLang].prompt_layout || "Name für das Layout:";
@@ -1156,11 +1162,13 @@
             const layoutData = {
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2',
                 text: localStorage.getItem('snowi_text_color') || '#ffffff',
+                blur: localStorage.getItem('snowi_panel_blur') || 8,
+                alpha: localStorage.getItem('snowi_panel_alpha') || 8,
                 hasBg: !!bgData
             };
 
             try {
-                // Bild oder animiertes GIF in IndexedDB speichern (unbegrenzt viel Platz!)
+                // Bild oder animiertes GIF in IndexedDB speichern
                 if (bgData) {
                     await saveMedia('snowi_layout_img_' + cleanName, bgData);
                 } else {
@@ -1173,7 +1181,7 @@
                 
                 updateLayoutDropdown();
                 document.getElementById('layout-select').value = cleanName; 
-                alert(`✅ Layout '${cleanName}' (inkl. GIF/Bild) gespeichert!`);
+                alert(`✅ Layout '${cleanName}' (inkl. Slider-Werte) gespeichert!`);
             } catch (error) {
                 alert("Fehler beim Speichern: " + error.message);
             }
@@ -1210,8 +1218,15 @@
                 
                 changeTextColor(layout.text);
                 document.getElementById('text-color-picker').value = layout.text;
+
+                // Slider-Werte laden
+                const blur = layout.blur !== undefined ? layout.blur : 8;
+                const alpha = layout.alpha !== undefined ? layout.alpha : 8;
+                document.getElementById('blur-slider').value = blur;
+                document.getElementById('alpha-slider').value = alpha;
+                updatePanelStyle();
                 
-                // Bild oder animiertes GIF aus IndexedDB laden
+                // Bild laden
                 const bgData = await loadMedia('snowi_layout_img_' + name) || layout.bg || '';
                 const bgImg = document.getElementById('bg-img');
 
@@ -1257,6 +1272,13 @@
                 document.getElementById('text-color-picker').value = savedText; 
                 changeTextColor(savedText); 
             }
+
+            // Slider-Werte wiederherstellen
+            const savedBlur = localStorage.getItem('snowi_panel_blur') || 8;
+            const savedAlpha = localStorage.getItem('snowi_panel_alpha') || 8;
+            document.getElementById('blur-slider').value = savedBlur;
+            document.getElementById('alpha-slider').value = savedAlpha;
+            updatePanelStyle();
             
             // Bild oder animiertes GIF laden
             const savedBg = await loadMedia('snowi_bg_image');
@@ -1364,7 +1386,7 @@
         }
 
         // =======================================================
-        // BILD- & GIF-UPLOAD (BEHÄLT ANIMATIONEN VOLLSTÄNDIG BEI!)
+        // BILD- & GIF-UPLOAD
         // =======================================================
         async function handleImageUpload(input) {
             const file = input.files[0];
@@ -1372,32 +1394,27 @@
 
             const bgImg = document.getElementById('bg-img');
 
-            // Sofortige Vorschau
             const tempUrl = URL.createObjectURL(file);
             bgImg.src = tempUrl; 
             bgImg.style.display = 'block';
 
-            // Prüfen ob es ein animiertes GIF ist
             const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
 
             if (isGif) {
-                // WICHTIG: GIFs dürfen niemals über Canvas laufen, sonst geht die Animation verloren!
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     const gifData = e.target.result;
                     await saveMedia('snowi_bg_image', gifData);
-                    bgImg.src = gifData; // Animiertes GIF dauerhaft aktivieren
+                    bgImg.src = gifData; 
                 };
                 reader.readAsDataURL(file);
             } else {
-                // Bei normalen Bildern (JPG / PNG):
                 const reader = new FileReader();
                 reader.onload = function(e) { 
                     const img = new Image();
                     img.onload = async function() {
                         let finalData = e.target.result;
 
-                        // Nur bei sehr großen Fotos (> 2,5 MB) leicht optimieren
                         if (file.size > 2.5 * 1024 * 1024) {
                             const canvas = document.createElement('canvas');
                             const MAX_WIDTH = 1280;
