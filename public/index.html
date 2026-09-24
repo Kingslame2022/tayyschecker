@@ -98,7 +98,7 @@
             box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
         }
 
-        /* --- BILD HINTERGRUND --- */
+        /* --- BILD & GIF HINTERGRUND --- */
         #bg-img {
             position: fixed;
             top: 0;
@@ -154,7 +154,7 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) - Voller Glas-Effekt */
+        /* Top Panel (Knöpfe) */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
@@ -192,7 +192,7 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        /* Eingabebereich - Voller Glas-Effekt */
+        /* Eingabebereich */
         .input-wrapper { 
             margin-bottom: 25px; 
             position: relative; 
@@ -608,7 +608,6 @@
 </head>
 <body>
 
-    <!-- START SCREEN (WELCOME) -->
     <div id="start-screen">
         <div class="welcome-text" id="welcome-display">🔥 Welcome Back my Master 🔥</div>
         <div class="start-bottom">
@@ -617,7 +616,6 @@
         </div>
     </div>
 
-    <!-- ANNOUNCEMENT POPUP (Wird dynamisch angezeigt) -->
     <div id="announcement-modal" class="ios-overlay" style="display: none;">
         <div class="ios-modal">
             <div class="ios-text">
@@ -630,7 +628,6 @@
         </div>
     </div>
 
-    <!-- Hintergrundbild -->
     <img id="bg-img" alt="background">
     <div class="overlay"></div>
 
@@ -658,10 +655,8 @@
         <div id="loading" data-i18n="api_loading">API wird abgefragt...</div>
         <div id="error-message"></div>
 
-        <!-- RESULTAT BEREICH -->
         <div id="result-wrapper">
             
-            <!-- Desktop Layout -->
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
                 <div class="desktop-msg" id="desk-msg" style="color: var(--primary-color);">Banned by ViVa La Tayy</div>
@@ -671,7 +666,6 @@
                 </div>
             </div>
 
-            <!-- Mobile Layout (iOS Popup) -->
             <div class="mobile-result" id="mobile-view">
                 <div class="ios-overlay" style="background: transparent;">
                     <div class="ios-modal">
@@ -693,7 +687,6 @@
 
     </div>
 
-    <!-- SUPPORT AUSWAHL MENÜ -->
     <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
@@ -706,16 +699,13 @@
         </div>
     </div>
 
-    <!-- EINSTELLUNGEN SLIDE-UP MENÜ -->
     <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <!-- Secret Click für Owner Panel -->
                 <div class="settings-title" onclick="handleSecretClick()" data-i18n="settings_title">⚙️ Einstellungen</div>
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- LAYOUT BEREICH MIT FIX & MÜLLEIMER -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
@@ -728,7 +718,6 @@
                 <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
             </div>
 
-            <!-- Sprachauswahl -->
             <div class="settings-row">
                 <span data-i18n="change_lang">Sprache / Language</span>
                 <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
@@ -756,7 +745,7 @@
                 <span data-i18n="edit_ban">Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Text ändern</button>
             </div>
-            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild hochladen:</div>
+            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild / GIF hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
             
             <div style="margin-top: 25px;">
@@ -765,7 +754,6 @@
         </div>
     </div>
 
-    <!-- OWNER LOGIN MODAL -->
     <div id="owner-login-modal" class="ios-overlay" style="display: none; z-index: 5000;">
         <div class="ios-modal" style="padding: 20px;">
             <h3 style="margin-bottom: 15px; color: var(--primary-color);">Admin Login</h3>
@@ -778,7 +766,6 @@
         </div>
     </div>
 
-    <!-- OWNER DASHBOARD -->
     <div class="settings-backdrop" id="owner-panel" style="z-index: 5000;" onclick="if(event.target.id==='owner-panel') document.getElementById('owner-panel').classList.remove('active')">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
@@ -803,7 +790,71 @@
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
-        // Übersetzungs-Wörterbuch (Alle 5 Sprachen)
+        // ==========================================
+        // INDEXEDDB HELPER (FÜR RIESIGE BILDER & ECHTE GIFS)
+        // ==========================================
+        function openDB() {
+            return new Promise((resolve) => {
+                if (!window.indexedDB) return resolve(null);
+                const req = indexedDB.open('SnowiMediaDB', 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('media')) {
+                        db.createObjectStore('media');
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function saveMedia(key, val) {
+            try {
+                const db = await openDB();
+                if (!db) {
+                    try { localStorage.setItem(key, val); } catch(e){}
+                    return true;
+                }
+                return new Promise((resolve) => {
+                    const tx = db.transaction('media', 'readwrite');
+                    tx.objectStore('media').put(val, key);
+                    tx.oncomplete = () => resolve(true);
+                    tx.onerror = () => resolve(false);
+                });
+            } catch(e) {
+                return false;
+            }
+        }
+
+        async function loadMedia(key) {
+            try {
+                const db = await openDB();
+                if (!db) return localStorage.getItem(key);
+                return new Promise((resolve) => {
+                    const tx = db.transaction('media', 'readonly');
+                    const req = tx.objectStore('media').get(key);
+                    req.onsuccess = () => resolve(req.result || localStorage.getItem(key));
+                    req.onerror = () => resolve(localStorage.getItem(key));
+                });
+            } catch(e) {
+                return localStorage.getItem(key);
+            }
+        }
+
+        async function deleteMedia(key) {
+            try {
+                const db = await openDB();
+                if (db) {
+                    const tx = db.transaction('media', 'readwrite');
+                    tx.objectStore('media').delete(key);
+                }
+                localStorage.removeItem(key);
+            } catch(e) {}
+        }
+
+        // ==========================================
+        // SPRACH-WÖRTERBUCH
+        // ==========================================
         const translations = {
             en: {
                 agree_btn: "AGREE AND CONTINUE",
@@ -825,7 +876,7 @@
                 edit_welcome: "Edit Welcome Text",
                 edit_ban: "Edit Ban Text",
                 btn_edit: "✏️ Edit Text",
-                upload_bg: "Upload Background Image:",
+                upload_bg: "Upload Background / GIF:",
                 support_btn: "💬 Contact Support",
                 support_where: "Where do you want to contact us?",
                 change_lang: "Language",
@@ -833,7 +884,6 @@
                 alert_clipboard: "Clipboard access denied. Please allow it or paste manually.",
                 prompt_welcome: "Enter new Welcome text:",
                 prompt_ban: "Enter new text if the number is banned:",
-                alert_size: "Image > 4MB. Shown now but not saved permanently.",
                 error_msg: "Error:",
                 understood: "Understood",
                 prompt_layout: "Enter a name for this layout:"
@@ -858,7 +908,7 @@
                 edit_welcome: "Welcome-Text anpassen",
                 edit_ban: "Bann-Text anpassen",
                 btn_edit: "✏️ Text ändern",
-                upload_bg: "Hintergrundbild hochladen:",
+                upload_bg: "Hintergrundbild / GIF hochladen:",
                 support_btn: "💬 Support kontaktieren",
                 support_where: "Wo möchtest du uns kontaktieren?",
                 change_lang: "Sprache",
@@ -866,7 +916,6 @@
                 alert_clipboard: "Zugriff auf die Zwischenablage verweigert.",
                 prompt_welcome: "Neuen Welcome-Text eingeben:",
                 prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
-                alert_size: "Bild > 4MB. Wird nur für diese Sitzung gespeichert.",
                 error_msg: "Fehler:",
                 understood: "Verstanden",
                 prompt_layout: "Gib einen Namen für dieses Layout ein:"
@@ -891,7 +940,7 @@
                 edit_welcome: "Editar texto de bienvenida",
                 edit_ban: "Editar texto de baneo",
                 btn_edit: "✏️ Cambiar Texto",
-                upload_bg: "Subir imagen de fondo:",
+                upload_bg: "Subir imagen / GIF de fondo:",
                 support_btn: "💬 Contactar Soporte",
                 support_where: "¿Dónde deseas contactarnos?",
                 change_lang: "Idioma",
@@ -899,7 +948,6 @@
                 alert_clipboard: "Acceso al portapapeles denegado.",
                 prompt_welcome: "Introduzca el nuevo texto de bienvenida:",
                 prompt_ban: "Introduce un nuevo texto si el número está baneado:",
-                alert_size: "Imagen > 4MB. No se guardará permanentemente.",
                 error_msg: "Error:",
                 understood: "Entendido",
                 prompt_layout: "Introduce un nombre para este diseño:"
@@ -924,7 +972,7 @@
                 edit_welcome: "Изменить текст приветствия",
                 edit_ban: "Изменить текст блокировки",
                 btn_edit: "✏️ Изменить текст",
-                upload_bg: "Загрузить фон:",
+                upload_bg: "Загрузить фон / GIF:",
                 support_btn: "💬 Связаться с поддержкой",
                 support_where: "Где вы хотите с нами связаться?",
                 change_lang: "Язык",
@@ -932,7 +980,6 @@
                 alert_clipboard: "Доступ к буферу обмена запрещен.",
                 prompt_welcome: "Введите новый текст приветствия:",
                 prompt_ban: "Введите новый текст, если номер заблокирован:",
-                alert_size: "Изображение > 4 МБ.",
                 error_msg: "Ошибка:",
                 understood: "Понятно",
                 prompt_layout: "Введите имя для этого макета:"
@@ -957,7 +1004,7 @@
                 edit_welcome: "تعديل نص الترحيب",
                 edit_ban: "تعديل نص الحظر",
                 btn_edit: "✏️ تغيير النص",
-                upload_bg: "تحميل صورة الخلفية:",
+                upload_bg: "تحميل خلفية / GIF:",
                 support_btn: "💬 اتصل بالدعم",
                 support_where: "أين تريد الاتصال بنا؟",
                 change_lang: "اللغة",
@@ -965,7 +1012,6 @@
                 alert_clipboard: "تم رفض الوصول إلى الحافظة.",
                 prompt_welcome: "أدخل نص الترحيب الجديد:",
                 prompt_ban: "أدخل نصًا جديدًا للحظر:",
-                alert_size: "الصورة أكبر من 4MB.",
                 error_msg: "خطأ:",
                 understood: "مفهوم",
                 prompt_layout: "أدخل اسمًا لهذا التصميم:"
@@ -976,11 +1022,11 @@
         let secretClicks = 0;
         let secretTimer;
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const savedLang = localStorage.getItem('snowi_lang') || 'de';
             changeLanguage(savedLang);
 
-            loadSavedSettings();
+            await loadSavedSettings();
             updateLayoutDropdown();
             checkGlobalAnnouncements();
         });
@@ -1087,16 +1133,16 @@
 
         function closeAnnouncement() {
             const id = document.getElementById('announcement-modal').dataset.currentId;
-            
             if(id) {
                 localStorage.setItem('snowi_seen_ann', id);
             }
-            
             document.getElementById('announcement-modal').style.display = 'none';
         }
 
-        // --- LAYOUT SYSTEM ---
-        function saveCurrentLayout() {
+        // ==========================================
+        // LAYOUT SYSTEM (MIT ECHTEM GIF & INDEXEDDB SUPPORT)
+        // ==========================================
+        async function saveCurrentLayout() {
             const promptMsg = translations[currentLang].prompt_layout || "Name für das Layout:";
             const name = prompt(promptMsg);
             
@@ -1104,22 +1150,32 @@
                 return;
             }
 
+            const cleanName = name.trim();
+            const bgData = await loadMedia('snowi_bg_image') || '';
+
             const layoutData = {
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2',
                 text: localStorage.getItem('snowi_text_color') || '#ffffff',
-                bg: localStorage.getItem('snowi_bg_image') || ''
+                hasBg: !!bgData
             };
 
             try {
+                // Bild oder animiertes GIF in IndexedDB speichern (unbegrenzt viel Platz!)
+                if (bgData) {
+                    await saveMedia('snowi_layout_img_' + cleanName, bgData);
+                } else {
+                    await deleteMedia('snowi_layout_img_' + cleanName);
+                }
+
                 let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
-                layouts[name] = layoutData;
+                layouts[cleanName] = layoutData;
                 localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
                 
                 updateLayoutDropdown();
-                document.getElementById('layout-select').value = name; 
-                alert(`✅ Layout '${name}' erfolgreich gespeichert!`);
+                document.getElementById('layout-select').value = cleanName; 
+                alert(`✅ Layout '${cleanName}' (inkl. GIF/Bild) gespeichert!`);
             } catch (error) {
-                alert("❌ Speicherfehler! Das Hintergrundbild ist zu groß. Bitte lösche ein altes Layout oder lade ein Bild mit weniger MB hoch.");
+                alert("Fehler beim Speichern: " + error.message);
             }
         }
 
@@ -1138,7 +1194,7 @@
             }
         }
 
-        function loadSelectedLayout() {
+        async function loadSelectedLayout() {
             const name = document.getElementById('layout-select').value;
             
             if(!name) {
@@ -1155,20 +1211,24 @@
                 changeTextColor(layout.text);
                 document.getElementById('text-color-picker').value = layout.text;
                 
-                if(layout.bg) {
-                    localStorage.setItem('snowi_bg_image', layout.bg);
-                    const bgImg = document.getElementById('bg-img');
-                    bgImg.src = layout.bg;
+                // Bild oder animiertes GIF aus IndexedDB laden
+                const bgData = await loadMedia('snowi_layout_img_' + name) || layout.bg || '';
+                const bgImg = document.getElementById('bg-img');
+
+                if(bgData) {
+                    await saveMedia('snowi_bg_image', bgData);
+                    bgImg.src = bgData;
                     bgImg.style.display = 'block';
                 } else {
-                    localStorage.removeItem('snowi_bg_image');
-                    document.getElementById('bg-img').style.display = 'none';
+                    await deleteMedia('snowi_bg_image');
+                    bgImg.src = '';
+                    bgImg.style.display = 'none';
                 }
                 alert(`✅ Layout '${name}' erfolgreich geladen!`);
             }
         }
 
-        function deleteSelectedLayout() {
+        async function deleteSelectedLayout() {
             const name = document.getElementById('layout-select').value;
             if(!name) return alert("Bitte wähle zuerst ein Layout zum Löschen aus dem Dropdown.");
             
@@ -1176,13 +1236,16 @@
                 let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
                 delete layouts[name];
                 localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
+                await deleteMedia('snowi_layout_img_' + name);
                 updateLayoutDropdown();
                 alert(`🗑️ Layout '${name}' wurde gelöscht.`);
             }
         }
 
-        // --- STANDARDS ---
-        function loadSavedSettings() {
+        // ==========================================
+        // STANDARDS & BILD / GIF HANDLER
+        // ==========================================
+        async function loadSavedSettings() {
             const savedNeon = localStorage.getItem('snowi_neon_color');
             if (savedNeon) { 
                 document.getElementById('neon-color-picker').value = savedNeon; 
@@ -1195,7 +1258,8 @@
                 changeTextColor(savedText); 
             }
             
-            const savedBg = localStorage.getItem('snowi_bg_image');
+            // Bild oder animiertes GIF laden
+            const savedBg = await loadMedia('snowi_bg_image');
             if (savedBg) { 
                 const bgImg = document.getElementById('bg-img'); 
                 bgImg.src = savedBg; 
@@ -1217,7 +1281,6 @@
 
         function toggleSettings(open) {
             const m = document.getElementById('settings-modal');
-            
             if(open) {
                 m.classList.add('active'); 
             } else {
@@ -1233,7 +1296,6 @@
         
         function toggleSupport(open) {
             const m = document.getElementById('support-modal');
-            
             if(open) { 
                 toggleSettings(false); 
                 m.classList.add('active'); 
@@ -1255,7 +1317,6 @@
         async function pasteFromClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
-                
                 if (text) {
                     let clean = text.replace(/\D/g, '');
                     const cc = document.getElementById('country-code').value;
@@ -1302,57 +1363,70 @@
             }
         }
 
-        // AUTO KOMPRESSOR (Fixt den 5MB Speicherfehler)
-        function handleImageUpload(input) {
+        // =======================================================
+        // BILD- & GIF-UPLOAD (BEHÄLT ANIMATIONEN VOLLSTÄNDIG BEI!)
+        // =======================================================
+        async function handleImageUpload(input) {
             const file = input.files[0];
-            
-            if (!file) {
-                return;
-            }
-            
+            if (!file) return;
+
+            const bgImg = document.getElementById('bg-img');
+
             // Sofortige Vorschau
             const tempUrl = URL.createObjectURL(file);
-            const bgImg = document.getElementById('bg-img');
             bgImg.src = tempUrl; 
             bgImg.style.display = 'block';
-            
-            // Bild komprimieren
-            const reader = new FileReader();
-            reader.onload = function(e) { 
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    
-                    const MAX_WIDTH = 1080;
-                    const MAX_HEIGHT = 1920;
-                    let width = img.width;
-                    let height = img.height;
 
-                    if (width > height && width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    } else if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
+            // Prüfen ob es ein animiertes GIF ist
+            const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
 
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                    
-                    try {
-                        localStorage.setItem('snowi_bg_image', compressedDataUrl);
-                        bgImg.src = compressedDataUrl; 
-                    } catch (err) {
-                        alert("Kritischer Fehler: Dein Browser-Speicher ist komplett voll. Bitte drücke auf den Mülleimer 🗑️ bei alten Layouts, um Platz zu machen!");
-                    }
+            if (isGif) {
+                // WICHTIG: GIFs dürfen niemals über Canvas laufen, sonst geht die Animation verloren!
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const gifData = e.target.result;
+                    await saveMedia('snowi_bg_image', gifData);
+                    bgImg.src = gifData; // Animiertes GIF dauerhaft aktivieren
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            } else {
+                // Bei normalen Bildern (JPG / PNG):
+                const reader = new FileReader();
+                reader.onload = function(e) { 
+                    const img = new Image();
+                    img.onload = async function() {
+                        let finalData = e.target.result;
+
+                        // Nur bei sehr großen Fotos (> 2,5 MB) leicht optimieren
+                        if (file.size > 2.5 * 1024 * 1024) {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 1280;
+                            const MAX_HEIGHT = 1920;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height && width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            } else if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            finalData = canvas.toDataURL('image/jpeg', 0.85);
+                        }
+
+                        await saveMedia('snowi_bg_image', finalData);
+                        bgImg.src = finalData; 
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function formatPhoneNumber(cc, rawNum) {
