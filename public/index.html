@@ -147,16 +147,17 @@
             padding: 0 10px;
         }
 
-        /* Top Panel */
+        /* Top Panel (Knöpfe) - Jetzt identisch zum Glas Pop-up */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
             display: flex;
             text-align: center;
-            margin-bottom: 25px;
-            background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(4px);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+            margin-bottom: 10px; /* Abstand stark verkleinert für kompakten Look */
+            background: var(--ios-bg); /* Gleiche hohe Transparenz wie Popup */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sanfter Außenschatten, kein dunkles Innenleben mehr */
         }
         .top-panel > div {
             flex: 1; 
@@ -178,17 +179,18 @@
             text-shadow: 0 0 8px var(--primary-color);
         }
 
-        /* Eingabebereich */
+        /* Eingabebereich - Jetzt identisch zum Glas Pop-up */
         .input-wrapper { margin-bottom: 25px; position: relative; }
         .input-panel {
             border: 1px solid var(--primary-color);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex; 
             align-items: center;
             padding: 12px 15px;
-            background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(4px);
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+            background: var(--ios-bg); /* Gleiche hohe Transparenz wie Popup */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sanfter Außenschatten */
         }
         .input-panel span { 
             color: var(--text-color); 
@@ -241,10 +243,11 @@
             100% { left: 75%; width: 25%; }
         }
 
+        /* Copyright verkleinert */
         .copyright { 
             text-align: center; 
-            font-size: 0.72rem; 
-            color: rgba(255,255,255,0.7); 
+            font-size: 0.55rem; /* Deutlich kleiner gemacht */
+            color: rgba(255,255,255,0.5); /* Etwas blasser für edleren Look */
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
@@ -1070,7 +1073,6 @@
                 mobCustom.innerHTML = customBannedText;
                 mobSystemText.style.display = 'block';
             } else {
-                // Dynamische Übersetzung für den "Unban" Status
                 deskMsg.innerText = t.is_unban;
                 deskMsg.style.color = "#32D74B";
                 
