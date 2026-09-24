@@ -47,11 +47,13 @@
             padding: 80px 20px 60px 20px;
             transition: opacity 0.5s ease, visibility 0.5s;
         }
+
         #start-screen.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
+
         .welcome-text {
             font-size: 1.4rem;
             font-weight: 600;
@@ -60,6 +62,7 @@
             letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
+
         .start-bottom {
             display: flex;
             flex-direction: column;
@@ -67,12 +70,14 @@
             width: 100%;
             max-width: 320px;
         }
+
         .start-by {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.6);
             margin-bottom: 15px;
             letter-spacing: 1px;
         }
+
         .agree-btn {
             width: 100%;
             padding: 14px;
@@ -87,6 +92,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .agree-btn:hover {
             background: rgba(255, 255, 255, 0.05);
             box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
@@ -138,6 +144,7 @@
             text-shadow: 0 0 10px rgba(0,0,0,0.8);
             z-index: 20;
         }
+
         .dots { 
             position: absolute; 
             right: 0; 
@@ -147,18 +154,19 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) - Jetzt identisch zum Glas Pop-up */
+        /* Top Panel (Knöpfe) - Voller Glas-Effekt */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
             display: flex;
             text-align: center;
-            margin-bottom: 10px; /* Abstand stark verkleinert für kompakten Look */
-            background: var(--ios-bg); /* Gleiche hohe Transparenz wie Popup */
+            margin-bottom: 10px;
+            background: var(--ios-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sanfter Außenschatten, kein dunkles Innenleben mehr */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+
         .top-panel > div {
             flex: 1; 
             padding: 14px; 
@@ -167,38 +175,49 @@
             color: var(--text-color);
             font-weight: 500;
         }
+
         .top-panel > div:hover { 
             background: rgba(255,255,255,0.08); 
         }
-        .border-right { border-right: 1px solid var(--primary-color); }
-        
-        .check-btn-area {
-            letter-spacing: 1px;
+
+        .border-right { 
+            border-right: 1px solid var(--primary-color); 
         }
-        .check-btn-area:hover {
-            text-shadow: 0 0 8px var(--primary-color);
+        
+        .check-btn-area { 
+            letter-spacing: 1px; 
         }
 
-        /* Eingabebereich - Jetzt identisch zum Glas Pop-up */
-        .input-wrapper { margin-bottom: 25px; position: relative; }
+        .check-btn-area:hover { 
+            text-shadow: 0 0 8px var(--primary-color); 
+        }
+
+        /* Eingabebereich - Voller Glas-Effekt */
+        .input-wrapper { 
+            margin-bottom: 25px; 
+            position: relative; 
+        }
+
         .input-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
             display: flex; 
             align-items: center;
             padding: 12px 15px;
-            background: var(--ios-bg); /* Gleiche hohe Transparenz wie Popup */
+            background: var(--ios-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sanfter Außenschatten */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+
         .input-panel span { 
             color: var(--text-color); 
             margin-right: 10px; 
             font-weight: bold;
             font-size: 1.1rem;
         }
-        input[type="text"] {
+
+        input[type="text"], input[type="password"], input[type="number"] {
             background: transparent; 
             border: none; 
             color: var(--text-color);
@@ -208,6 +227,7 @@
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
             width: 100%;
         }
+
         #country-code { 
             width: 45px; 
             border-right: 1px solid rgba(255,255,255,0.2); 
@@ -215,7 +235,10 @@
             margin-right: 10px; 
             text-align: center;
         }
-        #phone-number { flex: 1; }
+
+        #phone-number { 
+            flex: 1; 
+        }
 
         .progress-bar-container {
             width: 82%; 
@@ -226,6 +249,7 @@
             overflow: hidden;
             position: relative;
         }
+
         .progress-bar {
             height: 100%; 
             width: 40%; 
@@ -243,11 +267,10 @@
             100% { left: 75%; width: 25%; }
         }
 
-        /* Copyright verkleinert */
         .copyright { 
             text-align: center; 
-            font-size: 0.55rem; /* Deutlich kleiner gemacht */
-            color: rgba(255,255,255,0.5); /* Etwas blasser für edleren Look */
+            font-size: 0.55rem; 
+            color: rgba(255,255,255,0.5); 
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
@@ -261,6 +284,7 @@
             font-weight: 500;
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
+
         #error-message { 
             color: #ff4d4d; 
             text-align: center; 
@@ -270,7 +294,10 @@
         }
 
         /* --- RESULT BOXEN --- */
-        #result-wrapper { display: none; margin-bottom: 20px; }
+        #result-wrapper { 
+            display: none; 
+            margin-bottom: 20px; 
+        }
         
         .desktop-result {
             position: relative;
@@ -282,37 +309,47 @@
             -webkit-backdrop-filter: blur(8px);
             box-shadow: 0 0 18px rgba(255,0,51,0.25);
         }
+
         .desktop-num { 
             font-size: 1.25rem; 
             font-weight: bold; 
             margin-bottom: 15px; 
             text-align: center;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); 
         }
+
         .desktop-msg { 
             font-style: italic; 
             font-size: 1.15rem; 
             margin-bottom: 30px; 
             text-align: center;
             font-weight: 600;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); 
         }
+
         .desktop-actions { 
             display: flex; 
             justify-content: space-between; 
             font-size: 0.9rem; 
             text-transform: uppercase; 
         }
+
         .desktop-actions span { 
             cursor: pointer; 
             letter-spacing: 1px;
             transition: color 0.2s;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            text-shadow: 0 0 5px rgba(0,0,0,0.8); 
         }
-        .desktop-actions span:hover { color: var(--primary-color); }
 
-        .mobile-result { display: none; }
-        .ios-overlay {
+        .desktop-actions span:hover { 
+            color: var(--primary-color); 
+        }
+
+        .mobile-result { 
+            display: none; 
+        }
+
+        .ios-overlay { 
             position: fixed; 
             top: 0; 
             left: 0; 
@@ -322,20 +359,19 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            z-index: 1000; 
+            z-index: 4000; 
         }
 
-        /* --- ANIMATION FÜR DAS POP-UP --- */
-        @keyframes popupSlideUpFade {
-            0% { opacity: 0; transform: translateY(40px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes popupSlideUpFade { 
+            0% { opacity: 0; transform: translateY(40px); } 
+            100% { opacity: 1; transform: translateY(0); } 
         }
 
         .ios-modal {
             position: relative;
             background: var(--ios-bg);
-            backdrop-filter: blur(6px); 
-            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 14px; 
             width: 275px; 
             text-align: center; 
@@ -345,28 +381,32 @@
             animation: popupSlideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .ios-text {
+        .ios-text { 
             padding: 24px 14px 20px 14px; 
             font-size: 0.95rem; 
             font-weight: 500;
             line-height: 1.35; 
         }
-        #mob-num {
+
+        #mob-num { 
             display: block; 
             margin: 8px 0; 
             font-size: 1.05rem; 
-            font-weight: 600;
+            font-weight: 600; 
         }
-        #mob-system-text {
-            display: block;
+
+        #mob-system-text { 
+            display: block; 
             margin-top: 12px; 
             font-size: 0.85rem; 
         }
-        .ios-buttons {
+
+        .ios-buttons { 
             display: flex; 
-            border-top: 1px solid var(--ios-border);
+            border-top: 1px solid var(--ios-border); 
         }
-        .ios-buttons button {
+
+        .ios-buttons button { 
             flex: 1; 
             padding: 13px; 
             background: none; 
@@ -374,43 +414,54 @@
             font-size: 1rem; 
             color: var(--primary-color); 
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s; 
         }
-        .ios-buttons button:active {
-            background: rgba(255,255,255,0.1);
+
+        .ios-buttons button:active { 
+            background: rgba(255,255,255,0.1); 
         }
+
         .ios-buttons button:first-child { 
             border-right: 1px solid var(--ios-border); 
             color: var(--primary-color); 
         }
-        .ios-buttons button:last-child { font-weight: 600; }
+
+        .ios-buttons button:last-child { 
+            font-weight: 600; 
+        }
 
         @media (max-width: 768px) {
             .desktop-result { display: none; }
             .mobile-result.active { display: block; }
         }
+
         @media (min-width: 769px) {
             .desktop-result.active { display: block; }
             .mobile-result { display: none !important; }
         }
 
         /* --- SLIDE-UP MENÜS (EINSTELLUNGEN & SUPPORT) --- */
-        .settings-backdrop {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+        .settings-backdrop { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
-            z-index: 3000;
-            display: none;
+            z-index: 3000; 
+            display: none; 
             justify-content: center;
-            align-items: flex-end;
+            align-items: flex-end; 
         }
-        .settings-backdrop.active {
-            display: flex;
+
+        .settings-backdrop.active { 
+            display: flex; 
         }
-        .settings-panel {
-            width: 100%;
-            max-width: 420px;
+
+        .settings-panel { 
+            width: 100%; 
+            max-width: 420px; 
             border-top: 1px solid var(--primary-color);
             border-left: 1px solid var(--primary-color);
             border-right: 1px solid var(--primary-color);
@@ -422,16 +473,21 @@
             box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            max-height: 85vh; 
+            overflow-y: auto;
         }
-        .settings-backdrop.active .settings-panel {
-            transform: translateY(0);
+
+        .settings-backdrop.active .settings-panel { 
+            transform: translateY(0); 
         }
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
+        
+        .settings-header { 
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: 18px; 
         }
+
         .settings-title { 
             font-size: 0.9rem; 
             color: var(--text-color); 
@@ -439,19 +495,28 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             font-weight: bold;
+            cursor: pointer; 
+            user-select: none; 
         }
-        .close-settings {
-            background: none; border: none; color: var(--text-color);
-            font-size: 1.3rem; cursor: pointer; opacity: 0.8;
-            padding: 5px;
+
+        .close-settings { 
+            background: none; 
+            border: none; 
+            color: var(--text-color);
+            font-size: 1.3rem; 
+            cursor: pointer; 
+            opacity: 0.8; 
+            padding: 5px; 
         }
+
         .settings-row { 
             display: flex; 
             align-items: center; 
-            justify-content: space-between; 
+            justify-content: space-between;
             margin-bottom: 14px; 
-            font-size: 0.85rem;
+            font-size: 0.85rem; 
         }
+        
         input[type="color"] { 
             -webkit-appearance: none; 
             border: none; 
@@ -460,13 +525,15 @@
             border-radius: 6px; 
             cursor: pointer; 
             padding: 0; 
-            background: transparent;
+            background: transparent; 
         }
+
         input[type="color"]::-webkit-color-swatch { 
             border: 1px solid rgba(255,255,255,0.4); 
             border-radius: 6px; 
         }
-        .edit-text-btn {
+
+        .edit-text-btn, .action-btn { 
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--primary-color);
             color: var(--text-color);
@@ -474,40 +541,44 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.2s;
+            transition: all 0.2s; 
         }
-        .edit-text-btn:hover {
-            background: rgba(255,255,255,0.2);
+
+        .edit-text-btn:hover, .action-btn:hover { 
+            background: rgba(255,255,255,0.2); 
         }
+        
         input[type="file"] { 
             width: 100%; 
             padding: 6px; 
-            border: 1px dashed var(--primary-color); 
-            color: var(--text-color); 
-            border-radius: 6px; 
+            border: 1px dashed var(--primary-color);
+            color: var(--text-color);
+            border-radius: 6px;
             font-size: 0.75rem; 
             cursor: pointer; 
             margin-top: 6px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.4); 
         }
+
         input[type="file"]::file-selector-button { 
             background: transparent; 
-            border: 1px solid var(--primary-color); 
-            color: var(--text-color); 
-            padding: 4px 10px; 
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 4px 10px;
             border-radius: 4px; 
             cursor: pointer; 
             margin-right: 8px;
-            font-size: 0.75rem;
+            font-size: 0.75rem; 
         }
-        .support-info-text {
+        
+        .support-info-text { 
             text-align: center; 
             font-size: 0.85rem; 
             margin-bottom: 20px; 
-            opacity: 0.8;
+            opacity: 0.8; 
         }
-        /* Glas-Dropdown für die Sprache */
-        select.glass-select {
+        
+        select.glass-select { 
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--primary-color);
             color: var(--text-color);
@@ -515,11 +586,23 @@
             border-radius: 6px;
             outline: none;
             font-size: 0.85rem;
-            cursor: pointer;
+            cursor: pointer; 
         }
-        select.glass-select option {
-            background: #1a1a1a;
-            color: #fff;
+
+        select.glass-select option { 
+            background: #1a1a1a; 
+            color: #fff; 
+        }
+
+        /* Custom Inputs für Owner */
+        .owner-input { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border-radius: 6px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white; 
         }
     </style>
 </head>
@@ -531,6 +614,19 @@
         <div class="start-bottom">
             <div class="start-by">by Tayy</div>
             <button class="agree-btn" onclick="startApp()" data-i18n="agree_btn">AGREE AND CONTINUE</button>
+        </div>
+    </div>
+
+    <!-- ANNOUNCEMENT POPUP (Wird dynamisch angezeigt) -->
+    <div id="announcement-modal" class="ios-overlay" style="display: none;">
+        <div class="ios-modal">
+            <div class="ios-text">
+                <strong id="ann-title" style="display:block; margin-bottom:10px; font-size:1.1rem; color:var(--primary-color);">Ankündigung</strong>
+                <span id="ann-content">Hier steht der Text...</span>
+            </div>
+            <div class="ios-buttons">
+                <button onclick="closeAnnouncement()" style="border-right: none; font-weight: bold;" data-i18n="understood">Verstanden</button>
+            </div>
         </div>
     </div>
 
@@ -577,7 +673,7 @@
 
             <!-- Mobile Layout (iOS Popup) -->
             <div class="mobile-result" id="mobile-view">
-                <div class="ios-overlay">
+                <div class="ios-overlay" style="background: transparent;">
                     <div class="ios-modal">
                         <div class="ios-text" id="mobile-msg">
                             <span data-i18n="your_phone">Deine Telefonnummer</span>
@@ -614,8 +710,21 @@
     <div class="settings-backdrop" id="settings-modal" onclick="checkCloseSettings(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
-                <div class="settings-title" data-i18n="settings_title">⚙️ Einstellungen</div>
+                <!-- Secret Click für Owner Panel -->
+                <div class="settings-title" onclick="handleSecretClick()" data-i18n="settings_title">⚙️ Einstellungen</div>
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
+            </div>
+
+            <!-- LAYOUT BEREICH -->
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);" data-i18n="layout_manager">🎨 Layout Manager</div>
+                <div class="settings-row" style="margin-bottom: 8px;">
+                    <button class="action-btn" onclick="saveCurrentLayout()" data-i18n="layout_save">💾 Speichern</button>
+                    <select id="layout-select" class="glass-select" style="max-width: 140px;">
+                        <option value="" data-i18n="layout_select">Layout wählen...</option>
+                    </select>
+                </div>
+                <button class="action-btn" style="width: 100%; border-color: rgba(255,255,255,0.3);" onclick="loadSelectedLayout()" data-i18n="layout_load">📂 Gewähltes Layout laden</button>
             </div>
 
             <!-- Sprachauswahl -->
@@ -655,11 +764,45 @@
         </div>
     </div>
 
+    <!-- OWNER LOGIN MODAL -->
+    <div id="owner-login-modal" class="ios-overlay" style="display: none; z-index: 5000;">
+        <div class="ios-modal" style="padding: 20px;">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">Admin Login</h3>
+            <input type="text" id="admin-user" class="owner-input" placeholder="Benutzername">
+            <input type="password" id="admin-pass" class="owner-input" placeholder="Passwort">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="action-btn" style="flex:1" onclick="document.getElementById('owner-login-modal').style.display='none'">Abbrechen</button>
+                <button class="action-btn" style="flex:1; border-color: var(--primary-color);" onclick="verifyOwner()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OWNER DASHBOARD -->
+    <div class="settings-backdrop" id="owner-panel" style="z-index: 5000;" onclick="if(event.target.id==='owner-panel') document.getElementById('owner-panel').classList.remove('active')">
+        <div class="settings-panel" onclick="event.stopPropagation()">
+            <div class="settings-header">
+                <div class="settings-title" style="color: red;">👑 OWNER BEREICH</div>
+                <button class="close-settings" onclick="document.getElementById('owner-panel').classList.remove('active')">✕</button>
+            </div>
+            
+            <p style="font-size: 0.85rem; margin-bottom: 10px; opacity: 0.8;">Neues Announcement für alle Nutzer erstellen:</p>
+            <input type="text" id="new-ann-title" class="owner-input" placeholder="Titel (z.B. Wartungsarbeiten)">
+            <textarea id="new-ann-content" class="owner-input" placeholder="Inhalt der Nachricht..." rows="3"></textarea>
+            
+            <div class="settings-row">
+                <span>Dauer in Stunden:</span>
+                <input type="number" id="new-ann-hours" class="owner-input" style="width: 80px; margin:0;" value="24">
+            </div>
+            
+            <button class="agree-btn" style="margin-top: 15px; border-color: red; color: red;" onclick="postAnnouncement()">🚀 Announcement Senden</button>
+        </div>
+    </div>
+
     <script>
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
-        // Übersetzungs-Wörterbuch (Englisch, Deutsch, Spanisch, Russisch, Arabisch)
+        // Übersetzungs-Wörterbuch (Alle 5 Sprachen)
         const translations = {
             en: {
                 agree_btn: "AGREE AND CONTINUE",
@@ -672,6 +815,10 @@
                 support: "Support",
                 support_desk: "Support",
                 settings_title: "⚙️ Settings",
+                layout_manager: "🎨 Layout Manager",
+                layout_save: "💾 Save",
+                layout_select: "Select layout...",
+                layout_load: "📂 Load Selected Layout",
                 color_neon: "Neon/Accent Color",
                 color_text: "Change Text Color",
                 edit_welcome: "Edit Welcome Text",
@@ -682,11 +829,13 @@
                 support_where: "Where do you want to contact us?",
                 change_lang: "Language",
                 alert_empty: "Please enter a number!",
-                alert_clipboard: "Clipboard access denied. Please allow it in your browser or paste manually.",
+                alert_clipboard: "Clipboard access denied. Please allow it or paste manually.",
                 prompt_welcome: "Enter new Welcome text:",
                 prompt_ban: "Enter new text if the number is banned:",
-                alert_size: "Note: Your image/GIF is larger than 4 MB. It will be shown immediately but not saved permanently.",
-                error_msg: "Error:"
+                alert_size: "Image > 4MB. Shown now but not saved permanently.",
+                error_msg: "Error:",
+                understood: "Understood",
+                prompt_layout: "Enter a name for this layout:"
             },
             de: {
                 agree_btn: "ZUSTIMMEN UND WEITER",
@@ -699,6 +848,10 @@
                 support: "Support",
                 support_desk: "サポート", 
                 settings_title: "⚙️ Einstellungen",
+                layout_manager: "🎨 Layout Manager",
+                layout_save: "💾 Speichern",
+                layout_select: "Layout wählen...",
+                layout_load: "📂 Gewähltes Layout laden",
                 color_neon: "Neon-/Akzentfarbe",
                 color_text: "Textfarbe ändern",
                 edit_welcome: "Welcome-Text anpassen",
@@ -709,11 +862,13 @@
                 support_where: "Wo möchtest du uns kontaktieren?",
                 change_lang: "Sprache",
                 alert_empty: "Bitte eine Nummer eingeben!",
-                alert_clipboard: "Zugriff auf die Zwischenablage verweigert. Bitte erlaube es im Browser oder füge die Nummer manuell ein.",
+                alert_clipboard: "Zugriff auf die Zwischenablage verweigert.",
                 prompt_welcome: "Neuen Welcome-Text eingeben:",
                 prompt_ban: "Neuen Text eingeben, wenn die Nummer gebannt ist:",
-                alert_size: "Hinweis: Dein Bild/GIF ist größer als 4 MB. Es wird sofort angezeigt, aber nicht dauerhaft gespeichert.",
-                error_msg: "Fehler:"
+                alert_size: "Bild > 4MB. Wird nur für diese Sitzung gespeichert.",
+                error_msg: "Fehler:",
+                understood: "Verstanden",
+                prompt_layout: "Gib einen Namen für dieses Layout ein:"
             },
             es: {
                 agree_btn: "ACEPTAR Y CONTINUAR",
@@ -726,6 +881,10 @@
                 support: "Soporte",
                 support_desk: "Soporte",
                 settings_title: "⚙️ Ajustes",
+                layout_manager: "🎨 Gestor de Diseños",
+                layout_save: "💾 Guardar",
+                layout_select: "Seleccionar diseño...",
+                layout_load: "📂 Cargar Diseño",
                 color_neon: "Color Neón/Acento",
                 color_text: "Cambiar Color de Texto",
                 edit_welcome: "Editar texto de bienvenida",
@@ -736,11 +895,13 @@
                 support_where: "¿Dónde deseas contactarnos?",
                 change_lang: "Idioma",
                 alert_empty: "¡Por favor, introduzca un número!",
-                alert_clipboard: "Acceso al portapapeles denegado. Permítelo en el navegador o pega manualmente.",
+                alert_clipboard: "Acceso al portapapeles denegado.",
                 prompt_welcome: "Introduzca el nuevo texto de bienvenida:",
                 prompt_ban: "Introduce un nuevo texto si el número está baneado:",
-                alert_size: "Nota: Su imagen/GIF tiene más de 4 MB. Se mostrará inmediatamente pero no se guardará.",
-                error_msg: "Error:"
+                alert_size: "Imagen > 4MB. No se guardará permanentemente.",
+                error_msg: "Error:",
+                understood: "Entendido",
+                prompt_layout: "Introduce un nombre para este diseño:"
             },
             ru: {
                 agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ",
@@ -748,26 +909,32 @@
                 api_loading: "Проверка API...",
                 your_phone: "Ваш номер телефона",
                 is_unban: "Разблокирован",
-                contact_support: "Пожалуйста, свяжитесь с нашей службой поддержки для получения помощи.",
+                contact_support: "Пожалуйста, свяжитесь с поддержкой.",
                 cancel: "Отмена",
                 support: "Поддержка",
                 support_desk: "Поддержка",
                 settings_title: "⚙️ Настройки",
-                color_neon: "Неоновый/Акцентный цвет",
+                layout_manager: "🎨 Менеджер макетов",
+                layout_save: "💾 Сохранить",
+                layout_select: "Выбрать макет...",
+                layout_load: "📂 Загрузить макет",
+                color_neon: "Неоновый цвет",
                 color_text: "Изменить цвет текста",
                 edit_welcome: "Изменить текст приветствия",
                 edit_ban: "Изменить текст блокировки",
                 btn_edit: "✏️ Изменить текст",
-                upload_bg: "Загрузить фоновое изображение:",
+                upload_bg: "Загрузить фон:",
                 support_btn: "💬 Связаться с поддержкой",
                 support_where: "Где вы хотите с нами связаться?",
                 change_lang: "Язык",
                 alert_empty: "Пожалуйста, введите номер!",
-                alert_clipboard: "Доступ к буферу обмена запрещен. Разрешите его в браузере или вставьте вручную.",
+                alert_clipboard: "Доступ к буферу обмена запрещен.",
                 prompt_welcome: "Введите новый текст приветствия:",
                 prompt_ban: "Введите новый текст, если номер заблокирован:",
-                alert_size: "Примечание: Ваше изображение/GIF больше 4 МБ. Оно будет показано сразу, но не сохранится навсегда.",
-                error_msg: "Ошибка:"
+                alert_size: "Изображение > 4 МБ.",
+                error_msg: "Ошибка:",
+                understood: "Понятно",
+                prompt_layout: "Введите имя для этого макета:"
             },
             ar: {
                 agree_btn: "موافق ومتابعة",
@@ -775,12 +942,16 @@
                 api_loading: "جاري فحص API...",
                 your_phone: "رقم هاتفك",
                 is_unban: "غير محظور",
-                contact_support: "يرجى الاتصال بدعم العملاء للحصول على مزيد من المساعدة.",
+                contact_support: "يرجى الاتصال بدعم العملاء للمساعدة.",
                 cancel: "إلغاء",
                 support: "الدعم",
                 support_desk: "الدعم",
                 settings_title: "⚙️ الإعدادات",
-                color_neon: "لون النيون/التمييز",
+                layout_manager: "🎨 مدير التخطيط",
+                layout_save: "💾 حفظ",
+                layout_select: "اختر التصميم...",
+                layout_load: "📂 تحميل التصميم",
+                color_neon: "لون النيون",
                 color_text: "تغيير لون النص",
                 edit_welcome: "تعديل نص الترحيب",
                 edit_ban: "تعديل نص الحظر",
@@ -790,45 +961,27 @@
                 support_where: "أين تريد الاتصال بنا؟",
                 change_lang: "اللغة",
                 alert_empty: "الرجاء إدخال رقم!",
-                alert_clipboard: "تم رفض الوصول إلى الحافظة. يرجى السماح بذلك أو اللصق يدويًا.",
+                alert_clipboard: "تم رفض الوصول إلى الحافظة.",
                 prompt_welcome: "أدخل نص الترحيب الجديد:",
-                prompt_ban: "أدخل نصًا جديدًا إذا كان الرقم محظورًا:",
-                alert_size: "ملاحظة: صورتك أكبر من 4 ميغابايت. سيتم عرضها على الفور ولكن لن يتم حفظها بشكل دائم.",
-                error_msg: "خطأ:"
+                prompt_ban: "أدخل نصًا جديدًا للحظر:",
+                alert_size: "الصورة أكبر من 4MB.",
+                error_msg: "خطأ:",
+                understood: "مفهوم",
+                prompt_layout: "أدخل اسمًا لهذا التصميم:"
             }
         };
 
         let currentLang = 'en';
+        let secretClicks = 0;
+        let secretTimer;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Sprache laden & anwenden
-            const savedLang = localStorage.getItem('snowi_lang') || 'en';
+            const savedLang = localStorage.getItem('snowi_lang') || 'de';
             changeLanguage(savedLang);
 
-            // Farben laden
-            const savedNeon = localStorage.getItem('snowi_neon_color');
-            if (savedNeon) {
-                document.getElementById('neon-color-picker').value = savedNeon;
-                changeThemeColor(savedNeon);
-            }
-            const savedText = localStorage.getItem('snowi_text_color');
-            if (savedText) {
-                document.getElementById('text-color-picker').value = savedText;
-                changeTextColor(savedText);
-            }
-            // Bild laden
-            const savedBg = localStorage.getItem('snowi_bg_image');
-            if (savedBg) {
-                const bgImg = document.getElementById('bg-img');
-                bgImg.src = savedBg;
-                bgImg.style.display = 'block';
-            }
-            // Texte laden
-            const savedBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
-            updateBannedTextDisplay(savedBannedText);
-
-            const savedWelcomeText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
-            document.getElementById('welcome-display').innerText = savedWelcomeText;
+            loadSavedSettings();
+            updateLayoutDropdown();
+            checkGlobalAnnouncements();
         });
 
         function changeLanguage(lang) {
@@ -836,7 +989,6 @@
             localStorage.setItem('snowi_lang', lang);
             document.documentElement.lang = lang;
             
-            // RTL-Support für Arabisch
             if (lang === 'ar') {
                 document.body.style.direction = 'rtl';
             } else {
@@ -844,137 +996,304 @@
             }
 
             const t = translations[lang];
-            // Update alle Elemente mit "data-i18n"
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) {
                     el.innerText = t[key];
                 }
             });
-
+            
             document.getElementById('lang-select').value = lang;
+        }
+
+        // --- SECRET OWNER AREA ---
+        function handleSecretClick() {
+            secretClicks++;
+            clearTimeout(secretTimer);
+            
+            if (secretClicks >= 3) {
+                secretClicks = 0;
+                toggleSettings(false);
+                document.getElementById('owner-login-modal').style.display = 'flex';
+            } else {
+                secretTimer = setTimeout(() => { 
+                    secretClicks = 0; 
+                }, 800);
+            }
+        }
+
+        function verifyOwner() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            
+            if (u === 'Tayy' && p === '0873@adv') {
+                document.getElementById('owner-login-modal').style.display = 'none';
+                document.getElementById('owner-panel').classList.add('active');
+                document.getElementById('admin-user').value = '';
+                document.getElementById('admin-pass').value = '';
+            } else {
+                alert("Falsche Anmeldedaten!");
+            }
+        }
+
+        async function postAnnouncement() {
+            const title = document.getElementById('new-ann-title').value;
+            const content = document.getElementById('new-ann-content').value;
+            const hours = document.getElementById('new-ann-hours').value;
+            
+            if(!title || !content) {
+                return alert("Bitte Titel und Inhalt eingeben!");
+            }
+
+            try {
+                const res = await fetch('/api/announcement', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, hours, password: '0873@adv' })
+                });
+                
+                const data = await res.json();
+                
+                if(data.success) {
+                    alert("Announcement ist live!");
+                    document.getElementById('owner-panel').classList.remove('active');
+                }
+            } catch (err) {
+                alert("Fehler beim Senden. (Server online?)");
+            }
+        }
+
+        async function checkGlobalAnnouncements() {
+            try {
+                const res = await fetch('/api/announcement');
+                const data = await res.json();
+                
+                if(data && data.active) {
+                    const seenId = localStorage.getItem('snowi_seen_ann');
+                    
+                    if(seenId !== data.id.toString()) {
+                        document.getElementById('ann-title').innerText = data.title;
+                        document.getElementById('ann-content').innerText = data.content;
+                        document.getElementById('announcement-modal').dataset.currentId = data.id;
+                        document.getElementById('announcement-modal').style.display = 'flex';
+                    }
+                }
+            } catch (err) {
+                console.log("Keine Announcements.");
+            }
+        }
+
+        function closeAnnouncement() {
+            const id = document.getElementById('announcement-modal').dataset.currentId;
+            
+            if(id) {
+                localStorage.setItem('snowi_seen_ann', id);
+            }
+            
+            document.getElementById('announcement-modal').style.display = 'none';
+        }
+
+        // --- LAYOUT SYSTEM ---
+        function saveCurrentLayout() {
+            const promptMsg = translations[currentLang].prompt_layout || "Name für das Layout:";
+            const name = prompt(promptMsg);
+            
+            if(!name || name.trim() === "") {
+                return;
+            }
+
+            const layoutData = {
+                neon: localStorage.getItem('snowi_neon_color') || '#8a2be2',
+                text: localStorage.getItem('snowi_text_color') || '#ffffff',
+                bg: localStorage.getItem('snowi_bg_image') || ''
+            };
+
+            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
+            layouts[name] = layoutData;
+            localStorage.setItem('snowi_layouts', JSON.stringify(layouts));
+            
+            updateLayoutDropdown();
+        }
+
+        function updateLayoutDropdown() {
+            const select = document.getElementById('layout-select');
+            const defaultText = translations[currentLang].layout_select || "Layout wählen...";
+            
+            select.innerHTML = `<option value="">${defaultText}</option>`;
+            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
+            
+            for (let name in layouts) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                select.appendChild(opt);
+            }
+        }
+
+        function loadSelectedLayout() {
+            const name = document.getElementById('layout-select').value;
+            
+            if(!name) {
+                return;
+            }
+            
+            let layouts = JSON.parse(localStorage.getItem('snowi_layouts') || '{}');
+            const layout = layouts[name];
+            
+            if(layout) {
+                changeThemeColor(layout.neon);
+                document.getElementById('neon-color-picker').value = layout.neon;
+                
+                changeTextColor(layout.text);
+                document.getElementById('text-color-picker').value = layout.text;
+                
+                if(layout.bg) {
+                    localStorage.setItem('snowi_bg_image', layout.bg);
+                    const bgImg = document.getElementById('bg-img');
+                    bgImg.src = layout.bg;
+                    bgImg.style.display = 'block';
+                }
+            }
+        }
+
+        // --- STANDARDS ---
+        function loadSavedSettings() {
+            const savedNeon = localStorage.getItem('snowi_neon_color');
+            if (savedNeon) { 
+                document.getElementById('neon-color-picker').value = savedNeon; 
+                changeThemeColor(savedNeon); 
+            }
+            
+            const savedText = localStorage.getItem('snowi_text_color');
+            if (savedText) { 
+                document.getElementById('text-color-picker').value = savedText; 
+                changeTextColor(savedText); 
+            }
+            
+            const savedBg = localStorage.getItem('snowi_bg_image');
+            if (savedBg) { 
+                const bgImg = document.getElementById('bg-img'); 
+                bgImg.src = savedBg; 
+                bgImg.style.display = 'block'; 
+            }
+            
+            const savedWelcome = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
+            document.getElementById('welcome-display').innerText = savedWelcome;
         }
 
         function startApp() {
             const startScreen = document.getElementById('start-screen');
             startScreen.classList.add('hidden');
-            setTimeout(() => {
-                startScreen.style.display = 'none';
+            
+            setTimeout(() => { 
+                startScreen.style.display = 'none'; 
             }, 500);
         }
 
-        // Support Modal Steuerung
-        function toggleSupport(open) {
-            const modal = document.getElementById('support-modal');
-            if (open) {
-                toggleSettings(false); 
-                modal.classList.add('active');
+        function toggleSettings(open) {
+            const m = document.getElementById('settings-modal');
+            
+            if(open) {
+                m.classList.add('active'); 
             } else {
-                modal.classList.remove('active');
+                m.classList.remove('active');
             }
         }
 
-        function checkCloseSupport(event) {
-            if (event.target.id === 'support-modal') {
+        function checkCloseSettings(e) { 
+            if (e.target.id === 'settings-modal') {
+                toggleSettings(false);
+            } 
+        }
+        
+        function toggleSupport(open) {
+            const m = document.getElementById('support-modal');
+            
+            if(open) { 
+                toggleSettings(false); 
+                m.classList.add('active'); 
+            } else {
+                m.classList.remove('active');
+            }
+        }
+
+        function checkCloseSupport(e) { 
+            if (e.target.id === 'support-modal') {
                 toggleSupport(false);
-            }
+            } 
         }
 
-        function openSupport() {
-            toggleSupport(true);
+        function openSupport() { 
+            toggleSupport(true); 
         }
 
-        // Intelligente Zwischenablage
         async function pasteFromClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
+                
                 if (text) {
-                    let cleanText = text.replace(/\D/g, '');
+                    let clean = text.replace(/\D/g, '');
                     const cc = document.getElementById('country-code').value;
                     
-                    if (cc && cleanText.startsWith(cc)) {
-                        cleanText = cleanText.substring(cc.length);
-                    } else if (cleanText.startsWith('0')) {
-                        cleanText = cleanText.substring(1);
+                    if (cc && clean.startsWith(cc)) {
+                        clean = clean.substring(cc.length);
+                    } else if (clean.startsWith('0')) {
+                        clean = clean.substring(1);
                     }
-                    document.getElementById('phone-number').value = cleanText;
+                    
+                    document.getElementById('phone-number').value = clean;
                 }
-            } catch (err) {
-                alert(translations[currentLang].alert_clipboard);
+            } catch (err) { 
+                alert(translations[currentLang].alert_clipboard); 
             }
         }
 
-        function toggleSettings(open) {
-            const modal = document.getElementById('settings-modal');
-            if (open) {
-                modal.classList.add('active');
-            } else {
-                modal.classList.remove('active');
-            }
+        function changeThemeColor(hex) { 
+            document.documentElement.style.setProperty('--primary-color', hex); 
+            localStorage.setItem('snowi_neon_color', hex); 
         }
 
-        function checkCloseSettings(event) {
-            if (event.target.id === 'settings-modal') {
-                toggleSettings(false);
-            }
+        function changeTextColor(hex) { 
+            document.documentElement.style.setProperty('--text-color', hex); 
+            localStorage.setItem('snowi_text_color', hex); 
         }
-
+        
         function editWelcomeText() {
-            const currentText = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
-            const newText = prompt(translations[currentLang].prompt_welcome, currentText);
+            const current = localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT;
+            const neu = prompt(translations[currentLang].prompt_welcome, current);
             
-            if (newText !== null && newText.trim() !== "") {
-                localStorage.setItem('snowi_welcome_text', newText.trim());
-                document.getElementById('welcome-display').innerText = newText.trim();
+            if (neu && neu.trim() !== "") { 
+                localStorage.setItem('snowi_welcome_text', neu.trim()); 
+                document.getElementById('welcome-display').innerText = neu.trim(); 
             }
         }
 
         function editBannedText() {
-            const currentTextRaw = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
-            const currentTextClean = currentTextRaw.replace(/<br>/g, '\n');
-            const newText = prompt(translations[currentLang].prompt_ban, currentTextClean);
+            const current = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
+            const neu = prompt(translations[currentLang].prompt_ban, current.replace(/<br>/g, '\n'));
             
-            if (newText !== null && newText.trim() !== "") {
-                const cleaned = newText.trim().replace(/\n/g, '<br>');
-                localStorage.setItem('snowi_banned_text', cleaned);
-                updateBannedTextDisplay(cleaned);
+            if (neu && neu.trim() !== "") {
+                localStorage.setItem('snowi_banned_text', neu.trim().replace(/\n/g, '<br>'));
             }
-        }
-
-        function updateBannedTextDisplay(text) {
-            const deskMsg = document.getElementById('desk-msg');
-            const mobCustom = document.getElementById('mob-custom-text');
-            if (deskMsg) deskMsg.innerHTML = text; 
-            if (mobCustom) mobCustom.innerHTML = text;
-        }
-
-        function changeThemeColor(hex) {
-            document.documentElement.style.setProperty('--primary-color', hex);
-            localStorage.setItem('snowi_neon_color', hex);
-        }
-
-        function changeTextColor(hex) {
-            document.documentElement.style.setProperty('--text-color', hex);
-            localStorage.setItem('snowi_text_color', hex);
         }
 
         function handleImageUpload(input) {
             const file = input.files[0];
-            if (!file) return;
-
+            
+            if (!file) {
+                return;
+            }
+            
             const tempUrl = URL.createObjectURL(file);
             const bgImg = document.getElementById('bg-img');
-            bgImg.src = tempUrl;
+            bgImg.src = tempUrl; 
             bgImg.style.display = 'block';
-
+            
             if (file.size <= 4 * 1024 * 1024) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        localStorage.setItem('snowi_bg_image', e.target.result);
-                    } catch (err) {
-                        console.log("Storage limit reached.");
-                    }
+                reader.onload = function(e) { 
+                    localStorage.setItem('snowi_bg_image', e.target.result); 
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -982,107 +1301,91 @@
             }
         }
 
-        function closeResult() {
-            document.getElementById('result-wrapper').style.display = 'none';
-            document.getElementById('desktop-view').classList.remove('active');
-            document.getElementById('mobile-view').classList.remove('active');
-        }
-
         function formatPhoneNumber(cc, rawNum) {
             const clean = rawNum.replace(/\D/g, '');
+            
             if (cc === '49') {
                 if (clean.startsWith('15678') || clean.startsWith('1563')) {
                     return `+${cc} ${clean.slice(0, 5)} ${clean.slice(5)}`;
                 }
-                if (clean.startsWith('157') || clean.startsWith('156')) {
-                    return `+${cc} ${clean.slice(0, 4)} ${clean.slice(4)}`;
-                }
-                if (/^(15[129]|16[023]|17[0-8])/.test(clean)) {
+                if (/^(15[1279]|16[023]|17[0-8])/.test(clean)) {
                     return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`;
                 }
             }
-            if (clean.length > 7) {
-                return `+${cc} ${clean.slice(0, 4)} ${clean.slice(4)}`;
-            } else if (clean.length > 3) {
-                return `+${cc} ${clean.slice(0, 3)} ${clean.slice(3)}`;
-            }
+            
             return `+${cc} ${clean}`;
+        }
+
+        function closeResult() { 
+            document.getElementById('result-wrapper').style.display = 'none'; 
+            document.getElementById('desktop-view').classList.remove('active');
+            document.getElementById('mobile-view').classList.remove('active');
         }
 
         async function checkNumber() {
             const t = translations[currentLang];
-            const cc = document.getElementById('country-code').value.replace('+', ''); 
-            const num = document.getElementById('phone-number').value.replace(/\s+/g, ''); 
-            const formattedNumber = formatPhoneNumber(cc, num);
-
-            if(num.trim() === "") return alert(t.alert_empty);
-
+            const cc = document.getElementById('country-code').value; 
+            const num = document.getElementById('phone-number').value; 
+            
+            if(num.trim() === "") {
+                return alert(t.alert_empty);
+            }
+            
+            const formatted = formatPhoneNumber(cc, num);
             closeResult();
+            
             document.getElementById('error-message').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
 
             try {
-                const apiNumber = "+" + cc + " " + num;
                 const response = await fetch('/check', {
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ number: apiNumber })
+                    body: JSON.stringify({ number: "+" + cc + " " + num })
                 });
+                
+                const data = await response.json();
+                let banned = data.banned || data.isBanned || (data.data && data.data.banned) || data.status === "banned";
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                // Desktop
+                document.getElementById('desk-num').innerText = formatted;
+                const deskMsg = document.getElementById('desk-msg');
+                
+                // Mobile
+                document.getElementById('mob-num').innerText = formatted;
+                const mobCustom = document.getElementById('mob-custom-text');
+                const mobSystem = document.getElementById('mob-system-text');
+                
+                const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
 
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.error || 'Unknown API Error');
+                if (banned) {
+                    deskMsg.innerHTML = customBannedText; 
+                    deskMsg.style.color = "var(--primary-color)";
+                    
+                    mobCustom.innerHTML = customBannedText;
+                    mobCustom.style.color = "var(--primary-color)";
+                    mobSystem.style.display = 'block';
+                } else {
+                    deskMsg.innerText = t.is_unban;
+                    deskMsg.style.color = "#32D74B";
+                    
+                    mobCustom.innerText = t.is_unban;
+                    mobCustom.style.color = "#32D74B";
+                    mobSystem.style.display = 'none';
                 }
                 
-                let isBannedValue = false;
-                if (responseData.banned !== undefined) isBannedValue = responseData.banned;
-                else if (responseData.isBanned !== undefined) isBannedValue = responseData.isBanned;
-                else if (responseData.data && responseData.data.banned !== undefined) isBannedValue = responseData.data.banned;
-                else if (responseData.data && responseData.data.isBanned !== undefined) isBannedValue = responseData.data.isBanned;
-                else if (responseData.status === "banned" || responseData.status === "BANNED" || responseData.status === true) isBannedValue = true;
+                document.getElementById('result-wrapper').style.display = 'block';
+                document.getElementById('desktop-view').classList.add('active');
+                document.getElementById('mobile-view').classList.add('active');
                 
-                renderResult(formattedNumber, isBannedValue);
-            } catch (error) {
+            } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                const errorDiv = document.getElementById('error-message');
-                errorDiv.innerHTML = `<strong>${t.error_msg}</strong><br>${error.message}`;
-                errorDiv.style.display = 'block';
+                const errDiv = document.getElementById('error-message');
+                errDiv.innerHTML = `<strong>${t.error_msg}</strong><br>API Error`;
+                errDiv.style.display = 'block';
             }
-        }
-
-        function renderResult(formattedNumber, isBanned) {
-            const t = translations[currentLang];
-            document.getElementById('loading').style.display = 'none';
-            
-            const deskNum = document.getElementById('desk-num');
-            const deskMsg = document.getElementById('desk-msg');
-            const mobNum = document.getElementById('mob-num');
-            const mobCustom = document.getElementById('mob-custom-text');
-            const mobSystemText = document.getElementById('mob-system-text');
-
-            deskNum.innerText = formattedNumber;
-            mobNum.innerText = formattedNumber;
-
-            const customBannedText = localStorage.getItem('snowi_banned_text') || DEFAULT_BANNED_TEXT;
-
-            if (isBanned) {
-                deskMsg.innerHTML = customBannedText; 
-                deskMsg.style.color = "var(--primary-color)";
-                
-                mobCustom.innerHTML = customBannedText;
-                mobSystemText.style.display = 'block';
-            } else {
-                deskMsg.innerText = t.is_unban;
-                deskMsg.style.color = "#32D74B";
-                
-                mobCustom.innerText = t.is_unban;
-                mobSystemText.style.display = 'none';
-            }
-
-            document.getElementById('result-wrapper').style.display = 'block';
-            document.getElementById('desktop-view').classList.add('active');
-            document.getElementById('mobile-view').classList.add('active');
         }
     </script>
 </body>
