@@ -6,8 +6,6 @@
     <title>WhatsApp Banchecker</title>
     <link rel="icon" type="image/png" href="/icon.png">
     <link rel="manifest" href="/manifest.json">
-    
-    <!-- NEU: Socket.io Client für den Live-Chat -->
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <style>
@@ -160,7 +158,7 @@
             padding: 0 10px;
         }
 
-        /* Top Panel (Knöpfe) */
+        /* Top Panel */
         .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
@@ -620,7 +618,6 @@
             color: white; 
         }
 
-        /* Tabelle für Owner Dashboard */
         .owner-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -638,7 +635,7 @@
             color: var(--primary-color); 
         }
 
-        /* --- NEU: CHAT SYSTEM STYLES --- */
+        /* --- CHAT SYSTEM STYLES (VERBESSERT) --- */
         .chat-fab {
             position: fixed; 
             bottom: 20px; 
@@ -682,7 +679,10 @@
 
         .chat-messages { 
             flex: 1; 
+            /* Hier liegt der Fix für sauberes Scrollen */
             overflow-y: auto; 
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; 
             padding: 15px; 
             display: flex; 
             flex-direction: column; 
@@ -730,6 +730,30 @@
             background: rgba(0,0,0,0.2); 
             border-bottom-left-radius: 14px; 
             border-bottom-right-radius: 14px; 
+        }
+
+        /* Größeres Eingabefeld wie gewünscht */
+        .chat-input-area input {
+            flex: 1; 
+            padding: 15px; 
+            font-size: 1rem; 
+            border-radius: 8px; 
+            background: rgba(0,0,0,0.5); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            color: white; 
+            outline: none;
+        }
+
+        /* Größerer Button */
+        .chat-input-area button {
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            padding: 0 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 1.1rem;
         }
         
         @media (max-width: 768px) {
@@ -831,7 +855,7 @@
         </div>
     </div>
 
-    <!-- NEU: LIVE CHAT UI -->
+    <!-- LIVE CHAT UI -->
     <div class="chat-fab" onclick="toggleChat()">🌍 Live Chat</div>
     
     <div id="chat-panel" class="chat-panel">
@@ -840,13 +864,13 @@
             <button class="close-settings" onclick="toggleChat()">✕</button>
         </div>
         
+        <!-- Hier werden die Nachrichten eingefügt -->
         <div id="chat-messages" class="chat-messages">
-            <!-- Nachrichten spawnen hier -->
         </div>
         
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; padding:10px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:white; outline:none;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
-            <button onclick="sendChatMessage()" style="background:var(--primary-color); color:white; border:none; padding:0 15px; border-radius:8px; cursor:pointer; font-weight:bold;">➤</button>
+            <input type="text" id="chat-input" placeholder="Nachricht..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()">➤</button>
         </div>
     </div>
 
@@ -871,7 +895,7 @@
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- LAYOUT MANAGER (INKL. EXPORT / IMPORT) -->
+            <!-- LAYOUT MANAGER -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold; color: var(--primary-color);">🎨 Layout Manager</div>
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
@@ -996,7 +1020,6 @@
                 <button class="close-settings" onclick="document.getElementById('owner-panel').classList.remove('active')">✕</button>
             </div>
             
-            <!-- STATISTIK TABELLE -->
             <table class="owner-table">
                 <tr><th>Gesamte Checks</th><td id="stat-total">Lade...</td></tr>
                 <tr><th>Aktive Nutzer Heute</th><td id="stat-users">Lade...</td></tr>
@@ -1020,11 +1043,9 @@
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
 
-        // --- NEU: SOCKET.IO CHAT LOGIK ---
-        // Verbindet sich automatisch mit dem Backend-Socket
+        // --- SOCKET.IO CHAT LOGIK ---
         const socket = io(); 
 
-        // Chat Historie laden, wenn wir die Seite öffnen
         socket.on('chatHistory', (history) => {
             const chatBox = document.getElementById('chat-messages');
             chatBox.innerHTML = '';
@@ -1032,7 +1053,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         });
 
-        // Neue Nachricht in Echtzeit empfangen
         socket.on('newMessage', (msg) => {
             appendMessageToChat(msg);
             const chatBox = document.getElementById('chat-messages');
@@ -1045,11 +1065,9 @@
                 panel.style.display = 'none';
             } else {
                 panel.style.display = 'flex';
-                // Scrolle automatisch nach ganz unten beim Öffnen
                 const chatBox = document.getElementById('chat-messages');
                 chatBox.scrollTop = chatBox.scrollHeight;
                 
-                // Frage User einmal nach einem Namen, falls er keinen hat
                 if(!localStorage.getItem('snowi_chat_name')) {
                     const name = prompt("Wie möchtest du im Chat heißen?");
                     if(name) {
@@ -1084,10 +1102,9 @@
             const text = input.value.trim();
             if(!text) return;
             
-            const adminPass = localStorage.getItem('snowi_admin_token'); // Wird gesetzt, wenn du dich im Owner Panel anmeldest
+            const adminPass = localStorage.getItem('snowi_admin_token'); 
             const name = localStorage.getItem('snowi_chat_name') || 'Gast';
 
-            // Sendet die Nachricht ans Backend
             socket.emit('sendMessage', { name, text, adminPass });
             input.value = '';
         }
@@ -1161,7 +1178,7 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH (INKL. UNBAN GENERATOR)
+        // SPRACH-WÖRTERBUCH 
         // ==========================================
         const translations = {
             en: { 
@@ -1278,7 +1295,7 @@
             updatePanelStyle(); 
         }
 
-        // --- OWNER BEREICH (MIT STATS-FETCH) ---
+        // --- OWNER BEREICH ---
         function handleSecretClick() {
             secretClicks++; 
             clearTimeout(secretTimer);
@@ -1303,7 +1320,6 @@
                 document.getElementById('owner-panel').classList.add('active');
                 document.getElementById('admin-pass').value = '';
                 
-                // Setze das Owner-Token für den Chat
                 localStorage.setItem('snowi_admin_token', '0873@adv');
                 
                 await loadStats(); 
@@ -1396,7 +1412,7 @@
             document.getElementById('announcement-modal').style.display = 'none';
         }
 
-        // --- CUSTOM LOADER SYSTEM ---
+        // --- CUSTOM LOADER ---
         async function handleLoaderUpload(input) {
             const file = input.files[0]; 
             if (!file) return;
@@ -1494,12 +1510,10 @@
 
             const targetEmail = template === "3" ? "smb_web@support.whatsapp.com" : "support@support.whatsapp.com";
             
-            // Mailto-Link generieren und direkt öffnen
-            const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
+            window.location.href = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
-        // --- LAYOUT SHARE (EXPORT / IMPORT) ---
+        // --- LAYOUT SHARE ---
         async function saveCurrentLayout() {
             const name = prompt("Name für das Layout:"); 
             
