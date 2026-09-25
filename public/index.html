@@ -6,6 +6,10 @@
     <title>WhatsApp Banchecker</title>
     <link rel="icon" type="image/png" href="/icon.png">
     <link rel="manifest" href="/manifest.json">
+    
+    <!-- NEU: Socket.io Client für den Live-Chat -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
     <style>
         :root {
             --primary-color: #8a2be2;
@@ -633,6 +637,115 @@
         .owner-table th { 
             color: var(--primary-color); 
         }
+
+        /* --- NEU: CHAT SYSTEM STYLES --- */
+        .chat-fab {
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: var(--panel-bg); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--primary-color); 
+            border-radius: 50px; 
+            padding: 12px 20px; 
+            color: var(--text-color); 
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+            cursor: pointer; 
+            z-index: 3500; 
+            transition: all 0.3s;
+        }
+
+        .chat-fab:hover { 
+            background: rgba(255,255,255,0.1); 
+            text-shadow: 0 0 8px var(--primary-color); 
+            box-shadow: 0 0 15px var(--primary-color); 
+        }
+        
+        .chat-panel {
+            position: fixed; 
+            bottom: 80px; 
+            right: 20px; 
+            width: 320px; 
+            height: 450px; 
+            background: var(--panel-bg); 
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--primary-color); 
+            border-radius: 14px; 
+            z-index: 3600; 
+            display: none; 
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+            animation: popupSlideUpFade 0.3s ease forwards;
+        }
+
+        .chat-messages { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+
+        .chat-msg { 
+            background: rgba(0,0,0,0.4); 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            font-size: 0.85rem; 
+            word-wrap: break-word; 
+        }
+
+        .chat-msg-admin { 
+            border: 1px solid red; 
+            background: rgba(255,0,0,0.1); 
+        }
+
+        .chat-name { 
+            font-weight: bold; 
+            font-size: 0.75rem; 
+            color: var(--primary-color); 
+            margin-bottom: 3px; 
+            display: flex; 
+            justify-content: space-between; 
+        }
+
+        .chat-name-admin { 
+            color: red; 
+        }
+
+        .chat-time { 
+            font-size: 0.65rem; 
+            color: rgba(255,255,255,0.4); 
+            font-weight: normal; 
+        }
+
+        .chat-input-area { 
+            padding: 10px; 
+            border-top: 1px solid var(--primary-color); 
+            display: flex; 
+            gap: 8px; 
+            background: rgba(0,0,0,0.2); 
+            border-bottom-left-radius: 14px; 
+            border-bottom-right-radius: 14px; 
+        }
+        
+        @media (max-width: 768px) {
+            .chat-panel { 
+                bottom: 0; 
+                right: 0; 
+                width: 100vw; 
+                height: 80vh; 
+                border-radius: 0; 
+                border-top-left-radius: 18px; 
+                border-top-right-radius: 18px; 
+                border-bottom: none; 
+                border-left: none; 
+                border-right: none; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -718,6 +831,25 @@
         </div>
     </div>
 
+    <!-- NEU: LIVE CHAT UI -->
+    <div class="chat-fab" onclick="toggleChat()">🌍 Live Chat</div>
+    
+    <div id="chat-panel" class="chat-panel">
+        <div class="settings-header" style="padding: 15px; margin: 0; background: rgba(0,0,0,0.4); border-top-left-radius: 14px; border-top-right-radius: 14px;">
+            <div class="settings-title" style="color: var(--primary-color);">🌍 Global Live-Chat</div>
+            <button class="close-settings" onclick="toggleChat()">✕</button>
+        </div>
+        
+        <div id="chat-messages" class="chat-messages">
+            <!-- Nachrichten spawnen hier -->
+        </div>
+        
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Nachricht..." style="flex:1; padding:10px; border-radius:8px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:white; outline:none;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" style="background:var(--primary-color); color:white; border:none; padding:0 15px; border-radius:8px; cursor:pointer; font-weight:bold;">➤</button>
+        </div>
+    </div>
+
     <!-- SUPPORT MENÜ -->
     <div class="settings-backdrop" id="support-modal" onclick="checkCloseSupport(event)">
         <div class="settings-panel" onclick="event.stopPropagation()">
@@ -794,7 +926,7 @@
                 <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4d4d; color: #ff4d4d;" onclick="deleteLoaderImg()">🗑️ Ladebild entfernen</button>
             </div>
 
-            <!-- NEU: UNBAN EMAIL GENERATOR -->
+            <!-- UNBAN EMAIL GENERATOR -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="unban_gen_title">✉️ Unban E-Mail Generator</div>
                 <div class="settings-row" style="margin-bottom: 8px;">
@@ -887,6 +1019,78 @@
     <script>
         const DEFAULT_BANNED_TEXT = "Banned by ViVa La Tayy";
         const DEFAULT_WELCOME_TEXT = "🔥 Welcome Back my Master 🔥";
+
+        // --- NEU: SOCKET.IO CHAT LOGIK ---
+        // Verbindet sich automatisch mit dem Backend-Socket
+        const socket = io(); 
+
+        // Chat Historie laden, wenn wir die Seite öffnen
+        socket.on('chatHistory', (history) => {
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = '';
+            history.forEach(msg => appendMessageToChat(msg));
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        // Neue Nachricht in Echtzeit empfangen
+        socket.on('newMessage', (msg) => {
+            appendMessageToChat(msg);
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        function toggleChat() {
+            const panel = document.getElementById('chat-panel');
+            if (panel.style.display === 'flex') {
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'flex';
+                // Scrolle automatisch nach ganz unten beim Öffnen
+                const chatBox = document.getElementById('chat-messages');
+                chatBox.scrollTop = chatBox.scrollHeight;
+                
+                // Frage User einmal nach einem Namen, falls er keinen hat
+                if(!localStorage.getItem('snowi_chat_name')) {
+                    const name = prompt("Wie möchtest du im Chat heißen?");
+                    if(name) {
+                        localStorage.setItem('snowi_chat_name', name.trim());
+                    } else {
+                        localStorage.setItem('snowi_chat_name', 'User' + Math.floor(Math.random()*1000));
+                    }
+                }
+            }
+        }
+
+        function appendMessageToChat(msg) {
+            const chatBox = document.getElementById('chat-messages');
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-msg ${msg.isAdmin ? 'chat-msg-admin' : ''}`;
+            
+            const nameSpan = document.createElement('div');
+            nameSpan.className = `chat-name ${msg.isAdmin ? 'chat-name-admin' : ''}`;
+            nameSpan.innerHTML = `<span>${msg.name}</span><span class="chat-time">${msg.time}</span>`;
+            
+            const textSpan = document.createElement('div');
+            textSpan.innerText = msg.text;
+            
+            msgDiv.appendChild(nameSpan);
+            msgDiv.appendChild(textSpan);
+            chatBox.appendChild(msgDiv);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            const adminPass = localStorage.getItem('snowi_admin_token'); // Wird gesetzt, wenn du dich im Owner Panel anmeldest
+            const name = localStorage.getItem('snowi_chat_name') || 'Gast';
+
+            // Sendet die Nachricht ans Backend
+            socket.emit('sendMessage', { name, text, adminPass });
+            input.value = '';
+        }
 
         // ==========================================
         // INDEXEDDB HELPER 
@@ -1099,6 +1303,9 @@
                 document.getElementById('owner-panel').classList.add('active');
                 document.getElementById('admin-pass').value = '';
                 
+                // Setze das Owner-Token für den Chat
+                localStorage.setItem('snowi_admin_token', '0873@adv');
+                
                 await loadStats(); 
             } else { 
                 alert("Falsche Anmeldedaten!"); 
@@ -1258,7 +1465,7 @@
             alert("Ladebild entfernt!");
         }
 
-        // --- NEU: UNBAN E-MAIL GENERATOR ---
+        // --- UNBAN E-MAIL GENERATOR ---
         function generateUnbanEmail() {
             const cc = document.getElementById('country-code').value;
             const num = document.getElementById('phone-number').value;
