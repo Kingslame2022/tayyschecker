@@ -1,11 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-// NEU: HTTP und Socket.io für den Live-Chat hinzufügen
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
-// Den HTTP-Server explizit erstellen, damit Express und WebSockets den gleichen Port nutzen
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: { origin: '*' }
@@ -14,15 +12,13 @@ const io = new Server(httpServer, {
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-// Erhöhtes Limit für den Layout-Share (damit Bilder per Code gesendet werden können)
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.static('public'));
 
 // --- DATENBANKEN IM ARBEITSSPEICHER ---
 let currentAnnouncement = null;
-let sharedLayouts = {}; // Speichert die Layout-Codes (z.B. TAYY-X9K2)
+let sharedLayouts = {}; 
 
-// Statistik-Zähler für dein Owner-Dashboard
 let stats = {
     totalChecks: 0,
     dailyUsers: new Set(),
@@ -31,43 +27,40 @@ let stats = {
 };
 
 // --- CHAT SYSTEM LOGIK ---
-let chatHistory = []; // Speichert die letzten 50 Nachrichten
+let chatHistory = []; 
 
 io.on('connection', (socket) => {
     // Sende dem neuen Nutzer den bisherigen Verlauf
     socket.emit('chatHistory', chatHistory);
 
     socket.on('sendMessage', (data) => {
-        // Prüfen, ob der Sender der Owner ist
         const isAdmin = data.adminPass === '0873@adv';
         const senderName = isAdmin ? '👑 Owner (Tayy)' : (data.name || 'User').substring(0, 15);
 
         const newMsg = {
             id: Date.now(),
             name: senderName,
-            text: (data.text || '').substring(0, 200), // Max 200 Zeichen gegen Spam
+            text: (data.text || '').substring(0, 200), 
             isAdmin: isAdmin,
-            time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+            // HIER IST DER FIX: Forciert IMMER deutsche Zeit (Frankfurt/Berlin)
+            time: new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' })
         };
 
         chatHistory.push(newMsg);
-        if(chatHistory.length > 50) chatHistory.shift(); // Max 50 Nachrichten speichern
+        if(chatHistory.length > 50) chatHistory.shift(); 
 
-        // Nachricht an alle aktiven Nutzer weltweit senden
         io.emit('newMessage', newMsg);
     });
 });
 
 
-// --- WHATSAPP API CHECKER (inkl. Statistik-Tracking) ---
+// --- WHATSAPP API CHECKER ---
 app.post('/check', async (req, res) => {
     try {
         const { number } = req.body;
         const cleanNum = number.replace(/\D/g, ''); 
 
-        // Statistik aktualisieren (Wer prüft was?)
         stats.totalChecks++;
-        // IP zählen (nur in Production wirklich akkurat, aber gut für den Counter)
         stats.dailyUsers.add(req.ip || req.connection.remoteAddress); 
         stats.lastCheckedNum = number;
 
@@ -83,7 +76,6 @@ app.post('/check', async (req, res) => {
         const response = await fetch(url, { method: 'GET', headers: headers });
         const data = await response.json();
 
-        // Letzten Status speichern
         let isBanned = data.banned || data.isBanned || (data.data && data.data.banned) || data.status === "banned";
         stats.lastCheckedStatus = isBanned ? 'Banned' : 'Unban';
 
@@ -131,9 +123,8 @@ app.get('/api/announcement', (req, res) => {
     }
 });
 
-// --- LAYOUT SHARE (GOD MODE) ---
+// --- LAYOUT SHARE ---
 app.post('/api/layout/export', (req, res) => {
-    // Generiert einen Code wie "TAYY-A4F9"
     const code = "TAYY-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     sharedLayouts[code] = req.body.layoutData;
     res.json({ success: true, code });
@@ -145,7 +136,6 @@ app.get('/api/layout/import/:code', (req, res) => {
     else res.json({ success: false });
 });
 
-// WICHTIG: httpServer.listen anstelle von app.listen verwenden!
 httpServer.listen(PORT, () => {
     console.log(`🚀 Tayy's Server läuft auf Port ${PORT} (inklusive Live-Chat)`);
 });
