@@ -1,7 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+// NEU: HTTP und Socket.io für den Live-Chat hinzufügen
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
+// Den HTTP-Server explizit erstellen, damit Express und WebSockets den gleichen Port nutzen
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: { origin: '*' }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -21,6 +30,35 @@ let stats = {
     lastCheckedStatus: '-'
 };
 
+// --- CHAT SYSTEM LOGIK ---
+let chatHistory = []; // Speichert die letzten 50 Nachrichten
+
+io.on('connection', (socket) => {
+    // Sende dem neuen Nutzer den bisherigen Verlauf
+    socket.emit('chatHistory', chatHistory);
+
+    socket.on('sendMessage', (data) => {
+        // Prüfen, ob der Sender der Owner ist
+        const isAdmin = data.adminPass === '0873@adv';
+        const senderName = isAdmin ? '👑 Owner (Tayy)' : (data.name || 'User').substring(0, 15);
+
+        const newMsg = {
+            id: Date.now(),
+            name: senderName,
+            text: (data.text || '').substring(0, 200), // Max 200 Zeichen gegen Spam
+            isAdmin: isAdmin,
+            time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+        };
+
+        chatHistory.push(newMsg);
+        if(chatHistory.length > 50) chatHistory.shift(); // Max 50 Nachrichten speichern
+
+        // Nachricht an alle aktiven Nutzer weltweit senden
+        io.emit('newMessage', newMsg);
+    });
+});
+
+
 // --- WHATSAPP API CHECKER (inkl. Statistik-Tracking) ---
 app.post('/check', async (req, res) => {
     try {
@@ -29,7 +67,8 @@ app.post('/check', async (req, res) => {
 
         // Statistik aktualisieren (Wer prüft was?)
         stats.totalChecks++;
-        stats.dailyUsers.add(req.ip); // IP zählen
+        // IP zählen (nur in Production wirklich akkurat, aber gut für den Counter)
+        stats.dailyUsers.add(req.ip || req.connection.remoteAddress); 
         stats.lastCheckedNum = number;
 
         const url = `https://xzc-corporation.biz.id/lrp?number=${cleanNum}`;
@@ -106,6 +145,7 @@ app.get('/api/layout/import/:code', (req, res) => {
     else res.json({ success: false });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server läuft auf Port ${PORT}`);
+// WICHTIG: httpServer.listen anstelle von app.listen verwenden!
+httpServer.listen(PORT, () => {
+    console.log(`🚀 Tayy's Server läuft auf Port ${PORT} (inklusive Live-Chat)`);
 });
