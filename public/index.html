@@ -758,21 +758,21 @@
 
             <!-- PANEL DESIGN -->
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);">🎛️ Panel Design</div>
+                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="panel_settings">🎛️ Panel Design</div>
                 <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                     <div style="width: 100%; display: flex; justify-content: space-between;">
-                        <span>Blur-Effekt</span>
+                        <span data-i18n="panel_blur">Blur-Effekt</span>
                         <span id="blur-val">8px</span>
                     </div>
                     <input type="range" id="blur-slider" min="0" max="30" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
                     
                     <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 10px;">
-                        <span>Sichtbarkeit</span>
+                        <span data-i18n="panel_transparency">Sichtbarkeit</span>
                         <span id="alpha-val">8%</span>
                     </div>
                     <input type="range" id="alpha-slider" min="0" max="100" value="8" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
                 </div>
-                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()">🔄 Standard wiederherstellen</button>
+                <button class="action-btn" style="width: 100%; margin-top: 12px; border-color: rgba(255,255,255,0.3);" onclick="resetPanelStyle()" data-i18n="btn_default_reset">🔄 Standard wiederherstellen</button>
             </div>
 
             <!-- CUSTOM LOADER EINSTELLUNGEN -->
@@ -794,6 +794,19 @@
                 <button class="action-btn" style="width: 100%; margin-top: 10px; border-color: #ff4d4d; color: #ff4d4d;" onclick="deleteLoaderImg()">🗑️ Ladebild entfernen</button>
             </div>
 
+            <!-- NEU: UNBAN EMAIL GENERATOR -->
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 0.8rem; margin-bottom: 12px; font-weight: bold; color: var(--primary-color);" data-i18n="unban_gen_title">✉️ Unban E-Mail Generator</div>
+                <div class="settings-row" style="margin-bottom: 8px;">
+                    <select id="unban-template" class="glass-select" style="width: 100%;">
+                        <option value="1" data-i18n="unban_template_1">Standard (Unschuldig)</option>
+                        <option value="2" data-i18n="unban_template_2">Gehackt / Gestohlen</option>
+                        <option value="3" data-i18n="unban_template_3">Business Account</option>
+                    </select>
+                </div>
+                <button class="action-btn" style="width: 100%; border-color: #32D74B; color: #32D74B; font-weight: bold;" onclick="generateUnbanEmail()" data-i18n="unban_btn">📧 E-Mail App öffnen</button>
+            </div>
+
             <div class="settings-row">
                 <span data-i18n="change_lang">Sprache / Language</span>
                 <select id="lang-select" class="glass-select" onchange="changeLanguage(this.value)">
@@ -808,25 +821,25 @@
                 </select>
             </div>
             <div class="settings-row">
-                <span>Neon-/Akzentfarbe</span>
+                <span data-i18n="color_neon">Neon-/Akzentfarbe</span>
                 <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
             </div>
             <div class="settings-row">
-                <span>Textfarbe ändern</span>
+                <span data-i18n="color_text">Textfarbe ändern</span>
                 <input type="color" id="text-color-picker" value="#ffffff" onchange="changeTextColor(this.value)">
             </div>
             <div class="settings-row">
-                <span>Welcome-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editWelcomeText()">✏️ Ändern</button>
+                <span data-i18n="edit_welcome">Welcome-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editWelcomeText()" data-i18n="btn_edit">✏️ Ändern</button>
             </div>
             <div class="settings-row">
-                <span>Bann-Text anpassen</span>
-                <button class="edit-text-btn" onclick="editBannedText()">✏️ Ändern</button>
+                <span data-i18n="edit_ban">Bann-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Ändern</button>
             </div>
-            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;">Hintergrundbild / GIF hochladen:</div>
+            <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild / GIF hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
             
-            <button class="agree-btn" style="padding: 10px; margin-top: 25px;" onclick="openSupport()">💬 Support kontaktieren</button>
+            <button class="agree-btn" style="padding: 10px; margin-top: 25px;" onclick="openSupport()" data-i18n="support_btn">💬 Support kontaktieren</button>
         </div>
     </div>
 
@@ -843,7 +856,7 @@
         </div>
     </div>
 
-    <!-- NEUES OWNER DASHBOARD MIT STATISTIKEN -->
+    <!-- OWNER DASHBOARD MIT STATISTIKEN -->
     <div class="settings-backdrop" id="owner-panel" style="z-index: 5000;" onclick="if(event.target.id==='owner-panel') document.getElementById('owner-panel').classList.remove('active')">
         <div class="settings-panel" onclick="event.stopPropagation()">
             <div class="settings-header">
@@ -944,48 +957,64 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH
+        // SPRACH-WÖRTERBUCH (INKL. UNBAN GENERATOR)
         // ==========================================
         const translations = {
             en: { 
                 agree_btn: "AGREE AND CONTINUE", autofill: "Autofill", api_loading: "Checking API...", 
                 your_phone: "Your phone number", is_unban: "is Unbanned", contact_support: "Please contact Support for assistance.", 
-                cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings", error_msg: "Error:" 
+                cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings", error_msg: "Error:",
+                panel_settings: "🎛️ Panel Design", panel_blur: "Blur Effect", panel_transparency: "Visibility", btn_default_reset: "🔄 Reset to Default",
+                unban_gen_title: "✉️ Unban Email Generator", unban_template_1: "Standard (Innocent)", unban_template_2: "Hacked / Stolen", unban_template_3: "Business Account", unban_btn: "📧 Open Mail App"
             },
             de: { 
                 agree_btn: "ZUSTIMMEN UND WEITER", autofill: "Autofill", api_loading: "API wird abgefragt...", 
                 your_phone: "Deine Telefonnummer", is_unban: "ist Unban", contact_support: "Bitte kontaktiere Support für Hilfe.", 
-                cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen", error_msg: "Fehler:" 
+                cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen", error_msg: "Fehler:",
+                panel_settings: "🎛️ Panel Design", panel_blur: "Blur-Effekt", panel_transparency: "Sichtbarkeit", btn_default_reset: "🔄 Standard wiederherstellen",
+                unban_gen_title: "✉️ Unban E-Mail Generator", unban_template_1: "Standard (Unschuldig)", unban_template_2: "Gehackt / Gestohlen", unban_template_3: "Business Account", unban_btn: "📧 E-Mail App öffnen"
             },
             es: { 
                 agree_btn: "ACEPTAR Y CONTINUAR", autofill: "Autocompletar", api_loading: "Consultando API...", 
                 your_phone: "Tu número", is_unban: "no está baneado", contact_support: "Contacta a Soporte.", 
-                cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes", error_msg: "Error:" 
+                cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes", error_msg: "Error:",
+                panel_settings: "🎛️ Diseño del Panel", panel_blur: "Efecto Desenfocado", panel_transparency: "Visibilidad", btn_default_reset: "🔄 Restaurar Predeterminado",
+                unban_gen_title: "✉️ Generador de Email Unban", unban_template_1: "Estándar (Inocente)", unban_template_2: "Hackeado / Robado", unban_template_3: "Cuenta Business", unban_btn: "📧 Abrir App de Correo"
             },
             ru: { 
                 agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ", autofill: "Автозаполнение", api_loading: "Проверка API...", 
                 your_phone: "Ваш номер", is_unban: "Разблокирован", contact_support: "Свяжитесь с поддержкой.", 
-                cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки", error_msg: "Ошибка:" 
+                cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки", error_msg: "Ошибка:",
+                panel_settings: "🎛️ Дизайн панели", panel_blur: "Эффект размытия", panel_transparency: "Видимость", btn_default_reset: "🔄 По умолчанию",
+                unban_gen_title: "✉️ Генератор Email", unban_template_1: "Стандарт (Невиновен)", unban_template_2: "Взломан / Украден", unban_template_3: "Бизнес-аккаунт", unban_btn: "📧 Открыть почту"
             },
             ar: { 
                 agree_btn: "موافق ومتابعة", autofill: "ملء تلقائي", api_loading: "جاري الفحص...", 
                 your_phone: "رقم هاتفك", is_unban: "غير محظور", contact_support: "اتصل بالدعم.", 
-                cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات", error_msg: "خطأ:" 
+                cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات", error_msg: "خطأ:",
+                panel_settings: "🎛️ تصميم اللوحة", panel_blur: "تأثير الضبابية", panel_transparency: "الرؤية", btn_default_reset: "🔄 إعادة تعيين",
+                unban_gen_title: "✉️ منشئ بريد رفع الحظر", unban_template_1: "قياسي (بريء)", unban_template_2: "تم الاختراق / مسروق", unban_template_3: "حساب أعمال", unban_btn: "📧 فتح تطبيق البريد"
             },
             ja: { 
                 agree_btn: "同意して続行", autofill: "自動入力", api_loading: "APIを確認中...", 
                 your_phone: "電話番号", is_unban: "は制限解除されています", contact_support: "サポートにお問い合わせください。", 
-                cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定", error_msg: "エラー:" 
+                cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定", error_msg: "エラー:",
+                panel_settings: "🎛️ パネルデザイン", panel_blur: "ぼかし効果", panel_transparency: "不透明度", btn_default_reset: "🔄 デフォルトに戻す",
+                unban_gen_title: "✉️ 制限解除メール作成", unban_template_1: "標準（無実）", unban_template_2: "ハッキング / 盗難", unban_template_3: "ビジネスアカウント", unban_btn: "📧 メールを開く"
             },
             la: { 
                 agree_btn: "ACCIPERE ET CONTINUARE", autofill: "Autofill", api_loading: "API quaeritur...", 
                 your_phone: "Numerus tuus", is_unban: "non est interdictus", contact_support: "Mitte nuntium ad Support.", 
-                cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones", error_msg: "Error:" 
+                cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones", error_msg: "Error:",
+                panel_settings: "🎛️ Consilium Tabulae", panel_blur: "Effectus caliginis", panel_transparency: "Perspicuitas", btn_default_reset: "🔄 Restituere ad defaltam",
+                unban_gen_title: "✉️ Generator Epistulae Unban", unban_template_1: "Standard (Innocens)", unban_template_2: "Hacked / Furtum", unban_template_3: "Ratio Negotii", unban_btn: "📧 Aperi App Epistulae"
             },
             it: { 
                 agree_btn: "ACCETTA E CONTINUA", autofill: "Auto-compila", api_loading: "Controllo API...", 
                 your_phone: "Il tuo numero", is_unban: "è Sbloccato", contact_support: "Contatta il Supporto.", 
-                cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni", error_msg: "Errore:" 
+                cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni", error_msg: "Errore:",
+                panel_settings: "🎛️ Design Pannello", panel_blur: "Effetto Sfocatura", panel_transparency: "Visibilità", btn_default_reset: "🔄 Ripristina Predefinito",
+                unban_gen_title: "✉️ Generatore Email Sblocco", unban_template_1: "Standard (Innocente)", unban_template_2: "Hackerato / Rubato", unban_template_3: "Account Business", unban_btn: "📧 Apri App Mail"
             }
         };
 
@@ -1022,7 +1051,7 @@
             });
             
             document.getElementById('lang-select').value = lang;
-            applyLoaderSettings(); // Lade-Text sofort mitübersetzen, falls Standard aktiv ist
+            applyLoaderSettings(); 
         }
 
         function updatePanelStyle() {
@@ -1070,7 +1099,7 @@
                 document.getElementById('owner-panel').classList.add('active');
                 document.getElementById('admin-pass').value = '';
                 
-                await loadStats(); // Lade Live-Statistiken sofort beim Login
+                await loadStats(); 
             } else { 
                 alert("Falsche Anmeldedaten!"); 
             }
@@ -1213,7 +1242,6 @@
                 imgEl.style.display = 'block';
                 
                 if(rot) {
-                    // Speed 10 (schnell) = 0.2s | Speed 1 (langsam) = 2.0s
                     const dur = (11 - spd) * 0.2; 
                     imgEl.style.animation = `spin ${dur}s linear infinite`;
                 } else {
@@ -1228,6 +1256,40 @@
             await deleteMedia('snowi_loader_img');
             applyLoaderSettings();
             alert("Ladebild entfernt!");
+        }
+
+        // --- NEU: UNBAN E-MAIL GENERATOR ---
+        function generateUnbanEmail() {
+            const cc = document.getElementById('country-code').value;
+            const num = document.getElementById('phone-number').value;
+            
+            let fullNumber = "+49 [DEINE NUMMER]";
+            if (cc && num) {
+                fullNumber = "+" + cc + " " + num;
+            } else {
+                fullNumber = prompt("Für welche Nummer soll die E-Mail sein?", fullNumber) || fullNumber;
+            }
+
+            const template = document.getElementById('unban-template').value;
+            let subject = "";
+            let body = "";
+
+            if (template === "1") {
+                subject = "Urgent: Please reactivate my account - Number banned by mistake";
+                body = `Dear WhatsApp Support Team,\n\nMy WhatsApp account has been unexpectedly suspended. I am not aware of any violation of the Terms of Service. I only use my account for personal communication with my friends and family.\n\nI suspect this might be a system error or an automated false flag. Please review my account manually and reactivate my number as soon as possible, as I urgently need it for daily communication.\n\nMy phone number in full international format is: ${fullNumber}\n\nThank you for your fast help.\n\nBest regards,`;
+            } else if (template === "2") {
+                subject = "Account Compromised - Please restore my access";
+                body = `Dear WhatsApp Support,\n\nMy smartphone was recently stolen / compromised, and someone else gained access to my WhatsApp account. I believe they might have sent unauthorized messages using my number, which led to this ban.\n\nI have now recovered my SIM card and fully secured my device. Since I was not the one violating the Terms of Service, I kindly ask you to lift the suspension so I can securely use my account again.\n\nMy phone number is: ${fullNumber}\n\nThank you very much for your understanding and support.\n\nSincerely,`;
+            } else if (template === "3") {
+                subject = "Urgent Appeal: Business Account Suspended";
+                body = `Dear WhatsApp Support Team,\n\nMy WhatsApp Business account has been deactivated. We strictly adhere to all WhatsApp Business Policies and use the platform to provide customer support.\n\nThis suspension is causing significant disruption to our business operations and our customers are unable to reach us. If there was any unintentional violation, we apologize and will make sure to adjust our messaging strategy immediately.\n\nPlease review our case and lift the ban so we can continue serving our clients.\n\nRegistered Business Number: ${fullNumber}\n\nBest regards,`;
+            }
+
+            const targetEmail = template === "3" ? "smb_web@support.whatsapp.com" : "support@support.whatsapp.com";
+            
+            // Mailto-Link generieren und direkt öffnen
+            const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
         }
 
         // --- LAYOUT SHARE (EXPORT / IMPORT) ---
