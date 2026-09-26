@@ -618,6 +618,7 @@
             color: white; 
         }
 
+        /* Tabelle für Owner Dashboard */
         .owner-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -635,7 +636,7 @@
             color: var(--primary-color); 
         }
 
-        /* --- CHAT SYSTEM STYLES (VERBESSERT) --- */
+        /* --- CHAT SYSTEM STYLES --- */
         .chat-fab {
             position: fixed; 
             bottom: 20px; 
@@ -679,7 +680,6 @@
 
         .chat-messages { 
             flex: 1; 
-            /* Hier liegt der Fix für sauberes Scrollen */
             overflow-y: auto; 
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch; 
@@ -732,7 +732,6 @@
             border-bottom-right-radius: 14px; 
         }
 
-        /* Größeres Eingabefeld wie gewünscht */
         .chat-input-area input {
             flex: 1; 
             padding: 15px; 
@@ -744,7 +743,6 @@
             outline: none;
         }
 
-        /* Größerer Button */
         .chat-input-area button {
             background: var(--primary-color); 
             color: white; 
@@ -864,7 +862,6 @@
             <button class="close-settings" onclick="toggleChat()">✕</button>
         </div>
         
-        <!-- Hier werden die Nachrichten eingefügt -->
         <div id="chat-messages" class="chat-messages">
         </div>
         
@@ -976,6 +973,7 @@
                     <option value="it">Italiano (Italienisch)</option>
                 </select>
             </div>
+            
             <div class="settings-row">
                 <span data-i18n="color_neon">Neon-/Akzentfarbe</span>
                 <input type="color" id="neon-color-picker" value="#8a2be2" onchange="changeThemeColor(this.value)">
@@ -988,10 +986,21 @@
                 <span data-i18n="edit_welcome">Welcome-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editWelcomeText()" data-i18n="btn_edit">✏️ Ändern</button>
             </div>
+
+            <!-- NEU: BANNED & UNBAN TEXT/FARBE -->
             <div class="settings-row">
                 <span data-i18n="edit_ban">Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Ändern</button>
             </div>
+            <div class="settings-row">
+                <span data-i18n="edit_unban">Unban-Text anpassen</span>
+                <button class="edit-text-btn" onclick="editUnbanText()" data-i18n="btn_edit">✏️ Ändern</button>
+            </div>
+            <div class="settings-row">
+                <span data-i18n="color_unban">Unban-Farbe ändern</span>
+                <input type="color" id="unban-color-picker" value="#32d74b" onchange="changeUnbanColor(this.value)">
+            </div>
+
             <div style="font-size: 0.8rem; margin-top: 12px; opacity: 0.9;" data-i18n="upload_bg">Hintergrundbild / GIF hochladen:</div>
             <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleImageUpload(this)">
             
@@ -1178,7 +1187,7 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH 
+        // SPRACH-WÖRTERBUCH (INKL. UNBAN TEXT/FARBE)
         // ==========================================
         const translations = {
             en: { 
@@ -1186,56 +1195,64 @@
                 your_phone: "Your phone number", is_unban: "is Unbanned", contact_support: "Please contact Support for assistance.", 
                 cancel: "Cancel", support: "Support", support_desk: "Support", settings_title: "⚙️ Settings", error_msg: "Error:",
                 panel_settings: "🎛️ Panel Design", panel_blur: "Blur Effect", panel_transparency: "Visibility", btn_default_reset: "🔄 Reset to Default",
-                unban_gen_title: "✉️ Unban Email Generator", unban_template_1: "Standard (Innocent)", unban_template_2: "Hacked / Stolen", unban_template_3: "Business Account", unban_btn: "📧 Open Mail App"
+                unban_gen_title: "✉️ Unban Email Generator", unban_template_1: "Standard (Innocent)", unban_template_2: "Hacked / Stolen", unban_template_3: "Business Account", unban_btn: "📧 Open Mail App",
+                color_unban: "Change Unban Color", edit_unban: "Edit Unban Text", prompt_unban: "Enter new Unban text:"
             },
             de: { 
                 agree_btn: "ZUSTIMMEN UND WEITER", autofill: "Autofill", api_loading: "API wird abgefragt...", 
                 your_phone: "Deine Telefonnummer", is_unban: "ist Unban", contact_support: "Bitte kontaktiere Support für Hilfe.", 
                 cancel: "Abbrechen", support: "Support", support_desk: "サポート", settings_title: "⚙️ Einstellungen", error_msg: "Fehler:",
                 panel_settings: "🎛️ Panel Design", panel_blur: "Blur-Effekt", panel_transparency: "Sichtbarkeit", btn_default_reset: "🔄 Standard wiederherstellen",
-                unban_gen_title: "✉️ Unban E-Mail Generator", unban_template_1: "Standard (Unschuldig)", unban_template_2: "Gehackt / Gestohlen", unban_template_3: "Business Account", unban_btn: "📧 E-Mail App öffnen"
+                unban_gen_title: "✉️ Unban E-Mail Generator", unban_template_1: "Standard (Unschuldig)", unban_template_2: "Gehackt / Gestohlen", unban_template_3: "Business Account", unban_btn: "📧 E-Mail App öffnen",
+                color_unban: "Unban-Farbe ändern", edit_unban: "Unban-Text anpassen", prompt_unban: "Neuen Text eingeben, wenn die Nummer frei ist:"
             },
             es: { 
                 agree_btn: "ACEPTAR Y CONTINUAR", autofill: "Autocompletar", api_loading: "Consultando API...", 
                 your_phone: "Tu número", is_unban: "no está baneado", contact_support: "Contacta a Soporte.", 
                 cancel: "Cancelar", support: "Soporte", support_desk: "Soporte", settings_title: "⚙️ Ajustes", error_msg: "Error:",
                 panel_settings: "🎛️ Diseño del Panel", panel_blur: "Efecto Desenfocado", panel_transparency: "Visibilidad", btn_default_reset: "🔄 Restaurar Predeterminado",
-                unban_gen_title: "✉️ Generador de Email Unban", unban_template_1: "Estándar (Inocente)", unban_template_2: "Hackeado / Robado", unban_template_3: "Cuenta Business", unban_btn: "📧 Abrir App de Correo"
+                unban_gen_title: "✉️ Generador de Email Unban", unban_template_1: "Estándar (Inocente)", unban_template_2: "Hackeado / Robado", unban_template_3: "Cuenta Business", unban_btn: "📧 Abrir App de Correo",
+                color_unban: "Cambiar color de Unban", edit_unban: "Editar texto de Unban", prompt_unban: "Introduce nuevo texto de Unban:"
             },
             ru: { 
                 agree_btn: "ПРИНЯТЬ И ПРОДОЛЖИТЬ", autofill: "Автозаполнение", api_loading: "Проверка API...", 
                 your_phone: "Ваш номер", is_unban: "Разблокирован", contact_support: "Свяжитесь с поддержкой.", 
                 cancel: "Отмена", support: "Поддержка", support_desk: "Поддержка", settings_title: "⚙️ Настройки", error_msg: "Ошибка:",
                 panel_settings: "🎛️ Дизайн панели", panel_blur: "Эффект размытия", panel_transparency: "Видимость", btn_default_reset: "🔄 По умолчанию",
-                unban_gen_title: "✉️ Генератор Email", unban_template_1: "Стандарт (Невиновен)", unban_template_2: "Взломан / Украден", unban_template_3: "Бизнес-аккаунт", unban_btn: "📧 Открыть почту"
+                unban_gen_title: "✉️ Генератор Email", unban_template_1: "Стандарт (Невиновен)", unban_template_2: "Взломан / Украден", unban_template_3: "Бизнес-аккаунт", unban_btn: "📧 Открыть почту",
+                color_unban: "Цвет разбана", edit_unban: "Изменить текст разбана", prompt_unban: "Введите новый текст разбана:"
             },
             ar: { 
                 agree_btn: "موافق ومتابعة", autofill: "ملء تلقائي", api_loading: "جاري الفحص...", 
                 your_phone: "رقم هاتفك", is_unban: "غير محظور", contact_support: "اتصل بالدعم.", 
                 cancel: "إلغاء", support: "الدعم", support_desk: "الدعم", settings_title: "⚙️ الإعدادات", error_msg: "خطأ:",
                 panel_settings: "🎛️ تصميم اللوحة", panel_blur: "تأثير الضبابية", panel_transparency: "الرؤية", btn_default_reset: "🔄 إعادة تعيين",
-                unban_gen_title: "✉️ منشئ بريد رفع الحظر", unban_template_1: "قياسي (بريء)", unban_template_2: "تم الاختراق / مسروق", unban_template_3: "حساب أعمال", unban_btn: "📧 فتح تطبيق البريد"
+                unban_gen_title: "✉️ منشئ بريد رفع الحظر", unban_template_1: "قياسي (بريء)", unban_template_2: "تم الاختراق / مسروق", unban_template_3: "حساب أعمال", unban_btn: "📧 فتح تطبيق البريد",
+                color_unban: "تغيير لون فك الحظر", edit_unban: "تعديل نص فك الحظر", prompt_unban: "أدخل نص فك الحظر الجديد:"
             },
             ja: { 
                 agree_btn: "同意して続行", autofill: "自動入力", api_loading: "APIを確認中...", 
                 your_phone: "電話番号", is_unban: "は制限解除されています", contact_support: "サポートにお問い合わせください。", 
                 cancel: "キャンセル", support: "サポート", support_desk: "サポート", settings_title: "⚙️ 設定", error_msg: "エラー:",
                 panel_settings: "🎛️ パネルデザイン", panel_blur: "ぼかし効果", panel_transparency: "不透明度", btn_default_reset: "🔄 デフォルトに戻す",
-                unban_gen_title: "✉️ 制限解除メール作成", unban_template_1: "標準（無実）", unban_template_2: "ハッキング / 盗難", unban_template_3: "ビジネスアカウント", unban_btn: "📧 メールを開く"
+                unban_gen_title: "✉️ 制限解除メール作成", unban_template_1: "標準（無実）", unban_template_2: "ハッキング / 盗難", unban_template_3: "ビジネスアカウント", unban_btn: "📧 メールを開く",
+                color_unban: "制限解除の色", edit_unban: "制限解除テキストの編集", prompt_unban: "新しい制限解除テキスト:"
             },
             la: { 
                 agree_btn: "ACCIPERE ET CONTINUARE", autofill: "Autofill", api_loading: "API quaeritur...", 
                 your_phone: "Numerus tuus", is_unban: "non est interdictus", contact_support: "Mitte nuntium ad Support.", 
                 cancel: "Abolere", support: "Auxilium", support_desk: "Auxilium", settings_title: "⚙️ Optiones", error_msg: "Error:",
                 panel_settings: "🎛️ Consilium Tabulae", panel_blur: "Effectus caliginis", panel_transparency: "Perspicuitas", btn_default_reset: "🔄 Restituere ad defaltam",
-                unban_gen_title: "✉️ Generator Epistulae Unban", unban_template_1: "Standard (Innocens)", unban_template_2: "Hacked / Furtum", unban_template_3: "Ratio Negotii", unban_btn: "📧 Aperi App Epistulae"
+                unban_gen_title: "✉️ Generator Epistulae Unban", unban_template_1: "Standard (Innocens)", unban_template_2: "Hacked / Furtum", unban_template_3: "Ratio Negotii", unban_btn: "📧 Aperi App Epistulae",
+                color_unban: "Color Unban", edit_unban: "Recensere Textum Unban", prompt_unban: "Novus textus Unban:"
             },
             it: { 
                 agree_btn: "ACCETTA E CONTINUA", autofill: "Auto-compila", api_loading: "Controllo API...", 
                 your_phone: "Il tuo numero", is_unban: "è Sbloccato", contact_support: "Contatta il Supporto.", 
                 cancel: "Annulla", support: "Supporto", support_desk: "Supporto", settings_title: "⚙️ Impostazioni", error_msg: "Errore:",
                 panel_settings: "🎛️ Design Pannello", panel_blur: "Effetto Sfocatura", panel_transparency: "Visibilità", btn_default_reset: "🔄 Ripristina Predefinito",
-                unban_gen_title: "✉️ Generatore Email Sblocco", unban_template_1: "Standard (Innocente)", unban_template_2: "Hackerato / Rubato", unban_template_3: "Account Business", unban_btn: "📧 Apri App Mail"
+                unban_gen_title: "✉️ Generatore Email Sblocco", unban_template_1: "Standard (Innocente)", unban_template_2: "Hackerato / Rubato", unban_template_3: "Account Business", unban_btn: "📧 Apri App Mail",
+                color_unban: "Cambia Colore Sblocco", edit_unban: "Modifica Testo Sblocco", prompt_unban: "Nuovo testo sbloccato:"
             }
         };
 
@@ -1412,7 +1429,7 @@
             document.getElementById('announcement-modal').style.display = 'none';
         }
 
-        // --- CUSTOM LOADER ---
+        // --- CUSTOM LOADER SYSTEM ---
         async function handleLoaderUpload(input) {
             const file = input.files[0]; 
             if (!file) return;
@@ -1527,6 +1544,7 @@
             const layoutData = {
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2',
                 text: localStorage.getItem('snowi_text_color') || '#ffffff',
+                unbanColor: localStorage.getItem('snowi_unban_color') || '#32d74b',
                 blur: localStorage.getItem('snowi_panel_blur') || 8, 
                 alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
                 hasBg: !!bgData
@@ -1554,6 +1572,7 @@
             const layoutData = {
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2', 
                 text: localStorage.getItem('snowi_text_color') || '#ffffff',
+                unbanColor: localStorage.getItem('snowi_unban_color') || '#32d74b',
                 blur: localStorage.getItem('snowi_panel_blur') || 8, 
                 alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
                 bgData: bgData
@@ -1595,6 +1614,10 @@
                     
                     changeTextColor(l.text); 
                     document.getElementById('text-color-picker').value = l.text;
+
+                    const unbanCol = l.unbanColor || '#32d74b';
+                    changeUnbanColor(unbanCol);
+                    document.getElementById('unban-color-picker').value = unbanCol;
                     
                     document.getElementById('blur-slider').value = l.blur; 
                     document.getElementById('alpha-slider').value = l.alpha; 
@@ -1647,6 +1670,10 @@
                 
                 changeTextColor(layout.text); 
                 document.getElementById('text-color-picker').value = layout.text;
+
+                const unbanCol = layout.unbanColor || '#32d74b';
+                changeUnbanColor(unbanCol);
+                document.getElementById('unban-color-picker').value = unbanCol;
                 
                 document.getElementById('blur-slider').value = layout.blur !== undefined ? layout.blur : 8; 
                 document.getElementById('alpha-slider').value = layout.alpha !== undefined ? layout.alpha : 8; 
@@ -1687,17 +1714,20 @@
 
         async function loadSavedSettings() {
             const savedNeon = localStorage.getItem('snowi_neon_color'); 
-            
             if (savedNeon) { 
                 document.getElementById('neon-color-picker').value = savedNeon; 
                 changeThemeColor(savedNeon); 
             }
             
             const savedText = localStorage.getItem('snowi_text_color'); 
-            
             if (savedText) { 
                 document.getElementById('text-color-picker').value = savedText; 
                 changeTextColor(savedText); 
+            }
+
+            const savedUnbanColor = localStorage.getItem('snowi_unban_color');
+            if (savedUnbanColor) {
+                document.getElementById('unban-color-picker').value = savedUnbanColor;
             }
             
             document.getElementById('blur-slider').value = localStorage.getItem('snowi_panel_blur') || 8; 
@@ -1705,7 +1735,6 @@
             updatePanelStyle();
             
             const savedBg = await loadMedia('snowi_bg_image'); 
-            
             if (savedBg) { 
                 const bgImg = document.getElementById('bg-img'); 
                 bgImg.src = savedBg; 
@@ -1789,6 +1818,10 @@
             localStorage.setItem('snowi_text_color', hex); 
         }
 
+        function changeUnbanColor(hex) {
+            localStorage.setItem('snowi_unban_color', hex);
+        }
+
         function editWelcomeText() { 
             const neu = prompt("Welcome Text:", localStorage.getItem('snowi_welcome_text') || DEFAULT_WELCOME_TEXT); 
             if (neu && neu.trim() !== "") { 
@@ -1802,6 +1835,15 @@
             if (neu && neu.trim() !== "") { 
                 localStorage.setItem('snowi_banned_text', neu.trim().replace(/\n/g, '<br>')); 
             } 
+        }
+
+        function editUnbanText() {
+            const current = localStorage.getItem('snowi_unban_text') || (translations[currentLang] ? translations[currentLang].is_unban : "ist Unban");
+            const promptMsg = translations[currentLang] ? translations[currentLang].prompt_unban : "Neuen Text eingeben, wenn die Nummer frei ist:";
+            const neu = prompt(promptMsg, current.replace(/<br>/g, '\n'));
+            if (neu && neu.trim() !== "") {
+                localStorage.setItem('snowi_unban_text', neu.trim().replace(/\n/g, '<br>'));
+            }
         }
 
         async function handleImageUpload(input) {
@@ -1923,11 +1965,15 @@
                     mobCustom.style.color = "var(--text-color)"; 
                     mobSystem.style.display = 'block';
                 } else {
-                    deskMsg.innerText = t ? t.is_unban : "ist Unban"; 
-                    deskMsg.style.color = "#32D74B";
+                    // NEU: HIER WIRD DER BENUTZERDEFINIERTE UNBAN-TEXT UND DIE FARBE GELADEN
+                    const customUnbanText = localStorage.getItem('snowi_unban_text') || (t ? t.is_unban : "ist Unban");
+                    const customUnbanColor = localStorage.getItem('snowi_unban_color') || "#32d74b";
+
+                    deskMsg.innerHTML = customUnbanText; 
+                    deskMsg.style.color = customUnbanColor;
                     
-                    mobCustom.innerText = t ? t.is_unban : "ist Unban"; 
-                    mobCustom.style.color = "#32D74B"; 
+                    mobCustom.innerHTML = customUnbanText; 
+                    mobCustom.style.color = customUnbanColor; 
                     mobSystem.style.display = 'none';
                 }
                 
