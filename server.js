@@ -30,7 +30,6 @@ let stats = {
 let chatHistory = []; 
 
 io.on('connection', (socket) => {
-    // Sende dem neuen Nutzer den bisherigen Verlauf
     socket.emit('chatHistory', chatHistory);
 
     socket.on('sendMessage', (data) => {
@@ -42,7 +41,6 @@ io.on('connection', (socket) => {
             name: senderName,
             text: (data.text || '').substring(0, 200), 
             isAdmin: isAdmin,
-            // HIER IST DER FIX: Forciert IMMER deutsche Zeit (Frankfurt/Berlin)
             time: new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' })
         };
 
@@ -76,7 +74,14 @@ app.post('/check', async (req, res) => {
         const response = await fetch(url, { method: 'GET', headers: headers });
         const data = await response.json();
 
-        let isBanned = data.banned || data.isBanned || (data.data && data.data.banned) || data.status === "banned";
+        // BOMBENSICHERE BANNED-PRÜFUNG (Egal wie die API es schreibt)
+        let isBanned = false;
+        if (data.banned === true || String(data.banned).toLowerCase() === 'true') isBanned = true;
+        if (data.isBanned === true || String(data.isBanned).toLowerCase() === 'true') isBanned = true;
+        if (data.data && (data.data.banned === true || String(data.data.banned).toLowerCase() === 'true')) isBanned = true;
+        if (data.status && String(data.status).toLowerCase() === 'banned') isBanned = true;
+        if (data.reason && String(data.reason).toLowerCase() === 'banned') isBanned = true;
+
         stats.lastCheckedStatus = isBanned ? 'Banned' : 'Unban';
 
         res.json(data);
