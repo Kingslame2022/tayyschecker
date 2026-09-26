@@ -618,7 +618,6 @@
             color: white; 
         }
 
-        /* Tabelle für Owner Dashboard */
         .owner-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -987,7 +986,7 @@
                 <button class="edit-text-btn" onclick="editWelcomeText()" data-i18n="btn_edit">✏️ Ändern</button>
             </div>
 
-            <!-- NEU: BANNED & UNBAN TEXT/FARBE -->
+            <!-- BANNED & UNBAN TEXT/FARBE -->
             <div class="settings-row">
                 <span data-i18n="edit_ban">Bann-Text anpassen</span>
                 <button class="edit-text-btn" onclick="editBannedText()" data-i18n="btn_edit">✏️ Ändern</button>
@@ -1187,7 +1186,7 @@
         }
 
         // ==========================================
-        // SPRACH-WÖRTERBUCH (INKL. UNBAN TEXT/FARBE)
+        // SPRACH-WÖRTERBUCH
         // ==========================================
         const translations = {
             en: { 
@@ -1634,7 +1633,7 @@
                     
                     alert("✅ Layout erfolgreich importiert!");
                 } else {
-                    alert("❌ Code nicht gefunden oder abgelaufen.");
+                    alert("❌ Code nicht gefunden o. abgelaufen.");
                 }
             } catch(e) { 
                 alert("Server Fehler beim Importieren."); 
@@ -1944,7 +1943,14 @@
                 });
                 
                 const data = await response.json(); 
-                let banned = data.banned || data.isBanned || (data.data && data.data.banned) || data.status === "banned";
+                
+                // BOMBENSICHERE BANNED-PRÜFUNG
+                let banned = false;
+                if (data.banned === true || String(data.banned).toLowerCase() === 'true') banned = true;
+                if (data.isBanned === true || String(data.isBanned).toLowerCase() === 'true') banned = true;
+                if (data.data && (data.data.banned === true || String(data.data.banned).toLowerCase() === 'true')) banned = true;
+                if (data.status && String(data.status).toLowerCase() === 'banned') banned = true;
+                if (data.reason && String(data.reason).toLowerCase() === 'banned') banned = true;
                 
                 document.getElementById('loading-wrapper').style.display = 'none';
                 
@@ -1965,7 +1971,6 @@
                     mobCustom.style.color = "var(--text-color)"; 
                     mobSystem.style.display = 'block';
                 } else {
-                    // NEU: HIER WIRD DER BENUTZERDEFINIERTE UNBAN-TEXT UND DIE FARBE GELADEN
                     const customUnbanText = localStorage.getItem('snowi_unban_text') || (t ? t.is_unban : "ist Unban");
                     const customUnbanColor = localStorage.getItem('snowi_unban_color') || "#32d74b";
 
