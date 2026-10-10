@@ -23,7 +23,8 @@ let stats = {
     totalChecks: 0,
     dailyUsers: new Set(),
     lastCheckedNum: '-',
-    lastCheckedStatus: '-'
+    lastCheckedStatus: '-',
+    recentChecks: [] // NEU: Speichert die letzten 50 Checks (IP, Zeit, Nummer)
 };
 
 // --- CHAT SYSTEM LOGIK ---
@@ -57,9 +58,12 @@ app.post('/check', async (req, res) => {
     try {
         const { number } = req.body;
         const cleanNum = number.replace(/\D/g, ''); 
+        
+        // IP herausfinden (Auch hinter Proxys wie Render)
+        const userIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
 
         stats.totalChecks++;
-        stats.dailyUsers.add(req.ip || req.connection.remoteAddress); 
+        stats.dailyUsers.add(userIP); 
         stats.lastCheckedNum = number;
 
         const url = `https://xzc-corporation.biz.id/lrp?number=${cleanNum}`;
@@ -74,7 +78,7 @@ app.post('/check', async (req, res) => {
         const response = await fetch(url, { method: 'GET', headers: headers });
         const data = await response.json();
 
-        // BOMBENSICHERE BANNED-PRÜFUNG (Egal wie die API es schreibt)
+        // Absolut sichere Ban-Erkennung
         let isBanned = false;
         if (data.banned === true || String(data.banned).toLowerCase() === 'true') isBanned = true;
         if (data.isBanned === true || String(data.isBanned).toLowerCase() === 'true') isBanned = true;
@@ -83,6 +87,19 @@ app.post('/check', async (req, res) => {
         if (data.reason && String(data.reason).toLowerCase() === 'banned') isBanned = true;
 
         stats.lastCheckedStatus = isBanned ? 'Banned' : 'Unban';
+
+        // NEU: Log in die Liste eintragen (Vorne anhängen)
+        const timeNow = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        stats.recentChecks.unshift({
+            time: timeNow,
+            ip: userIP,
+            number: number,
+            status: stats.lastCheckedStatus
+        });
+        // Maximal 50 Einträge behalten, um RAM zu sparen
+        if (stats.recentChecks.length > 50) {
+            stats.recentChecks.pop();
+        }
 
         res.json(data);
     } catch (error) {
@@ -98,7 +115,8 @@ app.post('/api/owner/stats', (req, res) => {
         totalChecks: stats.totalChecks,
         activeUsersToday: stats.dailyUsers.size,
         lastCheckedNum: stats.lastCheckedNum,
-        lastCheckedStatus: stats.lastCheckedStatus
+        lastCheckedStatus: stats.lastCheckedStatus,
+        recentChecks: stats.recentChecks // NEU: Sendet die Liste an dein Dashboard
     });
 });
 
@@ -108,6 +126,7 @@ app.post('/api/owner/reset', (req, res) => {
     stats.dailyUsers.clear();
     stats.lastCheckedNum = '-';
     stats.lastCheckedStatus = '-';
+    stats.recentChecks = []; // NEU: Liste leeren
     res.json({ success: true });
 });
 
