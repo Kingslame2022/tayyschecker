@@ -162,21 +162,29 @@
             padding: 0 10px;
         }
 
-        .top-panel {
+        /* --- STANDARD iOS STYLES --- */
+        .top-block-container {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
-            display: flex;
-            text-align: center;
-            margin-bottom: 10px;
             background: var(--panel-bg);
             backdrop-filter: blur(var(--panel-blur));
             -webkit-backdrop-filter: blur(var(--panel-blur));
+            margin-bottom: 12px;
+            overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-panel {
+            display: flex;
+            text-align: center;
+            border-bottom: 1px solid var(--primary-color);
         }
 
         .top-panel > div {
             flex: 1; 
-            padding: 14px; 
+            padding: 12px; 
             cursor: pointer;
             transition: background 0.2s, text-shadow 0.2s; 
             color: var(--text-color);
@@ -199,21 +207,43 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        .input-wrapper { 
-            margin-bottom: 25px; 
-            position: relative; 
+        .extra-field-wrapper {
+            display: none; 
+            margin-bottom: 10px;
         }
-
-        .input-panel {
+        
+        .extra-field-wrapper input {
+            width: 100%;
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--panel-blur));
+            -webkit-backdrop-filter: blur(var(--panel-blur));
             border: 1px solid var(--primary-color);
             border-radius: 12px;
-            display: flex; 
-            align-items: center;
-            padding: 12px 15px;
+            padding: 10px;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper { 
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
             background: var(--panel-bg);
             backdrop-filter: blur(var(--panel-blur));
             -webkit-backdrop-filter: blur(var(--panel-blur));
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 6px; 
+            padding-bottom: 4px; 
+            position: relative;
+        }
+
+        .input-panel {
+            display: flex; 
+            align-items: center;
+            padding: 12px 15px;
         }
 
         .input-panel span { 
@@ -236,7 +266,7 @@
 
         #country-code { 
             width: 45px; 
-            border-right: 1px solid rgba(255,255,255,0.2); 
+            border-right: 1px solid var(--primary-color); 
             padding-right: 10px; 
             margin-right: 10px; 
             text-align: center;
@@ -247,10 +277,10 @@
         }
 
         .progress-bar-container {
-            width: 82%; 
+            width: 90%; 
             height: 3px; 
             background: rgba(255,255,255,0.1); 
-            margin: 6px auto 10px auto; 
+            margin: 0 auto; 
             border-radius: 3px; 
             overflow: hidden;
             position: relative;
@@ -280,6 +310,70 @@
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
             text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        /* --- ANDROID (HACKER) THEME OVERRIDES --- */
+        body.theme-android {
+            --panel-bg: rgba(10, 10, 10, 0.6);
+        }
+
+        body.theme-android .top-block-container,
+        body.theme-android .input-wrapper,
+        body.theme-android .desktop-result {
+            background: rgba(10, 10, 10, 0.4); 
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        }
+
+        body.theme-android .extra-field-wrapper input {
+            color: rgba(255,255,255,0.5); 
+        }
+
+        body.theme-android .input-wrapper {
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--panel-blur));
+            padding-bottom: 5px; 
+            box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        }
+
+        body.theme-android .input-panel {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        body.theme-android .progress-bar-container {
+            width: 90%;
+            margin-top: 0;
+        }
+
+        body.theme-android .desktop-result {
+            background: var(--panel-bg); 
+            backdrop-filter: blur(var(--panel-blur)); 
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        body.theme-android .desktop-num {
+            text-align: left;
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+        }
+
+        body.theme-android .desktop-msg {
+            text-align: left;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        body.theme-android .desktop-actions {
+            justify-content: flex-end;
+            gap: 25px;
         }
 
         /* CUSTOM LOADER BEREICH */
@@ -334,26 +428,28 @@
         }
 
         .desktop-num { 
-            font-size: 1.25rem; 
+            font-size: 1.05rem; 
             font-weight: bold; 
-            margin-bottom: 15px; 
-            text-align: center;
+            margin-bottom: 10px; 
+            text-align: left; 
             text-shadow: 0 0 5px rgba(0,0,0,0.8); 
         }
 
         .desktop-msg { 
             font-style: italic; 
-            font-size: 1.15rem; 
-            margin-bottom: 30px; 
-            text-align: center;
+            font-size: 0.95rem; 
+            margin-bottom: 25px; 
+            text-align: left; 
             font-weight: 600;
             text-shadow: 0 0 5px rgba(0,0,0,0.8); 
         }
 
         .desktop-actions { 
             display: flex; 
-            justify-content: space-between; 
-            font-size: 0.9rem; 
+            justify-content: flex-end; 
+            gap: 20px;
+            font-size: 0.85rem; 
+            font-weight: bold;
             text-transform: uppercase; 
         }
 
@@ -456,6 +552,9 @@
         @media (max-width: 768px) {
             .desktop-result { display: none; }
             .mobile-result.active { display: block; }
+            
+            body.theme-android .desktop-result.active { display: block; }
+            body.theme-android .mobile-result.active { display: none !important; }
         }
 
         @media (min-width: 769px) {
@@ -765,9 +864,15 @@
     <div class="app-container">
         <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
 
-        <div class="top-panel">
-            <div class="border-right" onclick="pasteFromClipboard()" data-i18n="autofill">Autofill</div>
-            <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
+        <!-- 1:1 CONNECTED TOP BLOCK WIE AUF BILD -->
+        <div class="top-block-container">
+            <div class="top-panel" style="margin-bottom: 0; border: none; border-bottom: 1px solid var(--primary-color); border-radius: 0; box-shadow: none;">
+                <div class="border-right" onclick="pasteFromClipboard()" data-i18n="autofill">Autofill</div>
+                <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
+            </div>
+            <div class="extra-field-wrapper" style="display: block;">
+                <input type="text" id="custom-extra-note" placeholder="Notiz / IP / Info..." oninput="saveExtraNote(this.value)">
+            </div>
         </div>
 
         <div class="input-wrapper">
@@ -779,17 +884,19 @@
             <div class="progress-bar-container">
                 <div class="progress-bar"></div>
             </div>
-            <div class="copyright">©Made by Tayy</div>
         </div>
+        
+        <!-- Enger am Input-Block -->
+        <div class="copyright">©Made by Tayy</div>
 
-        <!-- CUSTOM LOADER BEREICH -->
+        <!-- CUSTOM LOADER -->
         <div id="loading-wrapper">
             <img id="loading-icon" src="" alt="Loader">
             <div id="loading-text" data-i18n="api_loading">API wird abgefragt...</div>
         </div>
         <div id="error-message"></div>
 
-        <!-- RESULTAT BEREICH -->
+        <!-- RESULTAT BEREICH (Gleich für PC und Mobile im Hacker-Theme!) -->
         <div id="result-wrapper">
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
@@ -856,10 +963,18 @@
                 <button class="close-settings" onclick="toggleSettings(false)">✕</button>
             </div>
 
-            <!-- KATEGORIE 1: LAYOUT & DESIGN -->
+            <!-- KATEGORIE 1: LAYOUT & FARBEN -->
             <div class="category-box">
                 <div class="category-title">🎨 Layout & Farben</div>
                 
+                <div class="settings-row" style="margin-bottom: 15px;">
+                    <span>Design-Stil</span>
+                    <select id="theme-style-select" class="glass-select" onchange="changeThemeStyle(this.value)">
+                        <option value="ios">iOS (Standard Glas)</option>
+                        <option value="android">Android (Hacker Neon)</option>
+                    </select>
+                </div>
+
                 <div class="settings-row" style="margin-bottom: 8px; gap: 5px;">
                     <button class="action-btn" onclick="saveCurrentLayout()">💾 Speichern</button>
                     <select id="layout-select" class="glass-select" style="flex: 1;">
@@ -892,7 +1007,7 @@
                 <input type="range" id="bg-opacity-slider" min="10" max="100" value="40" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePanelStyle()">
             </div>
 
-            <!-- KATEGORIE 2: GLAS-EFFEKTE (PANEL DESIGN) -->
+            <!-- KATEGORIE 2: GLAS-EFFEKTE -->
             <div class="category-box">
                 <div class="category-title">🎛️ Glas & Popups</div>
                 
@@ -968,8 +1083,8 @@
     </div>
 
     <!-- OWNER LOGIN MODAL -->
-    <div id="owner-login-modal" class="ios-overlay" style="display: none; z-index: 5000;">
-        <div class="ios-modal" style="padding: 20px;">
+    <div id="owner-login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 5000; align-items: center; justify-content: center;">
+        <div style="background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 14px; padding: 20px; width: 280px; text-align: center; border: 1px solid var(--primary-color);">
             <h3 style="margin-bottom: 15px; color: var(--primary-color);">Admin Login</h3>
             <input type="text" id="admin-user" class="owner-input" placeholder="Benutzername">
             <input type="password" id="admin-pass" class="owner-input" placeholder="Passwort">
@@ -994,6 +1109,25 @@
                 <tr><th>Letzte Nr.</th><td id="stat-lastnum">Lade...</td></tr>
                 <tr><th>Letzter Status</th><td id="stat-laststat">Lade...</td></tr>
             </table>
+
+            <!-- NEU: LIVE CHECK LOG -->
+            <div style="font-size: 0.85rem; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: var(--primary-color);">🕵️ Live Check-Log (Letzte 50)</div>
+            <div style="max-height: 150px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; margin-bottom: 20px;">
+                <table class="owner-table" style="margin-bottom: 0; border: none;">
+                    <thead>
+                        <tr>
+                            <th style="position: sticky; top: 0; background: #111;">Zeit</th>
+                            <th style="position: sticky; top: 0; background: #111;">IP</th>
+                            <th style="position: sticky; top: 0; background: #111;">Nummer</th>
+                            <th style="position: sticky; top: 0; background: #111;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stat-log-body">
+                        <!-- Logs spawnen hier -->
+                    </tbody>
+                </table>
+            </div>
+
             <button class="action-btn" style="width:100%; border-color:red; color:red; margin-bottom:20px;" onclick="resetStats()">🗑️ Statistik zurücksetzen</button>
 
             <p style="font-size: 0.85rem; margin-bottom: 10px; opacity: 0.8;">Neues Announcement erstellen:</p>
@@ -1150,11 +1284,29 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             changeLanguage(localStorage.getItem('snowi_lang') || 'de');
+            
+            document.getElementById('custom-extra-note').value = localStorage.getItem('snowi_extra_note') || '';
+
             await loadSavedSettings();
             updateLayoutDropdown();
             checkGlobalAnnouncements();
             applyLoaderSettings();
         });
+
+        function saveExtraNote(val) {
+            localStorage.setItem('snowi_extra_note', val);
+        }
+
+        function changeThemeStyle(styleName) {
+            localStorage.setItem('snowi_theme_style', styleName);
+            document.getElementById('theme-style-select').value = styleName;
+            
+            if (styleName === 'android') {
+                document.body.classList.add('theme-android');
+            } else {
+                document.body.classList.remove('theme-android');
+            }
+        }
 
         function changeLanguage(lang) {
             currentLang = lang; 
@@ -1218,8 +1370,25 @@
             try {
                 const res = await fetch('/api/owner/stats', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: '0873@adv' }) });
                 const data = await res.json();
-                document.getElementById('stat-total').innerText = data.totalChecks; document.getElementById('stat-users').innerText = data.activeUsersToday;
-                document.getElementById('stat-lastnum').innerText = data.lastCheckedNum; document.getElementById('stat-laststat').innerText = data.lastCheckedStatus;
+                document.getElementById('stat-total').innerText = data.totalChecks; 
+                document.getElementById('stat-users').innerText = data.activeUsersToday;
+                document.getElementById('stat-lastnum').innerText = data.lastCheckedNum; 
+                document.getElementById('stat-laststat').innerText = data.lastCheckedStatus;
+
+                // NEU: Live Log Tabelle befüllen
+                const logBody = document.getElementById('stat-log-body');
+                logBody.innerHTML = '';
+                if(data.recentChecks && data.recentChecks.length > 0) {
+                    data.recentChecks.forEach(log => {
+                        const tr = document.createElement('tr');
+                        const statusColor = log.status === 'Banned' ? '#ff4d4d' : '#32d74b';
+                        tr.innerHTML = `<td>${log.time}</td><td>${log.ip}</td><td>${log.number}</td><td style="color:${statusColor}; font-weight:bold;">${log.status}</td>`;
+                        logBody.appendChild(tr);
+                    });
+                } else {
+                    logBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Noch keine Checks</td></tr>';
+                }
+
             } catch(e) {}
         }
 
@@ -1276,7 +1445,7 @@
 
         async function deleteLoaderImg() { await deleteMedia('snowi_loader_img'); applyLoaderSettings(); alert("Ladebild entfernt!"); }
 
-        // --- NEU: UNBAN E-MAIL GENERATOR (Mit smarter Erkennung) ---
+        // --- UNBAN E-MAIL GENERATOR ---
         function generateUnbanEmail() {
             const cc = document.getElementById('country-code').value.replace(/\D/g, '');
             const num = document.getElementById('phone-number').value.replace(/\D/g, '');
@@ -1284,7 +1453,6 @@
             let fullNumber = "";
             let resultBoxActive = document.getElementById('result-wrapper').style.display === 'block';
 
-            // Zieht sich IMMER die exakte Nummer - kein blöder Platzhalter mehr!
             if (resultBoxActive) {
                 fullNumber = document.getElementById('desk-num').innerText;
             } else if (num.length > 3) {
@@ -1295,18 +1463,14 @@
             }
 
             const template = document.getElementById('unban-template').value;
-            let subject = "";
-            let body = "";
+            let subject = ""; let body = "";
 
             if (template === "1") {
-                subject = "Urgent: Please reactivate my account - Number banned by mistake";
-                body = `Dear WhatsApp Support Team,\n\nMy WhatsApp account has been unexpectedly suspended. I am not aware of any violation of the Terms of Service. I only use my account for personal communication with my friends and family.\n\nI suspect this might be a system error or an automated false flag. Please review my account manually and reactivate my number as soon as possible, as I urgently need it for daily communication.\n\nMy phone number in full international format is: ${fullNumber}\n\nThank you for your fast help.\n\nBest regards,`;
+                subject = "Urgent: Please reactivate my account - Number banned by mistake"; body = `Dear WhatsApp Support Team,\n\nMy WhatsApp account has been unexpectedly suspended. I am not aware of any violation of the Terms of Service. I only use my account for personal communication with my friends and family.\n\nI suspect this might be a system error or an automated false flag. Please review my account manually and reactivate my number as soon as possible, as I urgently need it for daily communication.\n\nMy phone number in full international format is: ${fullNumber}\n\nThank you for your fast help.\n\nBest regards,`;
             } else if (template === "2") {
-                subject = "Account Compromised - Please restore my access";
-                body = `Dear WhatsApp Support,\n\nMy smartphone was recently stolen / compromised, and someone else gained access to my WhatsApp account. I believe they might have sent unauthorized messages using my number, which led to this ban.\n\nI have now recovered my SIM card and fully secured my device. Since I was not the one violating the Terms of Service, I kindly ask you to lift the suspension so I can securely use my account again.\n\nMy phone number is: ${fullNumber}\n\nThank you very much for your understanding and support.\n\nSincerely,`;
+                subject = "Account Compromised - Please restore my access"; body = `Dear WhatsApp Support,\n\nMy smartphone was recently stolen / compromised, and someone else gained access to my WhatsApp account. I believe they might have sent unauthorized messages using my number, which led to this ban.\n\nI have now recovered my SIM card and fully secured my device. Since I was not the one violating the Terms of Service, I kindly ask you to lift the suspension so I can securely use my account again.\n\nMy phone number is: ${fullNumber}\n\nThank you very much for your understanding and support.\n\nSincerely,`;
             } else if (template === "3") {
-                subject = "Urgent Appeal: Business Account Suspended";
-                body = `Dear WhatsApp Support Team,\n\nMy WhatsApp Business account has been deactivated. We strictly adhere to all WhatsApp Business Policies and use the platform to provide customer support.\n\nThis suspension is causing significant disruption to our business operations and our customers are unable to reach us. If there was any unintentional violation, we apologize and will make sure to adjust our messaging strategy immediately.\n\nPlease review our case and lift the ban so we can continue serving our clients.\n\nRegistered Business Number: ${fullNumber}\n\nBest regards,`;
+                subject = "Urgent Appeal: Business Account Suspended"; body = `Dear WhatsApp Support Team,\n\nMy WhatsApp Business account has been deactivated. We strictly adhere to all WhatsApp Business Policies and use the platform to provide customer support.\n\nThis suspension is causing significant disruption to our business operations and our customers are unable to reach us. If there was any unintentional violation, we apologize and will make sure to adjust our messaging strategy immediately.\n\nPlease review our case and lift the ban so we can continue serving our clients.\n\nRegistered Business Number: ${fullNumber}\n\nBest regards,`;
             }
 
             const targetEmail = template === "3" ? "smb_web@support.whatsapp.com" : "support@support.whatsapp.com";
@@ -1318,6 +1482,7 @@
             const name = prompt("Name für das Layout:"); if(!name || name.trim() === "") return;
             const cleanName = name.trim(); const bgData = await loadMedia('snowi_bg_image') || '';
             const layoutData = {
+                themeStyle: localStorage.getItem('snowi_theme_style') || 'ios',
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2', text: localStorage.getItem('snowi_text_color') || '#ffffff', unbanColor: localStorage.getItem('snowi_unban_color') || '#32d74b',
                 blur: localStorage.getItem('snowi_panel_blur') || 8, alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
                 popupBlur: localStorage.getItem('snowi_popup_blur') || 12, bgOpacity: localStorage.getItem('snowi_bg_opacity') || 40, hasBg: !!bgData
@@ -1330,6 +1495,7 @@
         async function exportLayout() {
             const bgData = await loadMedia('snowi_bg_image') || '';
             const layoutData = {
+                themeStyle: localStorage.getItem('snowi_theme_style') || 'ios',
                 neon: localStorage.getItem('snowi_neon_color') || '#8a2be2', text: localStorage.getItem('snowi_text_color') || '#ffffff', unbanColor: localStorage.getItem('snowi_unban_color') || '#32d74b',
                 blur: localStorage.getItem('snowi_panel_blur') || 8, alpha: localStorage.getItem('snowi_panel_alpha') || 8, 
                 popupBlur: localStorage.getItem('snowi_popup_blur') || 12, bgOpacity: localStorage.getItem('snowi_bg_opacity') || 40, bgData: bgData
@@ -1343,12 +1509,16 @@
                 const res = await fetch('/api/layout/import/' + code.toUpperCase()); const data = await res.json();
                 if(data.success && data.layoutData) {
                     const l = data.layoutData;
+                    
+                    changeThemeStyle(l.themeStyle || 'ios');
                     changeThemeColor(l.neon); document.getElementById('neon-color-picker').value = l.neon;
                     changeTextColor(l.text); document.getElementById('text-color-picker').value = l.text;
                     const unbanCol = l.unbanColor || '#32d74b'; changeUnbanColor(unbanCol); document.getElementById('unban-color-picker').value = unbanCol;
+                    
                     document.getElementById('blur-slider').value = l.blur; document.getElementById('alpha-slider').value = l.alpha; 
                     document.getElementById('popup-blur-slider').value = l.popupBlur !== undefined ? l.popupBlur : 12; document.getElementById('bg-opacity-slider').value = l.bgOpacity !== undefined ? l.bgOpacity : 40;
                     updatePanelStyle();
+                    
                     if(l.bgData) { await saveMedia('snowi_bg_image', l.bgData); document.getElementById('bg-img').src = l.bgData; document.getElementById('bg-img').style.display = 'block'; } else { await deleteMedia('snowi_bg_image'); document.getElementById('bg-img').style.display = 'none'; }
                     alert("✅ Layout erfolgreich importiert!");
                 } else { alert("❌ Code nicht gefunden oder abgelaufen."); }
@@ -1364,12 +1534,15 @@
             const name = document.getElementById('layout-select').value; if(!name) return alert("Layout wählen!");
             const layout = JSON.parse(localStorage.getItem('snowi_layouts') || '{}')[name];
             if(layout) {
+                changeThemeStyle(layout.themeStyle || 'ios');
                 changeThemeColor(layout.neon); document.getElementById('neon-color-picker').value = layout.neon;
                 changeTextColor(layout.text); document.getElementById('text-color-picker').value = layout.text;
                 const unbanCol = layout.unbanColor || '#32d74b'; changeUnbanColor(unbanCol); document.getElementById('unban-color-picker').value = unbanCol;
+                
                 document.getElementById('blur-slider').value = layout.blur !== undefined ? layout.blur : 8; document.getElementById('alpha-slider').value = layout.alpha !== undefined ? layout.alpha : 8; 
                 document.getElementById('popup-blur-slider').value = layout.popupBlur !== undefined ? layout.popupBlur : 12; document.getElementById('bg-opacity-slider').value = layout.bgOpacity !== undefined ? layout.bgOpacity : 40;
                 updatePanelStyle();
+                
                 const bgData = await loadMedia('snowi_layout_img_' + name) || layout.bg || '';
                 if(bgData) { await saveMedia('snowi_bg_image', bgData); document.getElementById('bg-img').src = bgData; document.getElementById('bg-img').style.display = 'block'; } else { await deleteMedia('snowi_bg_image'); document.getElementById('bg-img').style.display = 'none'; }
                 alert(`✅ Geladen!`);
@@ -1382,6 +1555,9 @@
         }
 
         async function loadSavedSettings() {
+            const savedTheme = localStorage.getItem('snowi_theme_style') || 'ios';
+            changeThemeStyle(savedTheme);
+
             const savedNeon = localStorage.getItem('snowi_neon_color'); if (savedNeon) { document.getElementById('neon-color-picker').value = savedNeon; changeThemeColor(savedNeon); }
             const savedText = localStorage.getItem('snowi_text_color'); if (savedText) { document.getElementById('text-color-picker').value = savedText; changeTextColor(savedText); }
             const savedUnbanColor = localStorage.getItem('snowi_unban_color'); if (savedUnbanColor) { document.getElementById('unban-color-picker').value = savedUnbanColor; }
@@ -1403,7 +1579,6 @@
         function checkCloseSupport(e) { if (e.target.id === 'support-modal') toggleSupport(false); }
         function openSupport() { toggleSupport(true); }
         
-        // --- NEU: SMARTER AUTOFILL (Erkennt Ländervorwahlen perfekt) ---
         async function pasteFromClipboard() { 
             try { 
                 const text = await navigator.clipboard.readText(); 
@@ -1415,7 +1590,7 @@
                         if (raw.startsWith('00')) clean = clean.substring(2);
                         
                         let possibleCC = clean.substring(0, 2);
-                        if (clean.startsWith('1')) possibleCC = '1'; // USA
+                        if (clean.startsWith('1')) possibleCC = '1'; 
                         else if (clean.startsWith('35') || clean.startsWith('37') || clean.startsWith('38') || clean.startsWith('42') || clean.startsWith('50') || clean.startsWith('59') || clean.startsWith('67') || clean.startsWith('68') || clean.startsWith('69') || clean.startsWith('85') || clean.startsWith('88') || clean.startsWith('96') || clean.startsWith('97') || clean.startsWith('99')) possibleCC = clean.substring(0, 3);
                         
                         document.getElementById('country-code').value = possibleCC;
