@@ -162,24 +162,17 @@
             padding: 0 10px;
         }
 
-        /* --- STANDARD iOS STYLES --- */
-        .top-block-container {
+        /* --- GETRENNTE BOXEN (WIE AUF BILD) --- */
+        .top-panel {
             border: 1px solid var(--primary-color);
             border-radius: 12px;
+            display: flex;
+            text-align: center;
+            margin-bottom: 15px; /* Wieder eine saubere Lücke zur Input-Box */
             background: var(--panel-bg);
             backdrop-filter: blur(var(--panel-blur));
             -webkit-backdrop-filter: blur(var(--panel-blur));
-            margin-bottom: 12px;
-            overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .top-panel {
-            display: flex;
-            text-align: center;
-            border-bottom: 1px solid var(--primary-color);
         }
 
         .top-panel > div {
@@ -207,43 +200,21 @@
             text-shadow: 0 0 8px var(--primary-color); 
         }
 
-        .extra-field-wrapper {
-            display: none; 
-            margin-bottom: 10px;
-        }
-        
-        .extra-field-wrapper input {
-            width: 100%;
-            background: var(--panel-bg);
-            backdrop-filter: blur(var(--panel-blur));
-            -webkit-backdrop-filter: blur(var(--panel-blur));
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            padding: 10px;
-            color: rgba(255,255,255,0.7);
-            text-align: center;
-            outline: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
         .input-wrapper { 
-            border: 1px solid var(--primary-color);
-            border-radius: 12px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(var(--panel-blur));
-            -webkit-backdrop-filter: blur(var(--panel-blur));
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-bottom: 6px; 
-            padding-bottom: 4px; 
-            position: relative;
+            margin-bottom: 12px; 
+            position: relative; 
         }
 
         .input-panel {
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
             display: flex; 
             align-items: center;
             padding: 12px 15px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--panel-blur));
+            -webkit-backdrop-filter: blur(var(--panel-blur));
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .input-panel span { 
@@ -280,7 +251,7 @@
             width: 90%; 
             height: 3px; 
             background: rgba(255,255,255,0.1); 
-            margin: 0 auto; 
+            margin: 6px auto 0 auto; 
             border-radius: 3px; 
             overflow: hidden;
             position: relative;
@@ -317,17 +288,12 @@
             --panel-bg: rgba(10, 10, 10, 0.6);
         }
 
-        body.theme-android .top-block-container,
-        body.theme-android .input-wrapper,
+        body.theme-android .top-panel,
         body.theme-android .desktop-result {
             background: rgba(10, 10, 10, 0.4); 
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
             box-shadow: 0 0 8px rgba(0,0,0,0.8);
-        }
-
-        body.theme-android .extra-field-wrapper input {
-            color: rgba(255,255,255,0.5); 
         }
 
         body.theme-android .input-wrapper {
@@ -864,16 +830,10 @@
     <div class="app-container">
         <div class="header">スノウィ <span class="dots" onclick="toggleSettings(true)">⋮</span></div>
 
-        <!-- 1:1 CONNECTED TOP BLOCK WIE AUF BILD -->
-        <div class="top-block-container">
-            <div class="top-panel" style="margin-bottom: 0; border: none; border-bottom: 1px solid var(--primary-color); border-radius: 0; box-shadow: none;">
-                <div class="border-right" onclick="pasteFromClipboard()" data-i18n="autofill">Autofill</div>
-                <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
-            </div>
-            <div class="extra-field-wrapper" style="display: block;">
-                <!-- PLATZHALTER ENTFERNT, DAMIT ES CLEAN WIE AUF DEM FOTO IST -->
-                <input type="text" id="custom-extra-note" placeholder="" oninput="saveExtraNote(this.value)">
-            </div>
+        <!-- GETRENNTE BOXEN WIE AUF BILD -->
+        <div class="top-panel">
+            <div class="border-right" onclick="pasteFromClipboard()" data-i18n="autofill">Autofill</div>
+            <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
         </div>
 
         <div class="input-wrapper">
@@ -887,7 +847,6 @@
             </div>
         </div>
         
-        <!-- Enger am Input-Block -->
         <div class="copyright">©Made by Tayy</div>
 
         <!-- CUSTOM LOADER -->
@@ -897,7 +856,7 @@
         </div>
         <div id="error-message"></div>
 
-        <!-- RESULTAT BEREICH (Gleich für PC und Mobile im Hacker-Theme!) -->
+        <!-- RESULTAT BEREICH -->
         <div id="result-wrapper">
             <div class="desktop-result" id="desktop-view">
                 <div class="desktop-num" id="desk-num">+49 175 2821649</div>
@@ -926,7 +885,7 @@
         </div>
     </div>
 
-    <!-- LIVE CHAT MODAL (IN SETTINGS INTEGRIERT) -->
+    <!-- LIVE CHAT MODAL -->
     <div class="settings-backdrop" id="chat-modal" onclick="checkCloseChat(event)">
         <div class="settings-panel" style="padding:0; display:flex; flex-direction:column; height:75vh;" onclick="event.stopPropagation()">
             <div class="settings-header" style="padding: 15px; margin: 0; background: rgba(0,0,0,0.4); border-top-left-radius: 18px; border-top-right-radius: 18px;">
@@ -934,7 +893,6 @@
                 <button class="close-settings" onclick="toggleChat(false)">✕</button>
             </div>
             <div id="chat-messages" class="chat-messages">
-                <!-- Nachrichten -->
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Nachricht..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
@@ -1286,17 +1244,11 @@
         document.addEventListener('DOMContentLoaded', async () => {
             changeLanguage(localStorage.getItem('snowi_lang') || 'de');
             
-            document.getElementById('custom-extra-note').value = localStorage.getItem('snowi_extra_note') || '';
-
             await loadSavedSettings();
             updateLayoutDropdown();
             checkGlobalAnnouncements();
             applyLoaderSettings();
         });
-
-        function saveExtraNote(val) {
-            localStorage.setItem('snowi_extra_note', val);
-        }
 
         function changeThemeStyle(styleName) {
             localStorage.setItem('snowi_theme_style', styleName);
