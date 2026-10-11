@@ -871,7 +871,8 @@
                 <div class="check-btn-area" onclick="checkNumber()">スノウィ</div>
             </div>
             <div class="extra-field-wrapper" style="display: block;">
-                <input type="text" id="custom-extra-note" placeholder="Notiz / IP / Info..." oninput="saveExtraNote(this.value)">
+                <!-- PLATZHALTER ENTFERNT, DAMIT ES CLEAN WIE AUF DEM FOTO IST -->
+                <input type="text" id="custom-extra-note" placeholder="" oninput="saveExtraNote(this.value)">
             </div>
         </div>
 
@@ -1110,7 +1111,7 @@
                 <tr><th>Letzter Status</th><td id="stat-laststat">Lade...</td></tr>
             </table>
 
-            <!-- NEU: LIVE CHECK LOG -->
+            <!-- LIVE CHECK LOG -->
             <div style="font-size: 0.85rem; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: var(--primary-color);">🕵️ Live Check-Log (Letzte 50)</div>
             <div style="max-height: 150px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; margin-bottom: 20px;">
                 <table class="owner-table" style="margin-bottom: 0; border: none;">
@@ -1375,7 +1376,6 @@
                 document.getElementById('stat-lastnum').innerText = data.lastCheckedNum; 
                 document.getElementById('stat-laststat').innerText = data.lastCheckedStatus;
 
-                // NEU: Live Log Tabelle befüllen
                 const logBody = document.getElementById('stat-log-body');
                 logBody.innerHTML = '';
                 if(data.recentChecks && data.recentChecks.length > 0) {
@@ -1388,7 +1388,6 @@
                 } else {
                     logBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Noch keine Checks</td></tr>';
                 }
-
             } catch(e) {}
         }
 
